@@ -38,7 +38,7 @@ const AppContainer = styled.main`
   display: flex;
   flex-direction: column;
 
-  width: 500px;
+  width: 900px;
 
   margin: 0 auto;
   padding-top: 10px;
@@ -48,7 +48,7 @@ const AppContainer = styled.main`
 
   background-color: ${ props => props.theme.colors.main };
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
     width: 100%;
   }
 `
@@ -63,7 +63,7 @@ const Spacer = styled.div`
 `
 
 const MainPage = styled.div`
-  width: 500px;
+  width: 900px;
 
   margin: 0 auto;
 

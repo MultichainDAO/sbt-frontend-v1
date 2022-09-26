@@ -165,7 +165,7 @@ const Connect: React.FC = () => {
     if(walletType === WalletListOptions.WalletConnect) {
 
       try {
-        await walletConnect.activate(137)  // Polygon
+        await walletConnect.activate(137)  // Polygon, since this holds the SBT
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
         console.log(err.message)
@@ -189,7 +189,7 @@ const Connect: React.FC = () => {
 
   useEffect(() => {
     connect()
-  }, [ walletType, connect ])
+  }, [ walletType, connect, accounts ])
 
 
 

@@ -2,6 +2,7 @@ import { ethers, Contract, BigNumber } from "ethers"
 import { Web3Provider } from "@ethersproject/providers"
 
 import {multiHonorAbi, idCardAbi} from "./abi"
+import {sbtContract} from "./sbtContract"
 
 import { getError } from "./errors"
 
@@ -21,12 +22,39 @@ const getMultiHonor = (chainId: number, provider: Web3Provider): Contract => {
     return new Contract(multiHonorAddr, multiHonorAbi, ethersSigner)
 }
 
+const getSBT = (provider: Web3Provider) : Contract => {
+    return new Contract(sbtContract.address, sbtContract.abi, provider)
+}
+
 const getIdNFT = (chainId: number, provider: Web3Provider): Contract => {
     const network = getNetwork(chainId)
     
     const iDCardAddr = network.contracts.idCardProxy
     const { ethersSigner } = getWeb3(provider)
     return new Contract(iDCardAddr, idCardAbi, ethersSigner)
+}
+
+const createSBT = async (chainId: number, provider: Web3Provider) => {
+    const { ethersSigner } = getWeb3(provider)
+    const idNFT = getIdNFT(chainId, provider)
+    console.log(idNFT)
+    // try {
+    //     const tx = await idNFT.claim()
+    //     await tx.wait()
+    // }catch(err: any) {
+    //     console.log(err.message)
+    // }
+}
+
+const removeSBT = async (id: number, chainId: number, provider: Web3Provider) => {
+    const { ethersSigner } = getWeb3(provider)
+    const idNFT = getIdNFT(chainId, provider)
+    try {
+        const tx = await idNFT.burn(id, {gasLimit: 100000})
+        await tx.wait()
+    }catch(err: any) {
+        console.log(err.message)
+    }
 }
 
 const getVePower =  (sbtId: number, chainId: number, provider: Web3Provider) => {
@@ -69,6 +97,10 @@ const getLevel =  (sbtId: number, chainId: number, provider: Web3Provider) => {
 
 export {
     getMultiHonor,
+    getIdNFT,
+    getSBT,
+    createSBT,
+    removeSBT,
     getVePower,
     getVePoint,
     getPOC,
