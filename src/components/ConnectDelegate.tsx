@@ -10,9 +10,11 @@ import { walletConnect } from "../utils/connectors/walletConnect"
 import { metaMask } from "../utils/connectors/metaMask"
 
 import WalletList from "./WalletList"
-import {NetworkRow, NetworkButton} from "../component-styles"
 
 import { Theme } from "../theme"
+
+import {NetworkRow, NetworkButton} from "../component-styles"
+
 
 
 const ConnectContainer = styled.div`
@@ -126,25 +128,28 @@ const BalSymbol = styled.div`
   margin-left: 2px;
 `
 
-interface DefaultNetworkProp {
+interface ConnectDelegateProp {
   defaultNetwork: number
+  sbtExists: Boolean
 }
 
-const Connect: React.FC<DefaultNetworkProp> = (props) => {
+const ConnectDelegate: React.FC<ConnectDelegateProp> = (props) => {
 
   const defaultNetwork = props.defaultNetwork
+  const sbtExists = props.sbtExists
 
   const [ baseBal, setBaseBal ] = useState<string>(" - ")
   const [ displayWalletList, setDisplayWalletList ] = useState<boolean>(false)
   const [ walletType, setWalletType ] = useState<WalletListOptions | null>(null)
-  const [newNetwork, setNewNetwork] = useState<boolean>(false)
   const [ walletSelected, setWalletSelected ] = useState<boolean>(false)
-
+  const [newNetwork, setNewNetwork] = useState<boolean>(true)
+  
 
 
   const { provider, chainId, accounts, isActive } = useWeb3React()
 
   const [newNetworkChain, setNewNetworkChain] = useState<number|undefined>(chainId)
+
 
   useEffect(() => {
     const loadBaseBal = async () => {
@@ -161,16 +166,14 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
   }, [ isActive, provider, accounts, setBaseBal ])
 
 
-
   const connect = useCallback(async (): Promise<void> => {
 
-    //if(isActive) return
-    console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
-    if(!walletSelected ) return
-    console.log("GOT THROUGH")
+    //if(!newNetwork && isActive && !walletSelected) return
+    console.log(`newNetwork = ${newNetwork} isActive = ${isActive} walletSelected = ${walletSelected}`)
+    if(!newNetwork || !isActive || !walletSelected) return
 
     if(walletType === WalletListOptions.WalletConnect) {
-      console.log("A")
+        console.log("three")
       try {
         await walletConnect.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
@@ -180,7 +183,7 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
       }
 
     } else if(walletType === WalletListOptions.MetaMask) {
-      console.log("B")
+
       try {
         await metaMask.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
@@ -189,103 +192,102 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
         console.log(`Connection Failed. ${ tsToTime() }`)
       }
 
-    } else {console.log("C")}
+    } else {}
     setNewNetwork(false)
-  }, [ newNetwork, isActive, walletType ])
+    setWalletSelected(true)
+  }, [ isActive, walletType, newNetworkChain ])
 
 
 
   useEffect(() => {
+    console.log('calling connect')
     connect()
-  }, [ newNetwork, walletType, connect ])
+  }, [ walletType, connect, newNetworkChain ])
 
-  // const networkDelegateHandler = (net: string) => {
-  //   console.log(`Clicked delegate veMULTI for ${net} OLD chainId = ${chainId}`)
-  //   if (net == "MATIC" && (chainId !=137 || chainId === undefined)){
-  //     setNewNetworkChain(137)
-  //     setNewNetwork(true)
-  //     setDisplayWalletList(true)
-  //   } else if (net == "ETH" && (chainId !=1 || chainId === undefined)) {
-  //       setNewNetworkChain(1)
-  //       setNewNetwork(true)
-  //       setDisplayWalletList(true)
-  //       console.log("EEEEEEEEEEEEEEETH")
-  //   } else if (net == "FTM" && (chainId !=250 || chainId === undefined)) {
-  //       setNewNetworkChain(250)
-  //       setNewNetwork(true)
-  //       setDisplayWalletList(true)
-  //   } else if (net == "BNB" && (chainId !=56 || chainId === undefined)) {
-  //       setNewNetworkChain(56)
-  //       setNewNetwork(true)
-  //       setDisplayWalletList(true)
-  //   } else {
-  //     console.log("No NEW NETWORK HANDLED")
-  //   }
-  //   console.log(`In networkDelegateHandler newNetwork = ${newNetwork} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
-  // }   
 
-    return(
-      <>
-      {
-      accounts && isActive
-      ?<ConnectContainer>
-          <ConnectedPage theme={ Theme }>
-          <Balance theme={ Theme }><BalAmount>{ baseBal }</BalAmount><BalSymbol>{ getNetwork(chainId).nativeCurrency.symbol }</BalSymbol></Balance>
-          <Account theme={ Theme }>{ formatAddr(accounts[ 0 ]) }</Account>
-          </ConnectedPage>
-      </ConnectContainer>
-      : ""
-      }
-      {
-        !displayWalletList
-      ? <NetworkRow isBottom = {false} theme = {Theme}> 
-      <NetworkButton onClick={ () => {
-          setNewNetworkChain(137);
-          setDisplayWalletList(true);
-          setWalletSelected(false);
+
+    const networkDelegateHandler = (net: string) => {
+        console.log(`Clicked delegate veMULTI for ${net}`)
+        setDisplayWalletList(true)
+        if (net == "ETH" && chainId !== 1) {
+            setNewNetworkChain(1)
+            setNewNetwork(true)
+        } else if (net == "FTM" && chainId !== 250) {
+            setNewNetworkChain(250)
+            setNewNetwork(true)
+        } else if (net == "BNB" && chainId !== 56) {
+            setNewNetworkChain(56)
+            setNewNetwork(true)
         }
-      } isActive = {chainId==137?false:true} theme = {Theme} >
-          Polygon
-      </NetworkButton>
-      <NetworkButton onClick={ () => {
-          setNewNetworkChain(1);
-          setDisplayWalletList(true);
-          setWalletSelected(false);
-        }
-      } isActive = {chainId==1?false:true} theme = {Theme} >
-          Ethereum
-      </NetworkButton>
-      <NetworkButton onClick={ () => {
-          setNewNetworkChain(250);
-          setDisplayWalletList(true);
-          setWalletSelected(false);
-        }
-      } isActive = {chainId==250?false:true} theme = {Theme} >
-          Fantom
-      </NetworkButton>
-      <NetworkButton onClick={ () => {
-          setNewNetworkChain(56);
-          setDisplayWalletList(true);
-          setWalletSelected(false);
-        }
-      } isActive = {chainId==56?false:true} theme = {Theme} >
-          BNB Chain
-      </NetworkButton>
-      </NetworkRow>
-      : 
-        <NetworkRow isBottom = {false} theme = {Theme}>
-          <WalletList onClose={ () => {
-              setDisplayWalletList(false); 
-              setNewNetwork(true); 
-              setWalletSelected(true); 
-              console.log(`Before WalletList: walletSelected = ${walletSelected} newNetwork = ${newNetwork} displayWalletList = ${displayWalletList}`)
-            }
-          } walletType={ walletType } setWalletType={ setWalletType }/>
-        </NetworkRow>
-      }
-      
-      </>
-    )
+        
+    }   
+    console.log(`newNetwork = ${newNetwork}`)
+    // if(sbtExists && isActive && chainId && accounts && newNetwork) {
+    //     return(
+    //       <ConnectContainer>
+    //         <ConnectedPage theme={ Theme }>
+    //           <Balance theme={ Theme }><BalAmount>{ baseBal }</BalAmount><BalSymbol>{ getNetwork(chainId).nativeCurrency.symbol }</BalSymbol></Balance>
+    //           <Account theme={ Theme }>{ formatAddr(accounts[ 0 ]) }</Account>
+    //         </ConnectedPage>
+    //       </ConnectContainer>
+    //     )
+    //   } else {
+
+        if(sbtExists && isActive && chainId && accounts) {
+            return (
+                <>
+                <ConnectContainer>
+                    <ConnectedPage theme={ Theme }>
+                    <Balance theme={ Theme }><BalAmount>{ baseBal }</BalAmount><BalSymbol>{ getNetwork(chainId).nativeCurrency.symbol }</BalSymbol></Balance>
+                    <Account theme={ Theme }>{ formatAddr(accounts[ 0 ]) }</Account>
+                    </ConnectedPage>
+                </ConnectContainer>
+                <NetworkRow isBottom = {false} theme = {Theme}> 
+                <NetworkButton isActive = {false} theme = {Theme} onClick = {() => networkDelegateHandler("ETH")}>
+                    Ethereum
+                </NetworkButton>
+                <NetworkButton isActive = {true} theme = {Theme} onClick = {() => networkDelegateHandler("FTM")}>
+                    Fantom
+                </NetworkButton>
+                <NetworkButton isActive = {true} theme = {Theme} onClick = {() => networkDelegateHandler("BNB")}>
+                    BNB Chain
+                </NetworkButton>
+            
+                {
+                displayWalletList
+                    ? <WalletList onClose={ () => {setDisplayWalletList(false); setWalletSelected(true)}} walletType={ walletType } setWalletType={ setWalletType }/>
+                    : ""
+                }
+                </NetworkRow>
+                </>
+            )
+        } else {return(<></>)}
+        
+      //}
+
+
+//   if(sbtExists && isActive && chainId && accounts && !newNetwork) {
+//     return(
+//         <NetworkRow isBottom = {false} theme = {Theme}> 
+//         <NetworkButton isActive = {false} theme = {Theme} onClick = {() => networkDelegateHandler("ETH")}>
+//             Ethereum
+//         </NetworkButton>
+//         <NetworkButton isActive = {true} theme = {Theme} onClick = {() => networkDelegateHandler("FTM")}>
+//             Fantom
+//         </NetworkButton>
+//         <NetworkButton isActive = {true} theme = {Theme} onClick = {() => networkDelegateHandler("BNB")}>
+//             BNB Chain
+//         </NetworkButton>
+//         </NetworkRow>
+//     )
+//     } else {
+//         return (
+//         <ConnectContainer>
+//             <WalletList onClose={ () => {setDisplayWalletList(false)} } walletType={ walletType } setWalletType={ setWalletType }/>
+            
+//         </ConnectContainer>
+//         )
+//     }
 }
 
-export default Connect
+export default ConnectDelegate

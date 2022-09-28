@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { useWeb3React } from "@web3-react/core"
 
 import { Theme } from "../theme"
-import { Icon } from "../component-styles"
+import { Icon } from "../old-omponent-styles"
 
 
 

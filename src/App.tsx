@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: "Noto Sans Display", sans-serif;
     overflow: hidden;
 
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       overflow-y: scroll;
     }
   }
@@ -38,7 +38,7 @@ const AppContainer = styled.main`
   display: flex;
   flex-direction: column;
 
-  width: 900px;
+  width: 700px;
 
   margin: 0 auto;
   padding-top: 10px;
@@ -63,7 +63,7 @@ const Spacer = styled.div`
 `
 
 const MainPage = styled.div`
-  width: 900px;
+  width: 720px;
 
   margin: 0 auto;
 
@@ -72,7 +72,7 @@ const MainPage = styled.div`
 
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
     width: 98%;
     margin: 0 1%;
   }

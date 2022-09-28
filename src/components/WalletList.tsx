@@ -8,7 +8,7 @@ import mmLogo from "../images/metamask.png"
 import wcLogo from "../images/wallet-connect.png"
 
 import { Theme } from "../theme"
-import { CloseIcon, ModalOverlay, ModalTitle, ModalClose, WalletListPopUp, WalletListTitleRow, WalletListItem, WalletListLogo } from "../component-styles"
+import { CloseIcon, ModalOverlay, ModalTitle, ModalClose, WalletListPopUp, WalletListTitleRow, WalletListItem, WalletListLogo } from "../old-omponent-styles"
 
 
 interface Props {

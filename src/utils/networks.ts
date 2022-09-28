@@ -65,7 +65,7 @@ const networks: Network[] = [
     }
   },
   {
-    chainId: 56,
+    chainId: 250,
     name: "Fantom Mainnet",
     explorer: "https://ftmscan.com/",
     rpcUrl: "https://rpc.ftm.tools/",
