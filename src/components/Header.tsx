@@ -103,7 +103,7 @@ const Header: React.FC = () => {
         <Title theme={ Theme }>Soul Bound Token</Title>
         <Subtitle theme={ Theme }>BETA</Subtitle>
       </TitleContainer>
-      <Connect defaultNetwork = {137} />
+      <Connect sbtNetwork = {[137,56]} />
     </HeaderContainer>
   )
 }

@@ -126,13 +126,12 @@ const BalSymbol = styled.div`
   margin-left: 2px;
 `
 
-interface DefaultNetworkProp {
-  defaultNetwork: number
+interface sbtNetworkProp {
+  sbtNetwork: [number, number]
 }
 
-const Connect: React.FC<DefaultNetworkProp> = (props) => {
+const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
-  const defaultNetwork = props.defaultNetwork
 
   const [ baseBal, setBaseBal ] = useState<string>(" - ")
   const [ displayWalletList, setDisplayWalletList ] = useState<boolean>(false)
@@ -199,30 +198,6 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
     connect()
   }, [ newNetwork, walletType, connect ])
 
-  // const networkDelegateHandler = (net: string) => {
-  //   console.log(`Clicked delegate veMULTI for ${net} OLD chainId = ${chainId}`)
-  //   if (net == "MATIC" && (chainId !=137 || chainId === undefined)){
-  //     setNewNetworkChain(137)
-  //     setNewNetwork(true)
-  //     setDisplayWalletList(true)
-  //   } else if (net == "ETH" && (chainId !=1 || chainId === undefined)) {
-  //       setNewNetworkChain(1)
-  //       setNewNetwork(true)
-  //       setDisplayWalletList(true)
-  //       console.log("EEEEEEEEEEEEEEETH")
-  //   } else if (net == "FTM" && (chainId !=250 || chainId === undefined)) {
-  //       setNewNetworkChain(250)
-  //       setNewNetwork(true)
-  //       setDisplayWalletList(true)
-  //   } else if (net == "BNB" && (chainId !=56 || chainId === undefined)) {
-  //       setNewNetworkChain(56)
-  //       setNewNetwork(true)
-  //       setDisplayWalletList(true)
-  //   } else {
-  //     console.log("No NEW NETWORK HANDLED")
-  //   }
-  //   console.log(`In networkDelegateHandler newNetwork = ${newNetwork} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
-  // }   
 
     return(
       <>
@@ -244,7 +219,7 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
           setDisplayWalletList(true);
           setWalletSelected(false);
         }
-      } isActive = {chainId==137?false:true} theme = {Theme} >
+      } isActive = {(chainId===137)?false:true} theme = {Theme} >
           Polygon
       </NetworkButton>
       <NetworkButton onClick={ () => {
@@ -252,7 +227,7 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
           setDisplayWalletList(true);
           setWalletSelected(false);
         }
-      } isActive = {chainId==1?false:true} theme = {Theme} >
+      } isActive = {(chainId===1)?false:true} theme = {Theme} >
           Ethereum
       </NetworkButton>
       <NetworkButton onClick={ () => {
@@ -260,7 +235,7 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
           setDisplayWalletList(true);
           setWalletSelected(false);
         }
-      } isActive = {chainId==250?false:true} theme = {Theme} >
+      } isActive = {(chainId===250)?false:true} theme = {Theme} >
           Fantom
       </NetworkButton>
       <NetworkButton onClick={ () => {
@@ -268,7 +243,7 @@ const Connect: React.FC<DefaultNetworkProp> = (props) => {
           setDisplayWalletList(true);
           setWalletSelected(false);
         }
-      } isActive = {chainId==56?false:true} theme = {Theme} >
+      } isActive = {(chainId===56)?false:true} theme = {Theme} >
           BNB Chain
       </NetworkButton>
       </NetworkRow>

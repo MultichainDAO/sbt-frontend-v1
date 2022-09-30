@@ -17,7 +17,8 @@ interface Network {
     multiHonorLogic: string,
     multiHonorProxy: string,
     pocSemiToken: string,
-    veOracleReceiver: string
+    veOracleReceiver: string,
+    veMULTI: string
   }
 }
 
@@ -40,7 +41,8 @@ const networks: Network[] = [
       multiHonorLogic: "",
       multiHonorProxy: "",
       pocSemiToken: "",
-      veOracleReceiver: ""
+      veOracleReceiver: "",
+      veMULTI: "0xbbA4115ecB1F811061eCb5A8DC8FcdEE2748ceBa"
     }
   },
   {
@@ -61,7 +63,8 @@ const networks: Network[] = [
       multiHonorLogic: "",
       multiHonorProxy: "",
       pocSemiToken: "",
-      veOracleReceiver: ""
+      veOracleReceiver: "",
+      veMULTI: "0x3f6727DefB15996d13b3461DAE0Ba7263CA3CAc5"
     }
   },
   {
@@ -82,7 +85,8 @@ const networks: Network[] = [
       multiHonorLogic: "",
       multiHonorProxy: "",
       pocSemiToken: "",
-      veOracleReceiver: ""
+      veOracleReceiver: "",
+      veMULTI: "0xE564cBcD78A76fD0Bb716a8e4252DFF06C2e4AE7"
     }
   },
   {
@@ -103,7 +107,8 @@ const networks: Network[] = [
       multiHonorLogic: "0xb8B282f45c8578c7772a0d01A7860aC09B95E36a",
       multiHonorProxy: "0xDd98B79b36c77Ee1F23f37B61e58A61cc3D5aceF",
       pocSemiToken: "0x431E70C7d0a5DE55D6B4F7Af9391eDF35B1dBc24",
-      veOracleReceiver: "0xf5828ef8879c307153FA9615FF9C4121981a0314"
+      veOracleReceiver: "0xf5828ef8879c307153FA9615FF9C4121981a0314",
+      veMULTI: ""
     }
   },
   {
@@ -124,7 +129,8 @@ const networks: Network[] = [
         multiHonorLogic: "",
         multiHonorProxy: "",
         pocSemiToken: "",
-        veOracleReceiver: ""
+        veOracleReceiver: "",
+        veMULTI: ""
       }
   }
 ]
@@ -147,7 +153,8 @@ const nullNetwork: Network = {
     multiHonorLogic: "",
     multiHonorProxy: "",
     pocSemiToken: "",
-    veOracleReceiver: ""
+    veOracleReceiver: "",
+    veMULTI: ""
   }
 }
 

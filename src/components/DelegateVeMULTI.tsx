@@ -13,7 +13,7 @@ import { Contract, ethers } from "ethers";
 import { Network } from "../utils/networks"
 
 import {Title, SubPage, SubTitle, MainRow, RowSpacer, ScanForVeMULTIButton} from "../component-styles"
-import ConnectDelegate from "./ConnectDelegate"
+import {veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex} from "../utils/veMulti"
  
 interface ActiveElement {
     theme: DefaultTheme,
@@ -31,13 +31,35 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
     const sbtExists = props.sbtExists
 
+    const { provider, chainId, accounts, isActive } = useWeb3React()
+
+    useEffect (() => {
+        const getVeMultiParams = async () => { 
+            const net = getNetwork(chainId)
+            console.log(`DELEGATE network = ${net.name}`)
+            console.log('GOTCHA')
+            if (accounts && chainId && provider){
+                const numberOfVeMulti = await veMultiBalanceOf(accounts[0], chainId, provider)
+                console.log(`number of veMulti = ${numberOfVeMulti}`)
+                const veMultiId = await veMultiOfOwnerByIndex(accounts[0], 0, chainId, provider)
+                console.log(`veMultiId = ${veMultiId}`)
+                const lockedMulti = await totalLockedMulti(veMultiId, chainId, provider)
+                console.log(`Total number of locked MULTI = ${lockedMulti}`)
+            }
+        }
+
+        if (sbtExists) getVeMultiParams()
+
+    }, [sbtExists, chainId, accounts, provider])
+
+
     if (sbtExists) {
         return(
             <div>
                 <SubPage theme={ Theme }>
                     <RowSpacer size={ "5px" }/>
                     <SubTitle theme = {Theme}>
-                    Scan your veMULTI on :
+                    Choose a Network to Scan your veMULTI
                     </SubTitle> 
                     <RowSpacer size={ "5px" }/>
                        

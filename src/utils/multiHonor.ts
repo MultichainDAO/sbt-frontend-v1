@@ -38,12 +38,12 @@ const createSBT = async (chainId: number, provider: Web3Provider) => {
     const { ethersSigner } = getWeb3(provider)
     const idNFT = getIdNFT(chainId, provider)
     console.log(idNFT)
-    // try {
-    //     const tx = await idNFT.claim()
-    //     await tx.wait()
-    // }catch(err: any) {
-    //     console.log(err.message)
-    // }
+    try {
+        const tx = await idNFT.claim()
+        await tx.wait()
+    }catch(err: any) {
+        console.log(err.message)
+    }
 }
 
 const removeSBT = async (id: number, chainId: number, provider: Web3Provider) => {

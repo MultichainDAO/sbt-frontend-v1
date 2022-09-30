@@ -72,7 +72,7 @@ const SubTitle = styled.div`
 
   font-size: 1rem;
   font-weight: bold;
-  letter-spacing: 0.5rem;
+  letter-spacing: 0.3rem;
 
   color: ${props => props.theme.colors.text};
 

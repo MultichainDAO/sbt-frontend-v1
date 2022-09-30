@@ -14,7 +14,7 @@ import { Contract, ethers } from "ethers";
 import { Network } from "../utils/networks"
 import DelegateVeMULTI from "./DelegateVeMULTI"
 
-import {SubPage, Title, RowSpacer, HeadingText, MainRow, InfoDisplayData, NewSBTButton, RemoveSBTButton} from "../component-styles"
+import {SubPage, Title, RowSpacer, HeadingText, MainRow, InfoDisplayData, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 
 interface MainRowProps {
     theme: DefaultTheme,
@@ -49,9 +49,11 @@ const getSBTTokenId = async (account:string, sbt: any) => {
     return(tokenId)
 }
 
+interface sbtNetworkProp {
+    sbtNetwork: [number, number]
+  }
 
-
-const SBT: React.FC = () => {
+const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const [sbtInfo, setSbtInfo] = useState({
         sbtId: 0,
@@ -67,9 +69,9 @@ const SBT: React.FC = () => {
     const [sbt, setSbt] = useState<Contract | null>(null)
     const [idNFT, setIdNFT] = useState<Contract |null >(null)
     const[sbtExists, setSbtExists] = useState<Boolean>(false)
-    const [ approvalLoading, setApprovalLoading ] = useState<boolean>(false)
-    const [ displayApproval, setDisplayApproval ] = useState<boolean>(true)
-    const [ confirmLoading, setConfirmLoading ] = useState<boolean>((false))
+    // const [ approvalLoading, setApprovalLoading ] = useState<boolean>(false)
+    // const [ displayApproval, setDisplayApproval ] = useState<boolean>(true)
+    // const [ confirmLoading, setConfirmLoading ] = useState<boolean>((false))
 
 
     const { provider, chainId, accounts, isActive } = useWeb3React()
@@ -181,20 +183,29 @@ const SBT: React.FC = () => {
             )
         }
         else if(!sbtExists && accounts && chainId && provider){
-            return(
-                <div>
-                    <MainRow isBottom={false}>
-                    <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                        New SBT
-                    </NewSBTButton>
-                    </MainRow>
-                </div>
-            )
+            if(sbtNetwork.includes(chainId)) {
+                return(
+                    <div>
+                        <MainRow isBottom={false}>
+                        <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
+                            New SBT
+                        </NewSBTButton>
+                        </MainRow>
+                    </div>
+                )
+            } else {
+                return(
+                    <div>
+                        <MainRow isBottom={false}>
+                            <SubTitle theme={ Theme }>
+                            Choose Polygon or BNB Chain for your SBT
+                            </SubTitle>
+                        </MainRow>
+                    </div>
+                )
+            }
         }
     }
-
-
-
 
     return(
         <div>

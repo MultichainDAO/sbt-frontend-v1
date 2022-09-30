@@ -119,11 +119,11 @@ const App: React.FC = () => {
           {
             isActive
               ? <AppContainer theme={ Theme }>
-                <SBT/>
+                <SBT sbtNetwork = {[137,56]}/>
               </AppContainer>
               : <AppContainer theme={ Theme }>
                   <NoConnection>
-                    Connect Wallet to Network
+                     Choose your SBT Network to Connect Wallet
                   </NoConnection>
                 </AppContainer>
           }
