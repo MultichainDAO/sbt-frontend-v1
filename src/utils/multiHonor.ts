@@ -1,7 +1,7 @@
 import { ethers, Contract, BigNumber } from "ethers"
 import { Web3Provider } from "@ethersproject/providers"
 
-import {multiHonorAbi, idCardAbi} from "./abi"
+import {multiHonorAbi, idCardAbi, oracleSenderAbi} from "./abi"
 import {sbtContract} from "./sbtContract"
 
 import { getError } from "./errors"
@@ -93,6 +93,22 @@ const getLevel =  (sbtId: number, chainId: number, provider: Web3Provider) => {
     return(level)
 }
 
+const getOracleSender = (chainId: number, provider: Web3Provider): Contract => {
+    const network = getNetwork(chainId)
+    const oracleSenderAddr = network.contracts.veOracleSender
+    const { ethersSigner } = getWeb3(provider)
+    return new Contract(oracleSenderAddr, oracleSenderAbi, ethersSigner)
+}
+
+const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number, provider: Web3Provider) => {
+    const oracleSender = getOracleSender(chainId, provider)
+    try {
+        const tx = await oracleSender.delegateVEPower(veId, daoId)
+        await tx.wait()
+    } catch(err: any) {
+        console.log(err.message)
+    }
+}
 
 
 export {
@@ -106,5 +122,6 @@ export {
     getPOC,
     getEventPoint,
     getTotalPoint,
-    getLevel
+    getLevel,
+    delegateVeMultiToSBT
 }

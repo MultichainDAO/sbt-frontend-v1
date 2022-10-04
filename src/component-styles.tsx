@@ -70,9 +70,9 @@ const SubTitle = styled.div`
 
   margin: 10px 10px 0;
 
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
-  letter-spacing: 0.3rem;
+  letter-spacing: 0.15rem;
 
   color: ${props => props.theme.colors.text};
 

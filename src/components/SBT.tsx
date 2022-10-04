@@ -155,7 +155,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         console.log(`network = ${net.name}`)
 
         setNetwork(137)
-        if (chainId == 137 && provider) {
+        if (chainId === 137 && provider) {
             setSbt(getSBT(provider))
             setIdNFT(getIdNFT(chainId, provider))
         }
@@ -216,9 +216,21 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 {renderSBT()}
             </MainRow>
         </SubPage>
-        <RowSpacer size={ "2" }/>
-        {sbtExists?<Title theme={ Theme }>Connect your veMULTI</Title>:null}
-        <DelegateVeMULTI sbtExists = {sbtExists}/>
+        <RowSpacer size={ "2px" }/>
+        {sbtExists
+        ?
+        <>
+        <Title theme={ Theme }>Connect your veMULTI</Title>
+        <RowSpacer size={ "5px" }/>
+        </>
+        :null}
+        <RowSpacer size={ "2px" }/>
+        {
+        sbtExists && chainId
+        ?
+        <DelegateVeMULTI sbtExists = {sbtExists} sbtId = {sbtInfo.sbtId} sbtChainId = {chainId}/>
+        : null
+        }
         </div>
     )
 }

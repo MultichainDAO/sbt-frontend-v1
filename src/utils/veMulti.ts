@@ -29,20 +29,26 @@ const veMultiBalanceOf = async (account: string, chainId: number, provider: Web3
 const totalLockedMulti = async (veMultiId: number, chainId: number, provider: Web3Provider) => {
     const veMULTI = getVeMulti(chainId, provider)
     const locked = await veMULTI.locked(veMultiId)
-    console.log(locked)
     const lockedMulti = formatUnits(locked.amount, 18)
-    return(lockedMulti)
+    return(Number(lockedMulti))
 }
 
 const veMultiOfOwnerByIndex = async (account: string, index: number, chainId: number, provider: Web3Provider) => {
     const veMULTI = getVeMulti(chainId, provider)
     const veMultiId = await veMULTI.tokenOfOwnerByIndex(account, index)
-    return(veMultiId)
+    return(Number(veMultiId))
+}
+
+const lockedEnd = async (veMultiId: number, chainId: number, provider: Web3Provider) => {
+    const veMULTI = getVeMulti(chainId, provider)
+    const timeEnd = await veMULTI.locked__end(veMultiId)
+    return(Number(timeEnd))
 }
 
 export {
     getVeMulti,
     veMultiBalanceOf,
     totalLockedMulti,
-    veMultiOfOwnerByIndex
+    veMultiOfOwnerByIndex,
+    lockedEnd
 }
