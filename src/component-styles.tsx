@@ -27,17 +27,20 @@ interface SizeProps {
 
 
 const SubPage = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
   margin: 0 auto;
+
+  height: 200px;
+
 
   outline: 1px solid ${ props => props.theme.colors.tertiary };
   border-radius: 1.25rem;
 
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
-  @media (max-width: 700px) {
-    width: 90%;
-    margin: 0 1%;
-  }
 `
 
 
@@ -61,9 +64,6 @@ const Title = styled.div`
 `
 
 const SubTitle = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
 
   width: 100%;
   height: 20px;
@@ -79,15 +79,50 @@ const SubTitle = styled.div`
   cursor: default;
 `
 
+const SmallText = styled.div`
+
+  width: 100%;
+  height: 20px;
+
+  margin: 10px 10px 0;
+
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+
+  color: ${props => props.theme.colors.text};
+
+  cursor: default;
+`
+
+const BigText = styled.div`
+
+  width: 100%;
+  height: 30px;
+
+  margin: 10px 10px 0;
+
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+
+  color: ${props => props.theme.colors.text};
+
+  cursor: default;
+`
+
 const RowSpacer = styled.div<SizeProps>`
   width: 100%;
   height: ${props => props.size};
 `
 
+const ColumnSpacer = styled.div<SizeProps>`
+  height: 100%;
+  width: ${props => props.size};
+`
+
+
 const HeadingText = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   width: 100%;
   height: 50px;
@@ -219,10 +254,10 @@ const RemoveSBTButton = styled.button<ActiveElement>`
   justify-content: center;
   align-items: center;
 
-  margin: 0 5px 0 0;
-  padding: 0 10px;
+  margin: 0 30px  0;
+  padding: 0 0;
 
-  width: 80%;
+  width: 20%;
   height: 50%;
 
   border: none;
@@ -321,7 +356,10 @@ export {
   SubPage, 
   Title, 
   SubTitle,
+  SmallText,
+  BigText,
   RowSpacer,
+  ColumnSpacer,
   HeadingText,
   MainRow,
   InfoDisplayData,

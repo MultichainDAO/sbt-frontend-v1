@@ -35,7 +35,6 @@ const getIdNFT = (chainId: number, provider: Web3Provider): Contract => {
 }
 
 const createSBT = async (chainId: number, provider: Web3Provider) => {
-    const { ethersSigner } = getWeb3(provider)
     const idNFT = getIdNFT(chainId, provider)
     console.log(idNFT)
     try {

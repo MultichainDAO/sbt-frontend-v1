@@ -26,7 +26,7 @@ const VeMultiContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-  height: 30vh;
+  height: 20vh;
 `
 
 const VeMULTI = styled.div`
@@ -205,33 +205,31 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
     if (sbtExists) {
         return(
-            <div>
-                <SubPage theme={ Theme }>
-                    <RowSpacer size={ "5px" }/>
-                    {myVeMulti.length === 0
-                    ?
-                    <div>
-                    <SubTitle theme = {Theme}>
-                    Choose a Network to Scan your veMULTI. None on {netw}
-                    </SubTitle> 
-                    <RowSpacer size={ "5px" }/>
-                    </div>
-                    :
-                    <>
+            <>
+                <RowSpacer size={ "5px" }/>
+                {myVeMulti.length === 0
+                ?
+                <div>
+                <SubTitle theme = {Theme}>
+                 Choose a Network to Scan your veMULTI. None on {netw}
+                </SubTitle> 
+                <RowSpacer size={ "5px" }/>
+                </div>
+                :
+                <>
                     
-                    <VeMultiContainer>
-                      <SubTitle theme={Theme}>Your veMULTI on {netw} </SubTitle>
-                      <RowSpacer size={ "5px" }/>
-                      <VeMultiList>
-                        {veMultiList()}
-                      </VeMultiList>
-                    </VeMultiContainer>
-                    
+                <VeMultiContainer>
+                    <SubTitle theme={Theme}>Your veMULTI on {netw} </SubTitle>
                     <RowSpacer size={ "5px" }/>
-                    </>
-                    }
-                </SubPage>
-            </div>
+                    <VeMultiList>
+                    {veMultiList()}
+                    </VeMultiList>
+                </VeMultiContainer>
+                    
+                <RowSpacer size={ "5px" }/>
+                </>
+                }
+            </>
         )
     } else {
         return(

@@ -38,7 +38,7 @@ const AppContainer = styled.main`
   display: flex;
   flex-direction: column;
 
-  width: 700px;
+  width: 720px;
 
   margin: 0 auto;
   padding-top: 10px;
