@@ -1,4 +1,5 @@
 const multiHonorAbi = 
+
 [
 	{
 		"anonymous": false,
@@ -394,6 +395,19 @@ const multiHonorAbi =
 		"name": "addPOC",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "currentVEEpoch",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{

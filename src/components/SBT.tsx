@@ -8,7 +8,7 @@ import styled, { DefaultTheme, keyframes } from "styled-components"
 
 
 import {sbtContract} from "../utils/sbtContract"
-import{getIdNFT, getSBT, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, createSBT, removeSBT} from "../utils/multiHonor"
+import{getIdNFT, getCurrentEpoch, getSBT, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, createSBT, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
 import { Web3Provider } from "@ethersproject/providers"
 import { Contract, ethers } from "ethers";
 import { Network } from "../utils/networks"
@@ -22,10 +22,12 @@ import silverMedal from "../images/silver-medal.png"
 import goldMedal from "../images/gold-medal.png"
 import platinumMedal from "../images/platinum-medal.png"
 import diamondMedal from "../images/diamond-medal.png"
+import { createModuleResolutionCache } from "typescript"
 
 
 interface ValueBoxProps {
     theme: DefaultTheme,
+    align?: string,
     top?: string,
     bottom?: string,
     left?: string,
@@ -122,6 +124,22 @@ const SbtInfoRow = styled.div `
     font-size: 0.9rem;
 `
 
+
+const ClaimRow = styled.div `
+    display: flex;
+    flex: 3;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.9rem;
+`
+
+
 const ValueBox = styled.text<ValueBoxProps>`
     text-align: right;
     width: ${props => props.width? props.width : "50px"};
@@ -141,8 +159,28 @@ const ValueBox = styled.text<ValueBoxProps>`
     color: ${props => props.theme.colors.text};
 
 `
+
 const RightText = styled.text<ValueBoxProps>`
     text-align: right;
+    width: ${props => props.width? props.width : "50px"};
+    height: ${props => props.height? props.height : "18px"};
+
+    margin-top: ${ props => props.top};
+    margin-right: ${ props => props.right};
+    margin-bottom: ${props => props.bottom};
+    margin-left: ${props => props.left};
+
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+
+    color: ${props => props.theme.colors.text};
+
+`
+
+
+const NormalText = styled.text<ValueBoxProps>`
+    text-align: ${props => props.align? props.align : "center"};
     width: ${props => props.width? props.width : "50px"};
     height: ${props => props.height? props.height : "18px"};
 
@@ -164,6 +202,43 @@ const MedalImage = styled.img`
     height: 10vh;
     margin: 5px;
 `
+
+const ClaimButton = styled.button<ActiveElement>`
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 20px 5px 0 0;
+  padding: 6px 6px;
+
+  width: 30%;
+  height: 50%;
+
+  border: none;
+  border-radius: 0.2rem;
+
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.08rem;
+
+  background-color: ${props => props.isActive ? `${props.theme.colors.highlight}` : "#a3a3c2"};
+  color: ${props => props.theme.colors.secondary};
+
+  cursor: pointer;
+
+  opacity: 0.9;
+
+  transition: opacity 0.01s ease;
+  
+
+  &:hover {
+    opacity: ${props => props.isActive ? `1` : `0.9`};
+  }
+`
+
+
 
 
 interface MainRowProps {
@@ -201,12 +276,13 @@ const getSBTTokenId = async (account:string, sbt: any) => {
 
 interface sbtNetworkProp {
     sbtNetwork: [number, number]
-  }
+}
 
 const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const [sbtInfo, setSbtInfo] = useState({
         sbtId: 0,
+        currentEpoch: 0,
         level: 0,
         totalPoint: 0,
         vePower: 0,
@@ -218,7 +294,12 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [network, setNetwork] = useState<number | null>(null)
     const [sbt, setSbt] = useState<Contract | null>(null)
     const [idNFT, setIdNFT] = useState<Contract |null >(null)
-    const[sbtExists, setSbtExists] = useState<Boolean>(false)
+    const [sbtExists, setSbtExists] = useState<Boolean>(false)
+    const [epochStart, setEpochStart] = useState<String>("")
+    const [epochEnd, setEpochEnd] = useState<String>("")
+    const [claimsOutstanding, setClaimsOutstanding] = useState<number>(0)
+    
+
     // const [ approvalLoading, setApprovalLoading ] = useState<boolean>(false)
     // const [ displayApproval, setDisplayApproval ] = useState<boolean>(true)
     // const [ confirmLoading, setConfirmLoading ] = useState<boolean>((false))
@@ -240,6 +321,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const displaySBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
         if (sbtExists){
             const sbtId = await getSBTTokenId(account, sbt)
+            const thisEpoch = await getCurrentEpoch(chainId, provider)
+            setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 16).replace("T", " "))
+            setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 16).replace("T", " "))
+            //console.log(`Current Epoch = ${thisEpoch}`)
             const vePower = await getVePower(sbtId, chainId, provider)
             //console.log(`vePower = ${vePower}`)
             const vePoint = await getVePoint(sbtId, chainId, provider)
@@ -252,9 +337,12 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             //console.log(`TotalPoint = ${totalPoint}`)
             const level = await getLevel(sbtId, chainId, provider)
             //console.log(`Level = ${level}`)
+            const rewards = await findRewards(sbtId, chainId, provider)
+            setClaimsOutstanding(rewards)
     
             setSbtInfo({
                 sbtId: Number(sbtId),
+                currentEpoch: thisEpoch,
                 level: Number(level),
                 totalPoint: Number(totalPoint),
                 vePower: Number(vePower),
@@ -343,6 +431,12 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <SbtInfoRow theme = {Theme}>
                         {attainmentLevel()}
                     </SbtInfoRow>
+                    <SbtInfoRow theme = {Theme}>
+                        {epochInfo()}
+                    </SbtInfoRow>
+                    <ClaimRow theme = {Theme}>
+                        {claimRewards()}
+                    </ClaimRow>
                 </SbtRightPanel>
                 <ColumnSpacer size = {"5px"}/>
                 </>
@@ -371,6 +465,27 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     </div>
                 )
             }
+        }
+    }
+
+    const claimRewards = () => {
+        return (
+            <>
+            <NormalText align = {"left"} left = {"10px"} width = {"150px"} top = {"30px"} theme = {Theme}>
+            Your Rewards are
+            </NormalText>
+            <ValueBox top = {"30px"} left = {"10px"} right = {"10px"} width = {"80px"} theme = {Theme}>{claimsOutstanding}</ValueBox>
+            <ClaimButton isActive = {claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
+            Claim
+            </ClaimButton>
+            </>
+        )
+    }
+
+    const claimClickHandler = async () => {
+        console.log(`claiming ${claimsOutstanding}`)
+        if (claimsOutstanding > 0 && chainId && provider) {
+            await getRewards(sbtInfo.sbtId, chainId, provider)
         }
     }
 
@@ -461,6 +576,16 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         else if (level === 5) return("Diamond")
         else return("")
     }
+
+    const epochInfo = () => {
+        return (
+            <SmallText theme = {Theme}>
+            The current 12 week Epoch is {sbtInfo.currentEpoch}<br></br>
+            {epochStart} to {epochEnd}
+            </SmallText>
+        )
+    }
+
 
     return(
         <div>

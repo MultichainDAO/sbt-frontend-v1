@@ -34,6 +34,13 @@ const getIdNFT = (chainId: number, provider: Web3Provider): Contract => {
     return new Contract(iDCardAddr, idCardAbi, ethersSigner)
 }
 
+
+const getCurrentEpoch = async (chainId: number, provider: Web3Provider) => {
+    const multiHonor = getMultiHonor(chainId, provider)
+    const currentEpoch = await multiHonor.currentVEEpoch()
+    return(Number(currentEpoch))
+}
+
 const createSBT = async (chainId: number, provider: Web3Provider) => {
     const idNFT = getIdNFT(chainId, provider)
     console.log(idNFT)
@@ -46,7 +53,6 @@ const createSBT = async (chainId: number, provider: Web3Provider) => {
 }
 
 const removeSBT = async (id: number, chainId: number, provider: Web3Provider) => {
-    const { ethersSigner } = getWeb3(provider)
     const idNFT = getIdNFT(chainId, provider)
     try {
         const tx = await idNFT.burn(id, {gasLimit: 100000})
@@ -55,6 +61,7 @@ const removeSBT = async (id: number, chainId: number, provider: Web3Provider) =>
         console.log(err.message)
     }
 }
+
 
 const getVePower =  (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
@@ -92,6 +99,8 @@ const getLevel =  (sbtId: number, chainId: number, provider: Web3Provider) => {
     return(level)
 }
 
+
+
 const getOracleSender = (chainId: number, provider: Web3Provider): Contract => {
     const network = getNetwork(chainId)
     const oracleSenderAddr = network.contracts.veOracleSender
@@ -109,9 +118,19 @@ const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number
     }
 }
 
+const findRewards = async (sbtId: number, chainId: number, provider: Web3Provider) => {
+    return(0)
+}
+
+
+const getRewards = async (sbtId: number, chainId: number, provider: Web3Provider) => {
+
+}
+
 
 export {
     getMultiHonor,
+    getCurrentEpoch,
     getIdNFT,
     getSBT,
     createSBT,
@@ -122,5 +141,7 @@ export {
     getEventPoint,
     getTotalPoint,
     getLevel,
-    delegateVeMultiToSBT
+    delegateVeMultiToSBT,
+    findRewards,
+    getRewards
 }
