@@ -7,14 +7,13 @@ import { Theme } from "../theme"
 import styled, { DefaultTheme, keyframes } from "styled-components"
 
 
-import {sbtContract} from "../utils/sbtContract"
 import{getIdNFT, getCurrentEpoch, getSBT, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, createSBT, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
 import { Web3Provider } from "@ethersproject/providers"
 import { Contract, ethers } from "ethers";
 import { Network } from "../utils/networks"
 import DelegateVeMULTI from "./DelegateVeMULTI"
 
-import {SmallText, BigText, Title, RowSpacer, ColumnSpacer, MainRow, InfoDisplayData, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {SmallText, BigText, Title, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 import { PickerOptionsList } from "../old-omponent-styles"
 
 import bronzeMedal from "../images/bronze-medal.png"
@@ -22,7 +21,7 @@ import silverMedal from "../images/silver-medal.png"
 import goldMedal from "../images/gold-medal.png"
 import platinumMedal from "../images/platinum-medal.png"
 import diamondMedal from "../images/diamond-medal.png"
-import { createModuleResolutionCache } from "typescript"
+import emptyMedal from "../images/empty-medal.png"
 
 
 interface ValueBoxProps {
@@ -309,9 +308,9 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     useEffect(()=>{
         const performSBTCheck = async() => {
-            if (accounts && Number(network) == 137 && provider) {
-                const sbtExists = await checkSBT(accounts[0], sbt)
-                setSbtExists(sbtExists)
+            if (accounts && Number(network) === 137 && provider) {
+                const doesSbtExist = await checkSBT(accounts[0], sbt)
+                setSbtExists(doesSbtExist)
             }
         }
         performSBTCheck()
@@ -353,10 +352,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         }
     },[isActive, provider, chainId, accounts, sbtExists])
 
-    const mintNewSBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
-        console.log('Creating a new SBT')
-        createSBT(chainId, provider)
-    },[isActive, provider, chainId, accounts, sbt])
 
     const handleRemoveSBTClick = () => {
         if (accounts && chainId && provider){
@@ -371,8 +366,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const handleNewSBTClick = () => {
         console.log('Clicked')
-        if (accounts && Number(network) == 137 && provider){
-            mintNewSBT(accounts[0], sbt, Number(network), provider)
+        if (accounts && Number(network) === 137 && provider){
+            createSBT(Number(network), provider)
         }
     }
 
@@ -380,9 +375,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (isActive && provider !== undefined && Number(network) == 137 && accounts){
             if (sbtExists){
                 displaySBT(accounts[0], sbt, Number(network), provider)
-            }
-            else {
-                mintNewSBT(accounts[0], sbt, Number(network), provider)
             }
         }
     },[isActive, provider, chainId, accounts, sbtExists])
@@ -446,23 +438,23 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         else if(!sbtExists && accounts && chainId && provider){
             if(sbtNetwork.includes(chainId)) {
                 return(
-                    <div>
+                    <>
                         <MainRow isBottom={false}>
                         <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
                             New SBT
                         </NewSBTButton>
                         </MainRow>
-                    </div>
+                    </>
                 )
             } else {
                 return(
-                    <div>
+                    <>
                         <MainRow isBottom={false}>
-                            <SubTitle theme={ Theme }>
-                            Choose Polygon or BNB Chain for your SBT
-                            </SubTitle>
+                            <NormalText align = {"center"} left = {"0px"} width = {"350px"} top = {"30px"} theme = {Theme}>
+                            Choose Polygon for your SBT
+                            </NormalText>
                         </MainRow>
-                    </div>
+                    </>
                 )
             }
         }
@@ -560,7 +552,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     }
 
     const renderMedal = (level: number) => {
-        if (level === 1) return (<MedalImage src = {bronzeMedal} alt = ""/>)
+        if (level === 0) return (<MedalImage src = {emptyMedal} alt = ""/>)
+        else if (level === 1) return (<MedalImage src = {bronzeMedal} alt = ""/>)
         else if (level === 2) return (<MedalImage src = {silverMedal} alt = ""/>)
         else if (level === 3) return (<MedalImage src = {goldMedal} alt = ""/>)
         else if (level === 4) return (<MedalImage src = {platinumMedal} alt = ""/>)

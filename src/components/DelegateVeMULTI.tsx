@@ -7,16 +7,12 @@ import { Theme } from "../theme"
 import styled, { DefaultTheme, keyframes } from "styled-components"
 
 
-import {sbtContract} from "../utils/sbtContract"
-import { Web3Provider } from "@ethersproject/providers"
-import { Contract, ethers } from "ethers";
-import { Network } from "../utils/networks"
 
 import {delegateVeMultiToSBT} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {SubPage, SubTitle, RowSpacer} from "../component-styles"
+import {SubTitle, RowSpacer} from "../component-styles"
 import {veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
@@ -125,10 +121,11 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     const sbtExists = props.sbtExists
     
 
-    const { provider, chainId, accounts, isActive } = useWeb3React()
-
+   
     const [ netw, setNetw] = useState<string>("")
     const [ myVeMulti, setMyVeMulti ] = useState<VeMultiDef[]>([])
+
+    const { provider, chainId, accounts, isActive } = useWeb3React()
 
     useEffect (() => {
         const getVeMultiParams = async () => { 

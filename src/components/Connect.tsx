@@ -30,40 +30,6 @@ const ConnectContainer = styled.div`
   }
 `
 
-const ConnectButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 50%;
-  height: 60%;
-
-  border: none;
-  border-radius: 0.625rem;
-
-  font-size: 0.9rem;
-  font-weight: bold;
-
-  color: ${ props => props.theme.colors.secondary };
-  background-color: ${ props => props.theme.colors.highlight };
-
-  cursor: pointer;
-
-  opacity: 0.9;
-
-  transition: opacity 0.1s ease, box-shadow 0.1s ease;
-
-  &:hover {
-    box-shadow: 0 0 10px 1px ${ props => props.theme.colors.highlightFaint };
-    opacity: 1;
-  }
-
-  @media (max-width: 700px) {
-    width: 98%;
-    height: 60%;
-    margin: 0 1%;
-  }
-`
 
 const ConnectedPage = styled.div`
   display: flex;
@@ -127,7 +93,7 @@ const BalSymbol = styled.div`
 `
 
 interface sbtNetworkProp {
-  sbtNetwork: [number, number]
+  sbtNetwork: [number]
 }
 
 const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {

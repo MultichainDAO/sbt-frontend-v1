@@ -142,6 +142,7 @@ const HeadingText = styled.div`
 
 const MainRow = styled.div<MainRowProps>`
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: flex-start;
   
@@ -186,7 +187,7 @@ const NetworkButton = styled.button<ActiveElement>`
   padding: 6px 6px;
 
   width: 80%;
-  height: 100%;
+  height: 70%;
 
   border: none;
   border-radius: 0.2rem;
@@ -215,14 +216,10 @@ const NetworkButton = styled.button<ActiveElement>`
 const NewSBTButton = styled.button<ActiveElement>`
   visibility: ${props => props.isActive ? "" : "hidden"};
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   margin: 10px 5px 0 0;
   padding: 0 10px;
 
-  width: 100%;
+  width: 20%;
   height: 50px;
 
   border: none;

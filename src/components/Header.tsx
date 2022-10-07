@@ -13,7 +13,7 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
 
-  height: 60px;
+  height: 70px;
   margin: 5px;
 
   @media (max-width: 700px) {
@@ -39,8 +39,8 @@ const TitleContainer = styled.div`
 `
 
 const MultiDAOIcon = styled.img`
-  width: 100px;
-  height: 100px;
+  width:90;
+  height: 90px;
 
   margin: 5px 15px;
 
@@ -103,7 +103,7 @@ const Header: React.FC = () => {
         <Title theme={ Theme }>Soul Bound Token</Title>
         <Subtitle theme={ Theme }>BETA</Subtitle>
       </TitleContainer>
-      <Connect sbtNetwork = {[137,56]} />
+      <Connect sbtNetwork = {[137]} />
     </HeaderContainer>
   )
 }
