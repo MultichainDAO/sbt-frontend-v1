@@ -98,7 +98,7 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
         {
             id: 1,
             title: "SBT Definition",
-            message: "A Soul Bound Token is an NFT that is bound to your wallet address. The MultiDAO SBT records your contribution to Multichain. It is not transferable to another wallet and you may only have one of these",
+            message: "A Soul Bound Token is an NFT that is bound to your wallet address. The MultiDAO SBT records your contribution to Multichain. It is not transferable to another wallet and you may only have one of these. In this interface, you can create your own SBT and then you can attach your veMULTI to it to gain Voting Power",
             link: "https://multidao.gitbook.io/multidao/the-multidao/multi-sbt"
         },
         {

@@ -247,7 +247,7 @@ const getSBTTokenId = async (account:string, sbt: any) => {
 }
 
 interface sbtNetworkProp {
-    sbtNetwork: [number, number]
+    sbtNetwork: [number]
 }
 
 const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
@@ -579,7 +579,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 </Title>
                 {
                 sbtExists
-                ? <SubTitle theme={Theme}>ID {sbtInfo.sbtId}</SubTitle>
+                ? <NormalText left = {"-420px"} bottom = {"-20px"} width = {"100px"} theme={Theme}>ID {sbtInfo.sbtId}</NormalText>
                 : null
                 }
             
