@@ -289,7 +289,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             }
         }
         performSBTCheck()
-    },[sbt, provider, chainId, accounts, isActive])
+    },[sbt, network, provider, chainId, accounts, isActive])
    
 
     const displaySBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
@@ -352,7 +352,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 displaySBT(accounts[0], sbt, Number(network), provider)
             }
         }
-    },[isActive, provider, chainId, accounts, sbtExists])
+    },[network, displaySBT, sbt, isActive, provider, chainId, accounts, sbtExists])
 
 
     useEffect(() => {
@@ -364,7 +364,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             setSbt(getSBT(provider))
             setIdNFT(getIdNFT(chainId, provider))
         }
-    }, [])
+    }, [chainId, provider])
 
     useEffect(() => {
 
