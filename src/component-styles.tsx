@@ -26,6 +26,18 @@ interface SizeProps {
 }
 
 
+interface ValueBoxProps {
+  theme: DefaultTheme,
+  align?: string,
+  top?: string,
+  bottom?: string,
+  left?: string,
+  right?: string,
+  height?: string,
+  width?: string
+}
+
+
 const SubPage = styled.div`
   display: flex;
   flex-direction: row;
@@ -45,14 +57,11 @@ const SubPage = styled.div`
 
 
 const Title = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   width: 100%;
   height: 20px;
 
-  margin: 10px 0 0;
+  margin: 10px 50px 0;
 
   font-size: 1.2rem;
   font-weight: bold;
@@ -109,6 +118,27 @@ const BigText = styled.div`
   color: ${props => props.theme.colors.text};
 
   cursor: default;
+`
+
+
+
+const NormalText = styled.text<ValueBoxProps>`
+    text-align: ${props => props.align? props.align : "center"};
+    width: ${props => props.width? props.width : "50px"};
+    height: ${props => props.height? props.height : "18px"};
+
+    margin-top: ${ props => props.top};
+    margin-right: ${ props => props.right};
+    margin-bottom: ${props => props.bottom};
+    margin-left: ${props => props.left};
+
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+    overflow-wrap: break-word;
+
+    color: ${props => props.theme.colors.text};
+
 `
 
 const RowSpacer = styled.div<SizeProps>`
@@ -255,7 +285,7 @@ const RemoveSBTButton = styled.button<ActiveElement>`
   padding: 0 0;
 
   width: 20%;
-  height: 50%;
+  height: 50px
 
   border: none;
   border-radius: 0.2rem;
@@ -355,6 +385,7 @@ export {
   SubTitle,
   SmallText,
   BigText,
+  NormalText,
   RowSpacer,
   ColumnSpacer,
   HeadingText,

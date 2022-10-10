@@ -5,16 +5,16 @@ import { useWeb3React } from "@web3-react/core"
 import {getNetwork} from "../utils/web3Utils"
 import { Theme } from "../theme"
 import styled, { DefaultTheme, keyframes } from "styled-components"
+import { IconContext } from "react-icons";
+import {IoIosInformationCircle as Info} from "react-icons/io"
 
-
-import{getIdNFT, getCurrentEpoch, getSBT, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, createSBT, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
+import{getIdNFT, getCurrentEpoch, getSBT, isVeMultiDelegated, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, createSBT, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
 import { Web3Provider } from "@ethersproject/providers"
 import { Contract, ethers } from "ethers";
-import { Network } from "../utils/networks"
 import DelegateVeMULTI from "./DelegateVeMULTI"
+import HelperBox from "./HelperBox"
 
-import {SmallText, BigText, Title, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
-import { PickerOptionsList } from "../old-omponent-styles"
+import {SmallText, BigText, NormalText, Title, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 
 import bronzeMedal from "../images/bronze-medal.png"
 import silverMedal from "../images/silver-medal.png"
@@ -35,6 +35,16 @@ interface ValueBoxProps {
     width?: string
 }
 
+const TitleRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100%
+    height: 80px;
+    margin 0 100px;
+`
 
 const InfoPage = styled.div`
   display: flex;
@@ -77,7 +87,7 @@ const SbtLeftPanel = styled.div `
     flex: 1;
     flex-direction: column;
     justify-content: start;
-    align-items: start;
+    align-items: flex-start;
 
     width: 45%;
     height: 100%;
@@ -113,8 +123,8 @@ const SbtInfoRow = styled.div `
     display: flex;
     flex: 1;
     flex-direction: row;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
 
     width: 100%;
     height: 100%;
@@ -159,42 +169,6 @@ const ValueBox = styled.text<ValueBoxProps>`
 
 `
 
-const RightText = styled.text<ValueBoxProps>`
-    text-align: right;
-    width: ${props => props.width? props.width : "50px"};
-    height: ${props => props.height? props.height : "18px"};
-
-    margin-top: ${ props => props.top};
-    margin-right: ${ props => props.right};
-    margin-bottom: ${props => props.bottom};
-    margin-left: ${props => props.left};
-
-    font-family: "Source Code Pro", monospace;
-    font-size: 0.9rem;
-    font-weight: bold;
-
-    color: ${props => props.theme.colors.text};
-
-`
-
-
-const NormalText = styled.text<ValueBoxProps>`
-    text-align: ${props => props.align? props.align : "center"};
-    width: ${props => props.width? props.width : "50px"};
-    height: ${props => props.height? props.height : "18px"};
-
-    margin-top: ${ props => props.top};
-    margin-right: ${ props => props.right};
-    margin-bottom: ${props => props.bottom};
-    margin-left: ${props => props.left};
-
-    font-family: "Source Code Pro", monospace;
-    font-size: 0.9rem;
-    font-weight: bold;
-
-    color: ${props => props.theme.colors.text};
-
-`
 
 const MedalImage = styled.img`
     width: 10vh;
@@ -257,7 +231,6 @@ interface ActiveElement {
 
 
 const checkSBT = async (account: string, sbt: any) => {
-    console.log('HA')
 
     if (account && sbt){
         const existSBT = Boolean(Number(await sbt.balanceOf(account)))
@@ -297,6 +270,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [epochStart, setEpochStart] = useState<String>("")
     const [epochEnd, setEpochEnd] = useState<String>("")
     const [claimsOutstanding, setClaimsOutstanding] = useState<number>(0)
+    const [displayHelperModal, setDisplayHelperModal] = useState<Boolean>(false)
+    const [helper, SetHelper] = useState<number>(0)
     
 
     // const [ approvalLoading, setApprovalLoading ] = useState<boolean>(false)
@@ -372,7 +347,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     }
 
     useEffect(()=>{
-        if (isActive && provider !== undefined && Number(network) == 137 && accounts){
+        if (isActive && provider !== undefined && Number(network) === 137 && accounts){
             if (sbtExists){
                 displaySBT(accounts[0], sbt, Number(network), provider)
             }
@@ -391,6 +366,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         }
     }, [])
 
+    useEffect(() => {
+
+    }, [helper])
+
     const renderSBT = () => {
         if (sbtExists) {
             return(
@@ -399,9 +378,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 <SbtLeftPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {vePower()}
-                    </SbtInfoRow>
-                    <SbtInfoRow theme = {Theme}>
-                        {powerToPoints()}
                     </SbtInfoRow>
                     <SbtInfoRow theme = {Theme}>
                         {vePoints()}
@@ -474,6 +450,14 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         )
     }
 
+    const helperClickHandler = (helperNumber: number) => {
+        return (
+            <IconContext.Provider value = {{color: Theme.colors.highlight, size:"2vh",style: { verticalAlign: 'top' }}}>
+                <Info onClick = {() => {SetHelper(helperNumber); setDisplayHelperModal(true)}}/>
+            </IconContext.Provider>
+        )
+    }
+
     const claimClickHandler = async () => {
         console.log(`claiming ${claimsOutstanding}`)
         if (claimsOutstanding > 0 && chainId && provider) {
@@ -484,27 +468,25 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const vePower = () => {
         return (
             <>
-            <SubTitle theme={Theme}>VEPower</SubTitle>
+            <SubTitle theme={Theme}>
+                VEPower
+                {helperClickHandler(2)}
+            </SubTitle>
             <ValueBox top = {"10px"} right = {"30px"} width = {"500px"} theme = {Theme}>{sbtInfo.vePower}</ValueBox>
             </>
         )
     }
 
-    const powerToPoints = () => {
-        return (
-            <>
-            <SmallText theme = {Theme}>250*log2(VEPower)+514*VEPower =</SmallText>
-            </>
-        )
-    }
 
     const vePoints = () => {
         return (
             <>
-            <SubTitle theme = {Theme} >VEPoints</SubTitle>
-            <RightText top = {"5px"} right = {"10px"} theme = {Theme} ></RightText>
+            <SubTitle theme = {Theme} >VEPoints
+            {helperClickHandler(3)}
+            </SubTitle>
+            <NormalText text-align = {"right"} top = {"5px"} right = {"10px"} theme = {Theme} ></NormalText>
             <ValueBox top = {"5px"} right = {"20px"} width = {"140px"} theme = {Theme}>{sbtInfo.vePoint}</ValueBox>
-            <RightText top = {"5px"} right = {"20px"} theme = {Theme}>*0.3</RightText>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*0.3</NormalText>
             </>
         )
     }
@@ -512,10 +494,13 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const eventPoints = () => {
         return (
             <>
-            <SubTitle theme = {Theme}>Event Points</SubTitle>
-            <RightText top = {"5px"} right = {"10px"} theme = {Theme} >+</RightText>
+            <SubTitle theme = {Theme}>
+                Event Points
+                {helperClickHandler(5)}
+            </SubTitle>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"10px"} theme = {Theme} >+</NormalText>
             <ValueBox top = {"5px"} right = {"20px"} width = {"140px"} theme = {Theme}>{sbtInfo.eventPoint}</ValueBox>
-            <RightText top = {"5px"} right = {"20px"} theme = {Theme}>*0.1</RightText>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*0.1</NormalText>
             </>
         )
     }
@@ -523,10 +508,12 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const POC = () => {
         return (
             <>
-            <SubTitle theme = {Theme}>POC</SubTitle>
-            <RightText top = {"5px"} right = {"10px"} theme = {Theme} >+</RightText>
+            <SubTitle theme = {Theme}>POC
+            {helperClickHandler(4)}
+            </SubTitle>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"10px"} theme = {Theme} >+</NormalText>
             <ValueBox top = {"5px"} right = {"20px"} width = {"140px"} theme = {Theme}>{sbtInfo.POC}</ValueBox>
-            <RightText top = {"5px"} right = {"20px"} theme = {Theme}>*0.6</RightText>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*0.6</NormalText>
             </>
         )
     }
@@ -534,8 +521,11 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const totalPoints = () => {
         return (
             <>
-            <BigText theme = {Theme}>Total Vote</BigText>
-            <RightText top = {"12px"} right = {"10px"} theme = {Theme} >=</RightText>
+            <BigText theme = {Theme}>
+                Vote Power
+                {helperClickHandler(6)}
+            </BigText>
+            <NormalText text-align = {"right"}  top = {"12px"} right = {"10px"} theme = {Theme} >=</NormalText>
             <ValueBox top = {"12px"} right = {"75px"} width = {"140px"} theme = {Theme}>{sbtInfo.totalPoint}</ValueBox>
             </>
         )
@@ -544,8 +534,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const attainmentLevel = () => {
         return (
             <>
-            <BigText theme = {Theme}>Level {sbtInfo.level}</BigText>
-            <BigText theme = {Theme}>{levelToBadge(sbtInfo.level)}</BigText>
+            <BigText theme = {Theme}>Level {sbtInfo.level} {" "}
+            {levelToBadge(sbtInfo.level)} {helperClickHandler(7)}</BigText>
             {renderMedal(sbtInfo.level)}
             </>
         )
@@ -573,7 +563,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const epochInfo = () => {
         return (
             <SmallText theme = {Theme}>
-            The current 12 week Epoch is {sbtInfo.currentEpoch}<br></br>
+            The current 12 week Epoch is {sbtInfo.currentEpoch} {helperClickHandler(8)}<br></br>
             {epochStart} to {epochEnd}
             </SmallText>
         )
@@ -582,7 +572,19 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     return(
         <div>
-        <Title theme={ Theme }>Your SBT</Title>
+        <TitleRow>
+            <Title theme={ Theme }>
+                Your SBT
+                {helperClickHandler(1)} 
+                </Title>
+                {
+                sbtExists
+                ? <SubTitle theme={Theme}>ID {sbtInfo.sbtId}</SubTitle>
+                : null
+                }
+            
+            
+        </TitleRow>
         <RowSpacer size={ "10px" }/>
         <InfoPage theme={ Theme }>
             {renderSBT()}
@@ -591,7 +593,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         {sbtExists
         ?
         <>
-        <Title theme={ Theme }>Connect your veMULTI</Title>
+        <Title theme={ Theme }>Connect your veMULTI {helperClickHandler(9)}</Title>
         <RowSpacer size={ "5px" }/>
         </>
         :null}
@@ -606,6 +608,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         <RowSpacer size={ "10px" }/>
         </>
         : null
+        }
+        {
+            displayHelperModal?<HelperBox selectedHelper = {helper} onClose = {() => setDisplayHelperModal(false)}/>
+            : null
         }
         </div>
     )

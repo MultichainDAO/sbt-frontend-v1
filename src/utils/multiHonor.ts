@@ -2,7 +2,7 @@ import { ethers, Contract, BigNumber } from "ethers"
 import { Web3Provider } from "@ethersproject/providers"
 
 import {multiHonorAbi, idCardAbi, oracleSenderAbi} from "./abi"
-import {sbtContract} from "./sbtContract"
+import {sbtContract, delegatedVEQuerierContract} from "./sbtContract"
 
 import { getError } from "./errors"
 
@@ -60,6 +60,17 @@ const removeSBT = async (id: number, chainId: number, provider: Web3Provider) =>
     }catch(err: any) {
         console.log(err.message)
     }
+}
+
+const isVeMultiDelegated = async (veId: number, veChainId: number, provider: Web3Provider) => {
+    const querierAddr = delegatedVEQuerierContract.address
+    const querierAbi = delegatedVEQuerierContract.abi
+
+    const querier = new Contract(querierAddr, querierAbi, provider)
+
+    const isDelegated = await querier.isDelegated(veId, veChainId)
+
+    return(isDelegated)
 }
 
 
@@ -135,6 +146,7 @@ export {
     getSBT,
     createSBT,
     removeSBT,
+    isVeMultiDelegated,
     getVePower,
     getVePoint,
     getPOC,

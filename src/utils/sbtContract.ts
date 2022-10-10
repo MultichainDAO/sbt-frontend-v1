@@ -403,4 +403,13 @@ const sbtContract = {
       ]
 }
 
-export {sbtContract}
+const delegatedVEQuerierContract = {
+  address: "0xD0d5332b37294003f3A915753ea15e4E1BB0Dc50",
+  abi: [{"inputs":[{"internalType":"address","name":"receiver_","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint256","name":"fromChainID","type":"uint256"},{"internalType":"uint256","name":"ve_id","type":"uint256"}],"name":"isDelegated","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"receiver","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"fromChainID","type":"uint256"},{"internalType":"uint256","name":"ve_id","type":"uint256"},{"internalType":"uint256","name":"epoch","type":"uint256"}],"name":"veKey","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"pure","type":"function"}]
+}
+
+
+export {
+  sbtContract,
+  delegatedVEQuerierContract
+}
