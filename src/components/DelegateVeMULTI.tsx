@@ -12,7 +12,7 @@ import {delegateVeMultiToSBT} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {SubTitle, RowSpacer} from "../component-styles"
+import {SubTitle, TitleRow, RowSpacer, ColumnSpacer} from "../component-styles"
 import {veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
@@ -125,7 +125,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     const [ netw, setNetw] = useState<string>("")
     const [ myVeMulti, setMyVeMulti ] = useState<VeMultiDef[]>([])
 
-    const { provider, chainId, accounts, isActive } = useWeb3React()
+        const { provider, chainId, accounts, isActive } = useWeb3React()
 
     useEffect (() => {
         const getVeMultiParams = async () => { 
@@ -207,10 +207,10 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 {myVeMulti.length === 0
                 ?
                 <div>
-                <SubTitle theme = {Theme}>
-                 Choose a Network to Scan your veMULTI. None on {netw}
-                </SubTitle> 
-                <RowSpacer size={ "5px" }/>
+                    <SubTitle theme = {Theme}>
+                    Choose a Network to Scan your veMULTI. None on {netw}
+                    </SubTitle> 
+                     <RowSpacer size={ "5px" }/>
                 </div>
                 :
                 <>

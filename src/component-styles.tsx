@@ -54,14 +54,23 @@ const SubPage = styled.div`
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
 `
-
+const TitleRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100%
+    height: 80px;
+    margin 0 auto;
+`
 
 const Title = styled.div`
 
   width: 100%;
   height: 20px;
 
-  margin: 10px 50px 0;
+  margin: 0 auto;
 
   font-size: 1.2rem;
   font-weight: bold;
@@ -381,6 +390,7 @@ const ApprovalLoader = styled.span`
 `
 export {
   SubPage, 
+  TitleRow,
   Title, 
   SubTitle,
   SmallText,

@@ -14,7 +14,7 @@ import { Contract, ethers } from "ethers";
 import DelegateVeMULTI from "./DelegateVeMULTI"
 import HelperBox from "./HelperBox"
 
-import {SmallText, BigText, NormalText, Title, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 
 import bronzeMedal from "../images/bronze-medal.png"
 import silverMedal from "../images/silver-medal.png"
@@ -35,16 +35,7 @@ interface ValueBoxProps {
     width?: string
 }
 
-const TitleRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    
-    width: 100%
-    height: 80px;
-    margin 0 100px;
-`
+
 
 const InfoPage = styled.div`
   display: flex;
@@ -573,17 +564,19 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     return(
         <div>
         <TitleRow>
+            <ColumnSpacer size = {"40%"}/>
             <Title theme={ Theme }>
                 Your SBT
                 {helperClickHandler(1)} 
-                </Title>
-                {
+            </Title>
+        </TitleRow>
+        <TitleRow>
+            <ColumnSpacer size = {"40%"}/>
+            {
                 sbtExists
-                ? <NormalText left = {"-420px"} bottom = {"-20px"} width = {"100px"} theme={Theme}>ID {sbtInfo.sbtId}</NormalText>
+                ? <SubTitle theme={Theme}>ID {sbtInfo.sbtId}</SubTitle>
                 : null
-                }
-            
-            
+            }
         </TitleRow>
         <RowSpacer size={ "10px" }/>
         <InfoPage theme={ Theme }>
@@ -593,7 +586,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         {sbtExists
         ?
         <>
-        <Title theme={ Theme }>Connect your veMULTI {helperClickHandler(9)}</Title>
+        <TitleRow>
+            <ColumnSpacer size = {"20%"}/>
+            <Title theme={ Theme }>Connect your veMULTI {helperClickHandler(9)}</Title>
+        </TitleRow>
         <RowSpacer size={ "5px" }/>
         </>
         :null}

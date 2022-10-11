@@ -129,13 +129,10 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
   const connect = useCallback(async (): Promise<void> => {
 
-    //if(isActive) return
     console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
     if(!walletSelected ) return
-    console.log("GOT THROUGH")
 
     if(walletType === WalletListOptions.WalletConnect) {
-      console.log("A")
       try {
         await walletConnect.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
@@ -145,7 +142,6 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
       }
 
     } else if(walletType === WalletListOptions.MetaMask) {
-      console.log("B")
       try {
         await metaMask.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
