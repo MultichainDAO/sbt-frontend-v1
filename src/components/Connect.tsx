@@ -152,7 +152,7 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     } else {console.log("C")}
     setNewNetwork(false)
-  }, [ newNetwork, isActive, walletType ])
+  }, [ walletSelected, isActive, walletType ])
 
 
 

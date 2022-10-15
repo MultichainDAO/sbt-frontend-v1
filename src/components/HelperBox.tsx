@@ -146,7 +146,7 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
         {
             id: 9,
             title: "veMULTI Definition",
-            message: "The veMULTI is an NFT into which you have locked your MULTI tokens for a period of up to 4 years. Ownership of veMULTI confers you with a proportion of the Multichain fees and by delegating your veMULTI to your SBT (which you can do here), you increase your governance Voting POwer (or SBT Points). You can create veMULTI tokens on either Ethereum, Fantom or BNB Chain and you may have multiple veMULTI tokens on each of these chains. They can all be delegated from this interface to your SBT",
+            message: "The veMULTI is an NFT into which you have locked your MULTI tokens for a period of up to 4 years. Ownership of veMULTI confers you with a proportion of the Multichain fees and by delegating your veMULTI to your SBT (which you can do here), you increase your governance Voting Power (or SBT Points). You can create veMULTI tokens on either Ethereum, Fantom or BNB Chain and you may have multiple veMULTI tokens on each of these chains. They can all be delegated from this interface to your SBT",
             link: "https://multidao.gitbook.io/multidao/the-multidao/vemulti"
         }
     ], [])

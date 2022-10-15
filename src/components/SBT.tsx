@@ -279,7 +279,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 setSbtExists(doesSbtExist)
             }
         }
-        performSBTCheck()
+        if (!sbtExists) performSBTCheck()
     },[sbt, network, provider, chainId, accounts, isActive])
    
 

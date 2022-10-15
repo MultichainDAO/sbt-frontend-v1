@@ -16,6 +16,7 @@ const getVeMulti =  (chainId: number, provider: Web3Provider): Contract => {
     const network = getNetwork(chainId)
     
     const veMultiAddr = network.contracts.veMULTI
+    console.log(`veMultiAddr = ${veMultiAddr}`)
     const { ethersSigner } = getWeb3(provider)
     return new Contract(veMultiAddr, veMULTIAbi, ethersSigner)
 }

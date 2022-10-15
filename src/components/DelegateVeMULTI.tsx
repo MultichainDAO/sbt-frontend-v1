@@ -216,7 +216,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 <>
                     
                 <VeMultiContainer>
-                    <SubTitle theme={Theme}>Your veMULTI on {netw} </SubTitle>
+                    <SubTitle theme={Theme}>Your veMULTI </SubTitle>
                     <RowSpacer size={ "5px" }/>
                     <VeMultiList>
                     {veMultiList()}
