@@ -8,10 +8,6 @@ import { getError } from "./errors"
 
 import {getWeb3, getNetwork} from "./web3Utils"
 
-  
-interface Web3 {
-    ethersSigner: ethers.providers.JsonRpcSigner
-}
 
 
 const getMultiHonor = (chainId: number, provider: Web3Provider): Contract => {
@@ -45,7 +41,7 @@ const createSBT = async (chainId: number, provider: Web3Provider) => {
     const idNFT = getIdNFT(chainId, provider)
     console.log(idNFT)
     try {
-        const tx = await idNFT.claim()
+        const tx = await idNFT.claim({gasLimit: 100000})
         await tx.wait()
     }catch(err: any) {
         console.log(err.message)
@@ -63,6 +59,8 @@ const removeSBT = async (id: number, chainId: number, provider: Web3Provider) =>
 }
 
 const isVeMultiDelegated = async (veId: number, veChainId: number, provider: Web3Provider) => {
+    // only on same chain. Use isVeDelegatedXChain for checking across chains
+    
     const querierAddr = delegatedVEQuerierContract.address
     const querierAbi = delegatedVEQuerierContract.abi
 
@@ -128,6 +126,18 @@ const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number
         console.log(err.message)
     }
 }
+
+
+const unDelegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number, provider: Web3Provider) => {
+    const oracleSender = getOracleSender(chainId, provider)
+    // try {
+    //     const tx = await oracleSender.unDelegateVEPower(veId, daoId)
+    //     await tx.wait()
+    // } catch(err: any) {
+    //     console.log(err.message)
+    // }
+}
+
 
 const findRewards = async (sbtId: number, chainId: number, provider: Web3Provider) => {
     return(0)

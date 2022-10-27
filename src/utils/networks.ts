@@ -1,3 +1,4 @@
+import { Address } from "cluster"
 
 interface Network {
   chainId: number,
@@ -18,7 +19,9 @@ interface Network {
     multiHonorProxy: string,
     pocSemiToken: string,
     veOracleReceiver: string,
-    veMULTI: string
+    veMULTI: string,
+    delegateCheck: string,
+    usdcAddr: string,
   }
 }
 
@@ -42,7 +45,9 @@ const networks: Network[] = [
       multiHonorProxy: "",
       pocSemiToken: "",
       veOracleReceiver: "",
-      veMULTI: "0xbbA4115ecB1F811061eCb5A8DC8FcdEE2748ceBa"
+      veMULTI: "0xbbA4115ecB1F811061eCb5A8DC8FcdEE2748ceBa",
+      delegateCheck: "",
+      usdcAddr: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
     }
   },
   {
@@ -64,7 +69,9 @@ const networks: Network[] = [
       multiHonorProxy: "",
       pocSemiToken: "",
       veOracleReceiver: "",
-      veMULTI: "0x3f6727DefB15996d13b3461DAE0Ba7263CA3CAc5"
+      veMULTI: "0x3f6727DefB15996d13b3461DAE0Ba7263CA3CAc5",
+      delegateCheck: "",
+      usdcAddr: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"
     }
   },
   {
@@ -86,7 +93,9 @@ const networks: Network[] = [
       multiHonorProxy: "",
       pocSemiToken: "",
       veOracleReceiver: "",
-      veMULTI: "0xE564cBcD78A76fD0Bb716a8e4252DFF06C2e4AE7"
+      veMULTI: "0xE564cBcD78A76fD0Bb716a8e4252DFF06C2e4AE7",
+      delegateCheck: "",
+      usdcAddr: ""
     }
   },
   {
@@ -108,7 +117,9 @@ const networks: Network[] = [
       multiHonorProxy: "0xDd98B79b36c77Ee1F23f37B61e58A61cc3D5aceF",
       pocSemiToken: "0x431E70C7d0a5DE55D6B4F7Af9391eDF35B1dBc24",
       veOracleReceiver: "0xf5828ef8879c307153FA9615FF9C4121981a0314",
-      veMULTI: ""
+      veMULTI: "",
+      delegateCheck: "0xD0d5332b37294003f3A915753ea15e4E1BB0Dc50",
+      usdcAddr: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
     }
   },
   {
@@ -130,7 +141,9 @@ const networks: Network[] = [
         multiHonorProxy: "",
         pocSemiToken: "",
         veOracleReceiver: "",
-        veMULTI: ""
+        veMULTI: "",
+        delegateCheck: "",
+        usdcAddr: ""
       }
   }
 ]
@@ -154,7 +167,9 @@ const nullNetwork: Network = {
     multiHonorProxy: "",
     pocSemiToken: "",
     veOracleReceiver: "",
-    veMULTI: ""
+    veMULTI: "",
+    delegateCheck: "",
+    usdcAddr: ""
   }
 }
 

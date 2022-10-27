@@ -13,8 +13,10 @@ import { Web3Provider } from "@ethersproject/providers"
 import { Contract, ethers } from "ethers";
 import DelegateVeMULTI from "./DelegateVeMULTI"
 import HelperBox from "./HelperBox"
+import DiscordRole from "./DiscordRole"
 
-import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {checkApproveSbtUSDC, approveSbtUSDC} from "../utils/usdcUtils"
 
 import bronzeMedal from "../images/bronze-medal.png"
 import silverMedal from "../images/silver-medal.png"
@@ -72,6 +74,20 @@ const VeMultiPage = styled.div`
 `
 
 
+const MainPanel = styled.div `
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+
+`
+
+
 
 const SbtLeftPanel = styled.div `
     display: flex;
@@ -86,8 +102,6 @@ const SbtLeftPanel = styled.div `
 
     outline: 1px solid ${ props => props.theme.colors.tertiary };
     border-radius: 1.25rem;
-
-
 `
 
 const SbtRightPanel = styled.div `
@@ -124,6 +138,47 @@ const SbtInfoRow = styled.div `
     font-size: 0.9rem;
 `
 
+const SbtBuyRow = styled.div `
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.9rem;
+`
+
+const LevelRow = styled.div `
+    display: flex;
+    flex: 3;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.9rem;
+`
+
+const LevelColumn = styled.div `
+    display: flex;
+    flex: 3;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: "Source Code Pro", monospace;
+    font-size: 0.9rem;
+`
 
 const ClaimRow = styled.div `
     display: flex;
@@ -165,6 +220,42 @@ const MedalImage = styled.img`
     width: 10vh;
     height: 10vh;
     margin: 5px;
+    min-width: 50px;
+`
+
+const DiscordButton = styled.button<ActiveElement>`
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 20px 5px 0 0;
+  padding: 6px 6px;
+
+  width: 50%;
+  height: 50%;
+
+  border: none;
+  border-radius: 0.2rem;
+
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.08rem;
+
+  background-color: ${props => props.isActive ? `${props.theme.colors.highlight}` : "#a3a3c2"};
+  color: ${props => props.theme.colors.secondary};
+
+  cursor: pointer;
+
+  opacity: 0.9;
+
+  transition: opacity 0.01s ease;
+  
+
+  &:hover {
+    opacity: ${props => props.isActive ? `1` : `0.9`};
+  }
 `
 
 const ClaimButton = styled.button<ActiveElement>`
@@ -254,6 +345,9 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         eventPoint: 0,
     })
 
+    const multiCitizenThreshold = 20
+    const sbtPrice = 5
+
     const [network, setNetwork] = useState<number | null>(null)
     const [sbt, setSbt] = useState<Contract | null>(null)
     const [idNFT, setIdNFT] = useState<Contract |null >(null)
@@ -262,11 +356,13 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [epochEnd, setEpochEnd] = useState<String>("")
     const [claimsOutstanding, setClaimsOutstanding] = useState<number>(0)
     const [displayHelperModal, setDisplayHelperModal] = useState<Boolean>(false)
+    const [displayDiscordRole, setDisplayDiscordRole] = useState<Boolean>(false)
     const [helper, SetHelper] = useState<number>(0)
+    const [approveSBT, setApproveSBT] = useState<Boolean>(true)
+    const [sbtBuyReady, setSbtBuyReady] = useState<Boolean>(false)
     
 
     // const [ approvalLoading, setApprovalLoading ] = useState<boolean>(false)
-    // const [ displayApproval, setDisplayApproval ] = useState<boolean>(true)
     // const [ confirmLoading, setConfirmLoading ] = useState<boolean>((false))
 
 
@@ -284,11 +380,11 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
    
 
     const displaySBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
-        if (sbtExists){
+        if (sbtExists && accounts && provider && chainId){
             const sbtId = await getSBTTokenId(account, sbt)
             const thisEpoch = await getCurrentEpoch(chainId, provider)
-            setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 16).replace("T", " "))
-            setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 16).replace("T", " "))
+            setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
+            setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
             //console.log(`Current Epoch = ${thisEpoch}`)
             const vePower = await getVePower(sbtId, chainId, provider)
             //console.log(`vePower = ${vePower}`)
@@ -328,14 +424,15 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const removeExistingSBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
         console.log('Remove an existing SBT')
         removeSBT(sbtInfo.sbtId, chainId, provider)
-    },[isActive, provider, chainId, accounts, sbt])
+    },[sbtInfo.sbtId])
 
     const handleNewSBTClick = () => {
-        console.log('Clicked')
-        if (accounts && Number(network) === 137 && provider){
+        console.log('Create a new SBT')
+        if (sbtBuyReady && accounts && Number(network) === 137 && provider){
             createSBT(Number(network), provider)
         }
     }
+
 
     useEffect(()=>{
         if (isActive && provider !== undefined && Number(network) === 137 && accounts){
@@ -358,8 +455,55 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     }, [chainId, provider])
 
     useEffect(() => {
+        const sbtAllowance = async () => {
+            if (accounts && chainId && provider) {
+                const enough = await checkApproveSbtUSDC(sbtPrice, accounts[0], chainId, provider)
+                if(enough) {
+                    console.log('enough allowance')
+                    setApproveSBT(false)
+                    setSbtBuyReady(true)
+                } else {
+                    console.log('Not enough allowance')
+                    setApproveSBT(true)
+                    setSbtBuyReady(false)
+                }
+            }
+        }
+        sbtAllowance()
+    },[accounts, chainId, provider])
 
-    }, [helper])
+
+    const handleApproveSBTClick = async () => {
+        console.log(`SBT Approval approveSBT = ${approveSBT}`)
+        if (approveSBT && accounts && chainId && provider) {
+            await approveSbtUSDC(sbtPrice, accounts[0], chainId, provider)
+        }
+    }
+
+    const newSBT = () => {
+        console.log('New SBT')
+        return(
+            <>
+            <MainPanel theme={Theme}>
+                <RowSpacer size={"20px"}/>
+                <SbtBuyRow>
+                    <ApproveSBTButton isActive = {approveSBT && !sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleApproveSBTClick()}>
+                        Approve 
+                    </ApproveSBTButton>
+                    
+                    <NewSBTButton isActive = {sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleNewSBTClick()}>
+                        New SBT
+                    </NewSBTButton>
+                </SbtBuyRow>
+                <SbtBuyRow>
+                    <NormalText text-align = {"left"} width = {"300px"} theme = {Theme}>
+                    Pay {sbtPrice} USDC for a new SBT
+                    </NormalText>
+                </SbtBuyRow>
+            </MainPanel>
+            </>
+        )
+    }
 
     const renderSBT = () => {
         if (sbtExists) {
@@ -382,7 +526,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <SbtInfoRow theme = {Theme}>
                         {totalPoints()}
                     </SbtInfoRow>
-                    <RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>
+                    {/*<RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>*/}
            
                 </SbtLeftPanel>
                 <ColumnSpacer size = {"10px"}/>
@@ -404,15 +548,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         }
         else if(!sbtExists && accounts && chainId && provider){
             if(sbtNetwork.includes(chainId)) {
-                return(
-                    <>
-                        <MainRow isBottom={false}>
-                        <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                            New SBT
-                        </NewSBTButton>
-                        </MainRow>
-                    </>
-                )
+                return(newSBT())
             } else {
                 return(
                     <>
@@ -525,9 +661,27 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const attainmentLevel = () => {
         return (
             <>
-            <BigText theme = {Theme}>Level {sbtInfo.level} {" "}
-            {levelToBadge(sbtInfo.level)} {helperClickHandler(7)}</BigText>
-            {renderMedal(sbtInfo.level)}
+            <LevelRow theme = {Theme}>
+                <LevelColumn theme = {Theme}>
+                    <BigText theme = {Theme}>Level {sbtInfo.level} {" "}
+                    {levelToBadge(sbtInfo.level)} {helperClickHandler(7)}
+                    </BigText>
+                    <LevelRow theme = {Theme}>
+                    <ColumnSpacer size = {"10px"}/>
+                    <DiscordButton isActive = {sbtInfo.vePower>=multiCitizenThreshold?true:false} theme = {Theme} 
+                        onClick = {() => {
+                            if (sbtInfo.vePower>=multiCitizenThreshold) setDisplayDiscordRole(true)
+                        }}>
+                        Multi<br></br>Citizen
+                    </DiscordButton>
+                    {helperClickHandler(10)}
+                    </LevelRow>
+                </LevelColumn>
+               
+                {renderMedal(sbtInfo.level)}
+            </LevelRow>
+            
+           
             </>
         )
     }
@@ -607,6 +761,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         }
         {
             displayHelperModal?<HelperBox selectedHelper = {helper} onClose = {() => setDisplayHelperModal(false)}/>
+            : null
+        }
+        {
+            displayDiscordRole?<DiscordRole onClose = {() => setDisplayDiscordRole(false)}/>
             : null
         }
         </div>

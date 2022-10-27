@@ -12,8 +12,8 @@ import {delegateVeMultiToSBT} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {SubTitle, TitleRow, RowSpacer, ColumnSpacer} from "../component-styles"
-import {veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
+import {NormalText, SubTitle, TitleRow, RowSpacer, ColumnSpacer} from "../component-styles"
+import {isVeDelegatedXChain, veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
 
@@ -94,6 +94,41 @@ const AttachButton = styled.button<ActiveElement>`
   }
 `
 
+const DetachButton = styled.button<ActiveElement>`
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 5px 0 0;
+  padding: 6px 6px;
+
+  width: 10%;
+  height: 60%;
+
+  border: none;
+  border-radius: 0.2rem;
+
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.08rem;
+
+  background-color: ${props => props.isActive ? `${props.theme.colors.highlight}` : "#a3a3c2"};
+  color: ${props => props.theme.colors.secondary};
+
+  cursor: pointer;
+
+  opacity: 0.9;
+
+  transition: opacity 0.01s ease;
+  
+
+  &:hover {
+    opacity: ${props => props.isActive ? `1` : `0.9`};
+  }
+`
+
 interface DelegateProps {
     sbtExists: Boolean,
     sbtId: number,
@@ -109,6 +144,7 @@ interface VeMultiDef  {
     iD: number,
     chainId: number,
     network: string,
+    delegated: boolean|undefined,
     veMultiLocked: number,
     lockedTimeEnd: number,
     lockedTimeEndString: string
@@ -119,6 +155,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
 
     const sbtExists = props.sbtExists
+    const sbtChainId = props.sbtChainId
     
 
    
@@ -136,6 +173,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
             let veMultiId: number
             let veMultiLocked: number
             let endTime: number
+            let isDel: boolean| undefined
             let newVeMulti: VeMultiDef
             if (accounts && chainId && provider){
                 const numberOfVeMulti = await veMultiBalanceOf(accounts[0], chainId, provider)
@@ -144,10 +182,12 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     veMultiId = await veMultiOfOwnerByIndex(accounts[0],ii, chainId, provider)
                     veMultiLocked = await totalLockedMulti(veMultiId, chainId, provider)
                     endTime = await lockedEnd(veMultiId, chainId, provider)
+                    isDel = await isVeDelegatedXChain(chainId, veMultiId, sbtChainId)
                     newVeMulti =  {                   
                         iD: veMultiId,
                         chainId: chainId,
                         network: net.name,
+                        delegated: isDel,
                         veMultiLocked: veMultiLocked,
                         lockedTimeEnd: endTime,
                         lockedTimeEndString: new Date(endTime * 1000).toISOString().slice(0, 19).replace("T", " ")
@@ -175,8 +215,15 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     }
 
     const attachClickHandler = async (thisVeMulti: VeMultiDef) => {
-        if (chainId !== 137 && provider){
+        if (chainId !== sbtChainId && provider){
             await delegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, props.sbtChainId, provider)
+        }
+
+    }
+
+    const detachClickHandler = async (thisVeMulti: VeMultiDef) => {
+        if (chainId !== sbtChainId && provider){
+            //await unDelegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, props.sbtChainId, provider)
         }
 
     }
@@ -191,9 +238,16 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 <b>     MULTI Locked: </b> {significantDigits(String(thisVeMulti.veMultiLocked), 10)}
                 <b>     Locked Until: </b> {thisVeMulti.lockedTimeEndString}
                 </TextVeMulti>
-                <AttachButton isActive={true} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
+                {
+                    thisVeMulti.delegated
+                    ? <DetachButton isActive={true} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
+                    Detach
+                    </DetachButton>
+                    : <AttachButton isActive={true} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
                     Attach
-                </AttachButton>
+                    </AttachButton>
+                }
+                
             </VeMULTI>
             </>
         )

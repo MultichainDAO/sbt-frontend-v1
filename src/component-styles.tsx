@@ -252,6 +252,37 @@ const NetworkButton = styled.button<ActiveElement>`
 `
 
 
+const ApproveSBTButton = styled.button<ActiveElement>`
+  visibility: ${props => props.isActive ? "" : "hidden"};
+
+  margin: 10px 5px 0 0;
+  padding: 0 10px;
+
+  width: 20%;
+  height: 50px;
+
+  border: none;
+  border-radius: 0.2rem;
+
+  font-family: "Source Code Pro", monospace;
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 0.08rem;
+
+  background-color: ${props => props.theme.colors.highlight};
+  color: ${props => props.theme.colors.secondary};
+
+  cursor: pointer;
+
+  opacity: 0.9;
+
+  transition: opacity 0.01s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
 const NewSBTButton = styled.button<ActiveElement>`
   visibility: ${props => props.isActive ? "" : "hidden"};
 
@@ -401,6 +432,7 @@ export {
   HeadingText,
   MainRow,
   InfoDisplayData,
+  ApproveSBTButton,
   NewSBTButton,
   RemoveSBTButton,
   bounceSmall,

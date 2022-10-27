@@ -148,6 +148,12 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
             title: "veMULTI Definition",
             message: "The veMULTI is an NFT into which you have locked your MULTI tokens for a period of up to 4 years. Ownership of veMULTI confers you with a proportion of the Multichain fees and by delegating your veMULTI to your SBT (which you can do here), you increase your governance Voting Power (or SBT Points). You can create veMULTI tokens on either Ethereum, Fantom or BNB Chain and you may have multiple veMULTI tokens on each of these chains. They can all be delegated from this interface to your SBT",
             link: "https://multidao.gitbook.io/multidao/the-multidao/vemulti"
+        },
+        {
+            id: 10,
+            title: "MultiCitizen Definition",
+            message: "A MultiCitizen has enhanced functionality in the MultiDAO Discord group. You need to be a MultiCitizen to be able to make proposals. To become a MultiCitizen, you need to have more than 20 VEPoints, which you can get by attaching more than 100 veMULTI to your SBT. By clicking this button, you open another page for you to verify your role in Discord. You do not need to do this more than once.",
+            link: "https://multidao.gitbook.io/multidao/the-multidao/roles/governance-role#multi-citizen"
         }
     ], [])
 
