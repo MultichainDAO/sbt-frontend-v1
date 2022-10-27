@@ -15,7 +15,7 @@ import DelegateVeMULTI from "./DelegateVeMULTI"
 import HelperBox from "./HelperBox"
 import DiscordRole from "./DiscordRole"
 
-import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
 import {checkApproveSbtUSDC, approveSbtUSDC} from "../utils/usdcUtils"
 
 import bronzeMedal from "../images/bronze-medal.png"
@@ -348,9 +348,9 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const multiCitizenThreshold = 20
     const sbtPrice = 5
 
-    const [network, setNetwork] = useState<number | null>(null)
     const [sbt, setSbt] = useState<Contract | null>(null)
     const [idNFT, setIdNFT] = useState<Contract |null >(null)
+    const [sbtChainId, setSbtChainId] = useState<number | null>(null)
     const [sbtExists, setSbtExists] = useState<Boolean>(false)
     const [epochStart, setEpochStart] = useState<String>("")
     const [epochEnd, setEpochEnd] = useState<String>("")
@@ -360,23 +360,21 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [helper, SetHelper] = useState<number>(0)
     const [approveSBT, setApproveSBT] = useState<Boolean>(true)
     const [sbtBuyReady, setSbtBuyReady] = useState<Boolean>(false)
+    const [loading, setLoading] = useState<Boolean>(false)
     
-
-    // const [ approvalLoading, setApprovalLoading ] = useState<boolean>(false)
-    // const [ confirmLoading, setConfirmLoading ] = useState<boolean>((false))
 
 
     const { provider, chainId, accounts, isActive } = useWeb3React()
 
     useEffect(()=>{
         const performSBTCheck = async() => {
-            if (accounts && Number(network) === 137 && provider) {
+            if (accounts && Number(sbtChainId) === 137 && provider) {
                 const doesSbtExist = await checkSBT(accounts[0], sbt)
                 setSbtExists(doesSbtExist)
             }
         }
         if (!sbtExists) performSBTCheck()
-    },[sbt, network, provider, chainId, accounts, isActive])
+    },[sbt, sbtChainId, provider, chainId, accounts, isActive])
    
 
     const displaySBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
@@ -416,42 +414,47 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
 
     const handleRemoveSBTClick = () => {
-        if (accounts && chainId && provider){
-            removeExistingSBT(accounts[0], sbt, Number(network), provider)
+        if (!loading && accounts && chainId && provider){
+            removeExistingSBT(accounts[0], sbt, Number(sbtChainId), provider)
         }
     }
 
     const removeExistingSBT = useCallback(async (account: string, sbt: any, chainId: number, provider: Web3Provider) => {
         console.log('Remove an existing SBT')
+        setLoading(true)
         removeSBT(sbtInfo.sbtId, chainId, provider)
+        setLoading(false)
     },[sbtInfo.sbtId])
 
     const handleNewSBTClick = () => {
         console.log('Create a new SBT')
-        if (sbtBuyReady && accounts && Number(network) === 137 && provider){
-            createSBT(Number(network), provider)
+        if (sbtBuyReady && accounts && Number(sbtChainId) === 137 && provider){
+            setLoading(true)
+            createSBT(Number(sbtChainId), provider)
+            setLoading(false)
         }
     }
 
 
     useEffect(()=>{
-        if (isActive && provider !== undefined && Number(network) === 137 && accounts){
+        if (isActive && provider !== undefined && Number(sbtChainId) === 137 && accounts){
             if (sbtExists){
-                displaySBT(accounts[0], sbt, Number(network), provider)
+                displaySBT(accounts[0], sbt, Number(sbtChainId), provider)
             }
         }
-    },[network, displaySBT, sbt, isActive, provider, chainId, accounts, sbtExists])
+    },[sbtChainId, displaySBT, sbt, isActive, provider, chainId, accounts, sbtExists])
 
 
     useEffect(() => {
         const net = getNetwork(chainId)
-        console.log(`network = ${net.name}`)
+        console.log(`sbtChainId = ${net.name}`)
 
-        setNetwork(137)
-        if (chainId === 137 && provider) {
+        if (chainId && sbtNetwork.includes(chainId) && provider){
+            setSbtChainId(chainId)
             setSbt(getSBT(provider))
             setIdNFT(getIdNFT(chainId, provider))
         }
+        
     }, [chainId, provider])
 
     useEffect(() => {
@@ -475,8 +478,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const handleApproveSBTClick = async () => {
         console.log(`SBT Approval approveSBT = ${approveSBT}`)
-        if (approveSBT && accounts && chainId && provider) {
+        if (approveSBT && !loading && accounts && chainId && provider) {
+            setLoading(true)
             await approveSbtUSDC(sbtPrice, accounts[0], chainId, provider)
+            setLoading(false)
         }
     }
 
@@ -488,11 +493,17 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 <RowSpacer size={"20px"}/>
                 <SbtBuyRow>
                     <ApproveSBTButton isActive = {approveSBT && !sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleApproveSBTClick()}>
-                        Approve 
+                        {!loading
+                        ? "Approve"
+                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                        }
                     </ApproveSBTButton>
                     
                     <NewSBTButton isActive = {sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                        New SBT
+                    {!loading
+                        ? "New SBT"
+                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                        }
                     </NewSBTButton>
                 </SbtBuyRow>
                 <SbtBuyRow>
@@ -571,7 +582,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             </NormalText>
             <ValueBox top = {"30px"} left = {"10px"} right = {"10px"} width = {"80px"} theme = {Theme}>{claimsOutstanding}</ValueBox>
             <ClaimButton isActive = {claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
-            Claim
+                {!loading
+                    ? "Claim"
+                    : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                }
             </ClaimButton>
             </>
         )
@@ -587,8 +601,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const claimClickHandler = async () => {
         console.log(`claiming ${claimsOutstanding}`)
-        if (claimsOutstanding > 0 && chainId && provider) {
+        if (!loading && claimsOutstanding > 0 && chainId && provider) {
+            setLoading(true)
             await getRewards(sbtInfo.sbtId, chainId, provider)
+            setLoading(false)
         }
     }
 
@@ -672,7 +688,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         onClick = {() => {
                             if (sbtInfo.vePower>=multiCitizenThreshold) setDisplayDiscordRole(true)
                         }}>
-                        Multi<br></br>Citizen
+                         <>Multi<br></br>Citizen</>
                     </DiscordButton>
                     {helperClickHandler(10)}
                     </LevelRow>
@@ -680,8 +696,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                
                 {renderMedal(sbtInfo.level)}
             </LevelRow>
-            
-           
             </>
         )
     }
@@ -753,7 +767,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         ?
         <>
         <VeMultiPage theme = {Theme}>
-             <DelegateVeMULTI sbtExists = {sbtExists} sbtId = {sbtInfo.sbtId} sbtChainId = {chainId}/>
+            {sbtChainId
+             ?<DelegateVeMULTI sbtExists = {sbtExists} sbtId = {sbtInfo.sbtId} sbtChainId = {sbtChainId}/>
+             : null
+            }
         </VeMultiPage>
         <RowSpacer size={ "10px" }/>
         </>

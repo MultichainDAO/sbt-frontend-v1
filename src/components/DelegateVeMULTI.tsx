@@ -12,7 +12,7 @@ import {delegateVeMultiToSBT} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {NormalText, SubTitle, TitleRow, RowSpacer, ColumnSpacer} from "../component-styles"
+import {NormalText, SubTitle, TitleRow, RowSpacer, ColumnSpacer, ApprovalLoader} from "../component-styles"
 import {isVeDelegatedXChain, veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
@@ -161,6 +161,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
    
     const [ netw, setNetw] = useState<string>("")
     const [ myVeMulti, setMyVeMulti ] = useState<VeMultiDef[]>([])
+    const [loading, setLoading] = useState<Boolean>(false)
 
         const { provider, chainId, accounts, isActive } = useWeb3React()
 
@@ -215,15 +216,19 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     }
 
     const attachClickHandler = async (thisVeMulti: VeMultiDef) => {
-        if (chainId !== sbtChainId && provider){
-            await delegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, props.sbtChainId, provider)
+        console.log(`chainId = ${chainId} sbtChainId = ${sbtChainId}`)
+        if (!loading && chainId && chainId !== sbtChainId && provider){
+            setLoading(true)
+            await delegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
+            setLoading(false)
         }
-
     }
 
     const detachClickHandler = async (thisVeMulti: VeMultiDef) => {
-        if (chainId !== sbtChainId && provider){
-            //await unDelegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, props.sbtChainId, provider)
+        if (!loading && chainId && chainId !== sbtChainId && provider){
+            //setLoading(true)
+            //await unDelegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
+            //setLoading(false)
         }
 
     }
@@ -241,10 +246,16 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 {
                     thisVeMulti.delegated
                     ? <DetachButton isActive={true} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
-                    Detach
+                    {!loading
+                        ? "Detach"
+                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                    }
                     </DetachButton>
                     : <AttachButton isActive={true} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
-                    Attach
+                    {!loading
+                        ? "Attach"
+                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                    }
                     </AttachButton>
                 }
                 

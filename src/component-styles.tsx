@@ -400,14 +400,14 @@ const bounceSmall = keyframes`
 const ApprovalLoader = styled.span`
   display: inline-block;
   
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 
   margin: 0 6px;
 
   border-radius: 50%;
 
-  background-color: ${props => props.theme.colors.text};
+  background-color: ${props => props.theme.colors.secondary};
 
   animation: ${bounceSmall} 0.3s infinite alternate;
 
