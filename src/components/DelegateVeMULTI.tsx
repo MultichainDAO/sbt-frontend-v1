@@ -68,7 +68,7 @@ const AttachButton = styled.button<ActiveElement>`
   margin: 0 5px 0 0;
   padding: 6px 6px;
 
-  width: 10%;
+  width: 12%;
   height: 60%;
 
   border: none;
@@ -103,7 +103,7 @@ const DetachButton = styled.button<ActiveElement>`
   margin: 0 5px 0 0;
   padding: 6px 6px;
 
-  width: 10%;
+  width: 12%;
   height: 60%;
 
   border: none;
@@ -195,14 +195,14 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     }
                     VeMultiObj.push(newVeMulti)
                 }
-                console.log(VeMultiObj)
+                //console.log(VeMultiObj)
                 setMyVeMulti(VeMultiObj)
             }
         }
 
         if (sbtExists) getVeMultiParams()
 
-    }, [sbtExists, chainId, accounts, provider])
+    }, [sbtExists, chainId, accounts, provider, sbtChainId])
 
     const veMultiList = () => {
         return(
@@ -245,9 +245,9 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 </TextVeMulti>
                 {
                     thisVeMulti.delegated
-                    ? <DetachButton isActive={true} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
+                    ? <DetachButton isActive={false} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
                     {!loading
-                        ? "Detach"
+                        ? "Attached"
                         : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
                     }
                     </DetachButton>
