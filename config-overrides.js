@@ -7,7 +7,7 @@ module.exports = function override(config, env) {
     url: require.resolve("url"),
     assert: require.resolve("assert"),
     buffer: require.resolve("buffer"),
-  },
+  }
 
   config.plugins.push(
     new webpack.ProvidePlugin({
