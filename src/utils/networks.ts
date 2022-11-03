@@ -12,6 +12,7 @@ interface Network {
   },
   contracts: {
     veOracleSender: string,
+    controller: string,
     proxyAdmin: string,
     idCardLogic: string,
     idCardProxy: string,
@@ -38,6 +39,7 @@ const networks: Network[] = [
     },
     contracts: {
       veOracleSender : "0x5c1F69eC530d69b5271678ACcAF8490F0dE725d3",
+      controller: "",
       proxyAdmin: "",
       idCardLogic: "",
       idCardProxy: "",
@@ -62,11 +64,12 @@ const networks: Network[] = [
     },
     contracts: {
       veOracleSender : "0x7c8D2965D9Bf39BE0Bc7258BA59E6b5f2c48f17f",
+      controller: "0x81DCd47EdAD7e30864C7d3f84032368954889B90",
       proxyAdmin: "",
-      idCardLogic: "",
+      idCardLogic: "0x3E05584358f0Fbfc1909aDE5aCfFBAB7842BdfDc",
       idCardProxy: "",
       multiHonorLogic: "",
-      multiHonorProxy: "",
+      multiHonorProxy: "0x0550082C40C6A04096B62116f227D110A699967B",
       pocSemiToken: "",
       veOracleReceiver: "",
       veMULTI: "0x3f6727DefB15996d13b3461DAE0Ba7263CA3CAc5",
@@ -86,6 +89,7 @@ const networks: Network[] = [
     },
     contracts: {
       veOracleSender : "0x70d6B3cFaaBd6c0Eb6b99b80C6540fA754a72c40",
+      controller: "",
       proxyAdmin: "",
       idCardLogic: "",
       idCardProxy: "",
@@ -102,7 +106,7 @@ const networks: Network[] = [
     chainId: 137,
     name: "Polygon Mainnet",
     explorer: "https://polygonscan.com/",
-    rpcUrl: "https://maticnode1.anyswap.exchange",
+    rpcUrl: "https://polygon-rpc.com",
     nativeCurrency: {
       name: "Matic",
       symbol: "MATIC",
@@ -110,6 +114,7 @@ const networks: Network[] = [
     },
     contracts: {
       veOracleSender: "",
+      controller: "0xB89a2Fa1efB5BcEcd813319c99711cc15DCa2C00",
       proxyAdmin: "0xe7E22Ad06493b97dd86875C7F59f0d71C664c75E",
       idCardLogic: "0xd8485513dd9947aa3287D90Fd3804D3dF52D0Da1",
       idCardProxy: "0x7a02492bAa66B0b8266a6d25Bbd6D8BA169296CC",
@@ -134,6 +139,7 @@ const networks: Network[] = [
       },
       contracts: {
         veOracleSender: "",
+        controller: "",
         proxyAdmin: "",
         idCardLogic: "",
         idCardProxy: "",
@@ -160,6 +166,7 @@ const nullNetwork: Network = {
   },
   contracts: {
     veOracleSender: "",
+    controller: "",
     proxyAdmin: "",
     idCardLogic: "",
     idCardProxy: "",
