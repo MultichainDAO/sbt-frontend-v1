@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
     "@openzeppelin/contracts-upgradeable": "^4.7.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -35,7 +36,6 @@
     "util": "^0.12.4",
     "web-vitals": "^2.1.4"
   },
-  
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
     "build": "react-app-rewired build",

@@ -18,8 +18,31 @@ const getMultiHonor = (chainId: number, provider: Web3Provider): Contract => {
     return new Contract(multiHonorAddr, multiHonorAbi, ethersSigner)
 }
 
-const getSBT = (provider: Web3Provider) : Contract => {
-    return new Contract(sbtContract.address, sbtContract.abi, provider)
+const getSbt = (chainId: number, provider: Web3Provider) : Contract => {
+    const network = getNetwork(chainId)
+    const sbtAddr = network.contracts.idCardProxy
+    console.log(`sbtAddr = ${sbtAddr}`)
+    return new Contract(sbtAddr, sbtContract.abi, provider)
+}
+
+const checkSbtExists = async (account: string, chainId: number, provider: Web3Provider) => {
+    if (chainId && provider) {
+        const sbt = getSbt(chainId, provider)
+        const bal = await sbt.balanceOf(account)
+        if (bal > 0) return(true)
+        else return(false)
+    }
+    return(false)
+}
+
+const checkSbtOwned = async (account: string, sbtId: number, chainId: number, provider: Web3Provider) => {
+    if (chainId && provider) {
+        const sbt = getIdNFT(chainId, provider)
+        const owner = await sbt.ownerOf(sbtId)
+        if (owner === account) return(true)
+        else return(false)
+    }
+    return(false)
 }
 
 const getIdNFT = (chainId: number, provider: Web3Provider): Contract => {
@@ -37,15 +60,25 @@ const getCurrentEpoch = async (chainId: number, provider: Web3Provider) => {
     return(Number(currentEpoch))
 }
 
-const createSBT = async (chainId: number, provider: Web3Provider) => {
-    const idNFT = getIdNFT(chainId, provider)
-    console.log(idNFT)
-    try {
-        const tx = await idNFT.claim({gasLimit: 100000})
-        await tx.wait()
-    }catch(err: any) {
-        console.log(err.message)
+// Used for v1 code
+// const createSBT = async (chainId: number, provider: Web3Provider) => {
+//     const idNFT = getIdNFT(chainId, provider)
+//     //console.log(idNFT)
+//     try {
+//         const tx = await idNFT.claim({gasLimit: 100000})
+//         await tx.wait()
+//     }catch(err: any) {
+//         console.log(err.message)
+//     }
+// }
+
+const getSBTTokenId = async (account:string, chainId: number, provider: Web3Provider) => {
+    if (chainId && provider) {
+        const sbt = getSbt(chainId, provider)
+        const tokenId = await sbt.tokenOfOwnerByIndex(account, 0)
+        return(tokenId)
     }
+    return(null)
 }
 
 const removeSBT = async (id: number, chainId: number, provider: Web3Provider) => {
@@ -153,8 +186,9 @@ export {
     getMultiHonor,
     getCurrentEpoch,
     getIdNFT,
-    getSBT,
-    createSBT,
+    getSBTTokenId,
+    checkSbtExists,
+    checkSbtOwned,
     removeSBT,
     isVeMultiDelegated,
     getVePower,

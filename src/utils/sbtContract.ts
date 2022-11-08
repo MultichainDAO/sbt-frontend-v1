@@ -1,5 +1,4 @@
 const sbtContract = {
-    address: "0x7a02492bAa66B0b8266a6d25Bbd6D8BA169296CC",
     abi:  [
         {
           "anonymous": false,

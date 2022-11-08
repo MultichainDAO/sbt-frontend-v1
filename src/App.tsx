@@ -119,7 +119,7 @@ const App: React.FC = () => {
           {
             isActive
               ? <AppContainer theme={ Theme }>
-                <SBT sbtNetwork = {[137]}/>
+                <SBT sbtNetwork = {[56, 137]}/>
               </AppContainer>
               : <AppContainer theme={ Theme }>
                   <NoConnection>
