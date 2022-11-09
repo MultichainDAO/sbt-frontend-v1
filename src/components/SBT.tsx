@@ -8,8 +8,8 @@ import styled, { DefaultTheme, keyframes } from "styled-components"
 import { IconContext } from "react-icons";
 import {IoIosInformationCircle as Info} from "react-icons/io"
 
-import {getIdNFT, getCurrentEpoch, getSBTTokenId, checkSbtExists, checkSbtOwned, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
-import {userBabtTokenId, sbtBabtClaim, sbtClaim, getPremiumPrice} from "../utils/adaptor"
+import {getIdNFT, getCurrentEpoch, sbtExistXChain, getSBTTokenId, checkSbtExists, checkSbtOwned, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
+import {userBabtTokenId, sbtBabtClaim, sbtClaim, babtExistXChain, getPremiumPrice} from "../utils/adaptor"
 import { Web3Provider } from "@ethersproject/providers"
 import { Contract, ethers } from "ethers";
 import DelegateVeMULTI from "./DelegateVeMULTI"
@@ -19,12 +19,12 @@ import DiscordRole from "./DiscordRole"
 import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
 import {checkApproveSbtPayment, approveSbtPayment} from "../utils/sbtPaymentUtils"
 
-import bronzeMedal from "../images/bronze-medal.png"
-import silverMedal from "../images/silver-medal.png"
-import goldMedal from "../images/gold-medal.png"
-import platinumMedal from "../images/platinum-medal.png"
-import diamondMedal from "../images/diamond-medal.png"
-import emptyMedal from "../images/empty-medal.png"
+import bronzeMedal from "../images/bronze-medal-lores.png"
+import silverMedal from "../images/silver-medal-lores.png"
+import goldMedal from "../images/gold-medal-lores.png"
+import platinumMedal from "../images/platinum-medal-lores.png"
+import diamondMedal from "../images/diamond-medal-lores.png"
+import emptyMedal from "../images/empty-medal-lores.png"
 import { UNDEFINED_CHAINID } from "../utils/errors"
 
 
@@ -324,16 +324,7 @@ interface buySbt {
 }
 
 
-const checkSBT = async (account: string, chainId: number, provider: Web3Provider) => {
 
-    if (account && chainId && provider){
-        const existSBT = await checkSbtExists(account, chainId, provider)
-        
-        console.log(`SBT exists for this account: ${existSBT}`)
-        return(existSBT)
-    }
-    else return(false)
-}
 
 const sbtOwned = async (account: string, sbtTokenId: number, chainId: number, provider: Web3Provider) => {
     if (account && chainId && provider){
@@ -366,6 +357,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const [sbtChainId, setSbtChainId] = useState<number | null>(null)
     const [sbtExists, setSbtExists] = useState<Boolean>(false)
+    const [sbtRemoteChainId, setSbtRemoteChainId] = useState<number|null>(null)
+    const [sbtRemoteName, setSbtRemoteName] = useState<string|null>(null)
     const [epochStart, setEpochStart] = useState<String>("")
     const [epochEnd, setEpochEnd] = useState<String>("")
     const [claimsOutstanding, setClaimsOutstanding] = useState<number>(0)
@@ -374,6 +367,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [helper, SetHelper] = useState<number>(0)
     const [approveSBT, setApproveSBT] = useState<Boolean>(true)
     const [sbtBuyReady, setSbtBuyReady] = useState<Boolean>(false)
+    const [babtExists, setBabtExists] = useState<Boolean>(false)
     const [babtToken, setBabtToken] = useState<number | null>(null)
     const [sbtPrice, setSbtPrice] = useState<buySbt | null>(null)
     const [loading, setLoading] = useState<Boolean>(false)
@@ -384,26 +378,69 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     useEffect(()=>{
         const performSBTCheck = async() => {
-            if (accounts && Number(sbtChainId) && provider) {
-                const doesSbtExist = await checkSBT(accounts[0], Number(sbtChainId), provider)
-                if (doesSbtExist) {
-                    const sbtTokenId = await getSBTTokenId(accounts[0], Number(sbtChainId), provider)
+            if (accounts && chainId && provider) {
+                const sbtChain = await checkSBT()
+                if (sbtChain === chainId) {
+                    console.log(`sbtChainId = ${sbtChainId}`)
+                    const sbtTokenId = await getSBTTokenId(accounts[0], chainId, provider)
                     const isSbtOwned = await checkSbtOwned(accounts[0], sbtTokenId, Number(sbtChainId), provider)
-                    console.log(`sbtExists = ${doesSbtExist} isSbtOwned = ${isSbtOwned}`)
+                    console.log(`sbtExists = ${true} isSbtOwned = ${isSbtOwned}`)
+                    setSbtChainId(chainId)
+                    setSbtRemoteChainId(null)
 
                     if (isSbtOwned) {
-                        setSbtExists(doesSbtExist)
+                        setSbtExists(true)
                     }
+                    else setSbtExists(false)
+                }
+                else if (sbtChain) {
+                    const net = getNetwork(sbtChain)
+                    console.log(`SBT exists remotely on ${sbtChain}`)
+                    setSbtRemoteChainId(sbtChain)
+                    setSbtRemoteName(net.name)
                 }
                 if (chainId === 56) {
-                    const babtTokenId = await userBabtTokenId(accounts[0], Number(sbtChainId), provider)
-                    if (babtTokenId) setBabtToken(babtTokenId)
+                    const babtTokenId = await userBabtTokenId(accounts[0], chainId, provider)
+                    if (babtTokenId) {
+                        setBabtToken(babtTokenId)
+                        setBabtExists(true)
+                    }
+                    else setBabtExists(false)
                     console.log(`babtTokenId = ${babtTokenId}`)
+                }
+                else {
+                    const babt = await babtExistXChain(accounts[0])
+                    if (babt) setBabtExists(true)
+                    console.log(`BABT exists = ${babt}`)
                 }
             }
         }
+
+        const checkSBT = async () => {
+
+            if (accounts && chainId && provider){
+                const existSBT = await checkSbtExists(accounts[0], chainId, provider)
+                if (existSBT) {
+                    console.log(`SBT exists locally: ${existSBT}`)
+                    return(chainId)
+                }
+                else {
+                    const existSBTXChain = await sbtExistXChain(accounts[0], chainId, sbtNetwork)
+                    if (existSBTXChain) {
+                        console.log(`SBT exists remotely on chain ${existSBTXChain}`)
+                        return(existSBTXChain)
+                    }
+                }
+                console.log('SBT does not yet exist')
+                return(undefined)
+            }
+            else return(undefined)
+        }
+
         if (!sbtExists) performSBTCheck()
-    },[sbtChainId, provider, chainId, accounts, isActive, sbtExists])
+    },[sbtChainId, provider, chainId, accounts, isActive, sbtExists, sbtNetwork])
+
+    
    
 
     const displaySBT = useCallback(async (account: string, chainId: number, provider: Web3Provider) => {
@@ -444,7 +481,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const handleRemoveSBTClick = () => {
         if (!loading && accounts && chainId && provider){
-            removeExistingSBT(accounts[0], Number(sbtChainId), provider)
+            removeExistingSBT(accounts[0], chainId, provider)
         }
     }
 
@@ -457,7 +494,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const handleNewSBTClick = () => {
         console.log('Create a new SBT')
-        if (accounts && Number(sbtChainId) && provider) {
+        if (accounts && chainId && provider) {
             if (sbtBuyReady){
                 setLoading(true)
                 sbtClaim(Number(sbtChainId), provider)
@@ -466,7 +503,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             else if (babtToken) {
                 console.log('has BABT')
                 setLoading(true)
-                sbtBabtClaim(babtToken, Number(sbtChainId), provider)
+                sbtBabtClaim(babtToken, chainId, provider)
                 setLoading(false)
             }
         }
@@ -482,15 +519,15 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     },[sbtChainId, displaySBT, isActive, provider, chainId, accounts, sbtExists])
 
 
-    useEffect(() => {
-        const net = getNetwork(chainId)
-        console.log(`sbtChainId = ${net.name}`)
+    // useEffect(() => {
+    //     const net = getNetwork(chainId)
+    //     console.log(`sbtChainId = ${net.name}`)
 
-        if (chainId && sbtNetwork.includes(chainId) && provider){
-            setSbtChainId(chainId)
-        }
+    //     if (chainId && sbtNetwork.includes(chainId) && provider){
+    //         setSbtChainId(chainId)
+    //     }
         
-    }, [chainId, provider, sbtNetwork])
+    // }, [chainId, provider, sbtNetwork])
 
     useEffect(() => {
         const sbtAllowance = async () => {
@@ -542,51 +579,64 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             <MainPanel theme={Theme}>
                 <RowSpacer size={"20px"}/>
                 {
-                babtToken && Number(sbtChainId) === 56
-                ? 
-                    <>
-                    <SbtBuyRow>
-                    <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                        {!loading
-                            ? "New SBT"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                            }
-                    </NewSBTButton>
-                    </SbtBuyRow>
-                    <SbtBuyRow>
-                        <NormalText text-align = {"left"} width = {"300px"} theme = {Theme}>
-                        BABT Owner. Claim your FREE SBT
-                        </NormalText>
-                    </SbtBuyRow>
-                    </>
+                sbtRemoteChainId
+                ?
+                    <NormalText align = {"center"} left = {"20px"} width = {"500px"} top = {"30px"} theme = {Theme}>
+                            You already have an SBT on {sbtRemoteName}. Please switch
+                    </NormalText>
                 :
-                    <>
-                    <SbtBuyRow>
-                        <ApproveSBTButton isActive = {approveSBT && !sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleApproveSBTClick()}>
+                    babtToken && chainId === 56
+                    ? 
+                        <>
+                        <SbtBuyRow>
+                        <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
                             {!loading
-                            ? "Approve"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                            }
-                        </ApproveSBTButton>
-                        
-                        <NewSBTButton isActive = {sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                        {!loading
-                            ? "New SBT"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                            }
+                                ? "New SBT"
+                                : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
                         </NewSBTButton>
-                    </SbtBuyRow>
-                    <SbtBuyRow>
-                        {sbtPrice && sbtPrice.symbol
-                        ?
-                        <NormalText text-align = {"left"} width = {"300px"} theme = {Theme}>
-                        {`Pay ${sbtPrice.price/(10**sbtPrice.decimals)} ${sbtPrice.symbol} for a new SBT`}
-                        </NormalText>
+                        </SbtBuyRow>
+                        <SbtBuyRow>
+                            <NormalText left = {"50px"} text-align = {"left"} width = {"300px"} theme = {Theme}>
+                            BABT Owner. Claim your FREE SBT
+                            </NormalText>
+                        </SbtBuyRow>
+                        </>
+                    :
+                        babtExists
+                        ? 
+                            <NormalText left = {"20px"} text-align = {"left"} width = {"500px"} theme = {Theme}>
+                            BABT Owner. Connect to BNB Chain to claim your FREE SBT
+                            </NormalText>
                         :
-                        null
-                        }
-                    </SbtBuyRow>
-                    </>
+                        <>
+                        <SbtBuyRow>
+                            <ApproveSBTButton isActive = {approveSBT && !sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleApproveSBTClick()}>
+                                {!loading
+                                ? "Approve"
+                                : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
+                            </ApproveSBTButton>
+                            
+                            <NewSBTButton isActive = {sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleNewSBTClick()}>
+                            {!loading
+                                ? "New SBT"
+                                : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
+                            </NewSBTButton>
+                        </SbtBuyRow>
+                        <SbtBuyRow>
+                            {sbtPrice && sbtPrice.symbol
+                            ?
+                            <NormalText text-align = {"left"} width = {"300px"} theme = {Theme}>
+                            {`Pay ${sbtPrice.price/(10**sbtPrice.decimals)} ${sbtPrice.symbol} for a new SBT`}
+                            </NormalText>
+                            :
+                            null
+                            }
+                        </SbtBuyRow>
+                        </>
+                    
                 }
             </MainPanel>
             </>

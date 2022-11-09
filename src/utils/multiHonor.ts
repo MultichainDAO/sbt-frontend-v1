@@ -8,6 +8,8 @@ import { getError } from "./errors"
 
 import {getWeb3, getNetwork} from "./web3Utils"
 
+import axios from "axios"
+import keccak256 from 'keccak256'
 
 
 const getMultiHonor = (chainId: number, provider: Web3Provider): Contract => {
@@ -181,9 +183,64 @@ const getRewards = async (sbtId: number, chainId: number, provider: Web3Provider
 
 }
 
+const sbtExistXChain = async (account: string, chainId: number, sbtNetwork: [number, number]) => {
+    var thisChainId
+    var exist
+    for (var ii=0; ii<sbtNetwork.length; ii++) {
+        thisChainId = sbtNetwork[ii]
+        if (chainId !== thisChainId) {
+            console.log(`Checking ${thisChainId}`)
+            exist = await sbtExistXChainTarget(account, thisChainId)
+            if (exist) return(thisChainId)
+        }
+    }
+    return(undefined)
+}
+
+const sbtExistXChainTarget = async (account: string, targetChainId: number) => {
+
+    
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("balanceOf(address)").toString('hex').slice(0,8)
+
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['address'], [account])
+    ])
+    
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.idCardProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        //console.log(data.result)
+        const exists = (data.result === "0x0000000000000000000000000000000000000000000000000000000000000001")
+        console.log(`SBT exists on chainId ${targetChainId} = ${exists}`)
+        return(exists)
+    } catch(error: any) {
+        console.log(`Error checking balanceOf SBT on chain ${targetChainId} : ${error}`)
+        return(undefined)
+    }
+
+}
+
 
 export {
     getMultiHonor,
+    sbtExistXChain,
     getCurrentEpoch,
     getIdNFT,
     getSBTTokenId,

@@ -4,6 +4,9 @@ import {getWeb3, getNetwork} from "./web3Utils"
 import {controllerAbi, babtAbi, babtAdaptorAbi, premiumAdaptorAbi} from "./abi"
 import {getPaymentTokenDetails} from "./sbtPaymentUtils"
 
+import axios from "axios"
+import keccak256 from "keccak256"
+
 interface Babt {
     contract: string,
     babtClaimHash: string,
@@ -140,6 +143,45 @@ const userBabtTokenId = async (account: string, chainId: number, provider: Web3P
     else return(null)
 }
 
+const babtExistXChain = async (account: string) => {
+
+    const network = getNetwork(56)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("balanceOf(address)").toString('hex').slice(0,8)
+
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['address'], [account])
+    ])
+    
+    const dataString = '{"method":"eth_call","params":[{"to":"' + babt.contract + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        //console.log(data.result)
+        const exists = (data.result === "0x0000000000000000000000000000000000000000000000000000000000000001")
+        console.log(`BABT exists on BNB chain = ${exists}`)
+        return(exists)
+    } catch(error: any) {
+        console.log(`Error checking balanceOf BABT on BNB chain : ${error}`)
+        return(undefined)
+    }
+
+}
+
 // const getDIDAdaptor = async (chainId: number, provider: Web3Provider) => {
 //     if (chainId === 56) {
 //         const controller = getBabtController(chainId, provider)
@@ -160,6 +202,7 @@ export {
     sbtBabtClaim,
     sbtClaim,
     userBabtTokenId,
+    babtExistXChain,
     getPremiumPrice,
     //getDIDAdaptor,
 }

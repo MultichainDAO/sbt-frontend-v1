@@ -29,7 +29,7 @@ interface Network {
 const networks: Network[] = [
   {
     chainId: 1,
-    name: "Ethereum Mainnet",
+    name: "Ethereum",
     explorer: "https://etherscan.io/",
     rpcUrl: "https://mainnet.infura.io/v3/",
     nativeCurrency: {
@@ -54,7 +54,7 @@ const networks: Network[] = [
   },
   {
     chainId: 56,
-    name: "BNBChain Mainnet",
+    name: "BNB Chain",
     explorer: "https://bscscan.com/",
     rpcUrl: "https://rpc.ankr.com/bsc",
     nativeCurrency: {
@@ -79,7 +79,7 @@ const networks: Network[] = [
   },
   {
     chainId: 250,
-    name: "Fantom Mainnet",
+    name: "Fantom",
     explorer: "https://ftmscan.com/",
     rpcUrl: "https://rpc.ftm.tools/",
     nativeCurrency: {
@@ -104,7 +104,7 @@ const networks: Network[] = [
   },
   {
     chainId: 137,
-    name: "Polygon Mainnet",
+    name: "Polygon",
     explorer: "https://polygonscan.com/",
     rpcUrl: "https://polygon-rpc.com",
     nativeCurrency: {
