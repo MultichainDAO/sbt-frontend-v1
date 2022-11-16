@@ -93,7 +93,7 @@ const BalSymbol = styled.div`
 `
 
 interface sbtNetworkProp {
-  sbtNetwork: [number]
+  sbtNetwork: [number, number]
 }
 
 const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
@@ -129,7 +129,7 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
   const connect = useCallback(async (): Promise<void> => {
 
-    console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
+    //console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
     if(!walletSelected ) return
 
     if(walletType === WalletListOptions.WalletConnect) {
@@ -215,7 +215,6 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
               setDisplayWalletList(false); 
               setNewNetwork(true); 
               setWalletSelected(true); 
-              console.log(`Before WalletList: walletSelected = ${walletSelected} newNetwork = ${newNetwork} displayWalletList = ${displayWalletList}`)
             }
           } walletType={ walletType } setWalletType={ setWalletType }/>
         </NetworkRow>

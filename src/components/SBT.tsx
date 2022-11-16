@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core"
 import {getNetwork} from "../utils/web3Utils"
 import { Theme } from "../theme"
 import styled, { DefaultTheme, keyframes } from "styled-components"
-import { IconContext } from "react-icons";
+import { IconContext } from "react-icons"
 import {IoIosInformationCircle as Info} from "react-icons/io"
 
 import {getIdNFT, getCurrentEpoch, sbtExistXChain, getSBTTokenId, checkSbtExists, checkSbtOwned, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
@@ -296,16 +296,6 @@ const ClaimButton = styled.button<ActiveElement>`
 `
 
 
-
-
-interface MainRowProps {
-    theme: DefaultTheme,
-    isBottom: boolean
-}
-
-interface SizeProps {
-    size: string
-}
   
 interface ActiveElement {
     theme: DefaultTheme,
@@ -381,7 +371,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             if (accounts && chainId && provider) {
                 const sbtChain = await checkSBT()
                 if (sbtChain === chainId) {
-                    console.log(`sbtChainId = ${sbtChainId}`)
                     const sbtTokenId = await getSBTTokenId(accounts[0], chainId, provider)
                     const isSbtOwned = await checkSbtOwned(accounts[0], sbtTokenId, Number(sbtChainId), provider)
                     console.log(`sbtExists = ${true} isSbtOwned = ${isSbtOwned}`)
@@ -497,7 +486,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (accounts && chainId && provider) {
             if (sbtBuyReady){
                 setLoading(true)
-                sbtClaim(Number(sbtChainId), provider)
+                sbtClaim(Number(chainId), provider)
                 setLoading(false)
             }
             else if (babtToken) {
@@ -519,19 +508,9 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     },[sbtChainId, displaySBT, isActive, provider, chainId, accounts, sbtExists])
 
 
-    // useEffect(() => {
-    //     const net = getNetwork(chainId)
-    //     console.log(`sbtChainId = ${net.name}`)
-
-    //     if (chainId && sbtNetwork.includes(chainId) && provider){
-    //         setSbtChainId(chainId)
-    //     }
-        
-    // }, [chainId, provider, sbtNetwork])
-
     useEffect(() => {
         const sbtAllowance = async () => {
-            if (accounts && chainId && provider) {
+            if (!sbtExists && accounts && chainId && provider) {
                 if (sbtPrice) {
                     const enough = await checkApproveSbtPayment(sbtPrice, accounts[0], chainId, provider)
                     if(enough) {
@@ -547,7 +526,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             }
         }
         if (!babtToken) sbtAllowance()
-    },[sbtPrice, accounts, babtToken, chainId, provider])
+    },[sbtPrice, accounts, babtToken, chainId, provider, sbtExists])
 
     useEffect(() => {
         const getSbtPriceData = async () => {
@@ -573,7 +552,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     }
 
     const newSBT = () => {
-        console.log('New SBT')
+        //console.log('New SBT')
         return(
             <>
             <MainPanel theme={Theme}>

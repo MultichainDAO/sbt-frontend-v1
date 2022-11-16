@@ -54,7 +54,7 @@ const isVeDelegatedXChain = async (fromChainID: number, ve_id: number, sbtChainI
     var headers = {
         'Content-Type': 'application/json'
     }
-    console.log(`fromChainID = ${fromChainID} ve_id = ${ve_id}`)
+    //console.log(`fromChainID = ${fromChainID} ve_id = ${ve_id}`)
 
     // see https://docs.soliditylang.org/en/latest/abi-spec.html#function-selector
     const func = '0x' + keccak256("isDelegated(uint256,uint256)").toString('hex').slice(0,8)
@@ -77,9 +77,8 @@ const isVeDelegatedXChain = async (fromChainID: number, ve_id: number, sbtChainI
     try {
         const response = await axios(options)
         var data = await response.data
-        //console.log(response)
         const isDel = (data.result === "0x0000000000000000000000000000000000000000000000000000000000000001")
-        console.log(`isDel = ${isDel}  StatusText: ${response.statusText}`)
+        //console.log(`isDel = ${isDel}  StatusText: ${response.statusText}`)
         return(isDel)
     } catch (error:any){
         console.log(`Error fetching veMULTI delegated status: ${error}`)

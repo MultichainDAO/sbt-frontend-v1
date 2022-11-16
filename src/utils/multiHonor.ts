@@ -23,7 +23,6 @@ const getMultiHonor = (chainId: number, provider: Web3Provider): Contract => {
 const getSbt = (chainId: number, provider: Web3Provider) : Contract => {
     const network = getNetwork(chainId)
     const sbtAddr = network.contracts.idCardProxy
-    console.log(`sbtAddr = ${sbtAddr}`)
     return new Contract(sbtAddr, sbtContract.abi, provider)
 }
 
@@ -189,7 +188,7 @@ const sbtExistXChain = async (account: string, chainId: number, sbtNetwork: [num
     for (var ii=0; ii<sbtNetwork.length; ii++) {
         thisChainId = sbtNetwork[ii]
         if (chainId !== thisChainId) {
-            console.log(`Checking ${thisChainId}`)
+            //console.log(`Checking ${thisChainId}`)
             exist = await sbtExistXChainTarget(account, thisChainId)
             if (exist) return(thisChainId)
         }
@@ -226,9 +225,8 @@ const sbtExistXChainTarget = async (account: string, targetChainId: number) => {
     try {
         const response = await axios(options)
         const data = await response.data
-        //console.log(data.result)
         const exists = (data.result === "0x0000000000000000000000000000000000000000000000000000000000000001")
-        console.log(`SBT exists on chainId ${targetChainId} = ${exists}`)
+        //console.log(`SBT exists on chainId ${targetChainId} = ${exists}`)
         return(exists)
     } catch(error: any) {
         console.log(`Error checking balanceOf SBT on chain ${targetChainId} : ${error}`)

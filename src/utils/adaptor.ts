@@ -6,6 +6,7 @@ import {getPaymentTokenDetails} from "./sbtPaymentUtils"
 
 import axios from "axios"
 import keccak256 from "keccak256"
+import { ZERO_ADDR } from "./web2Utils"
 
 interface Babt {
     contract: string,
@@ -31,7 +32,6 @@ const getIDNFTController = (chainId: number, provider: Web3Provider) => {
         const network = getNetwork(chainId)
         const { ethersSigner } = getWeb3(provider)
         const controller = new Contract(network.contracts.controller, controllerAbi, ethersSigner)
-        //console.log(controller)
         return(controller)
     }
     else return(null)
@@ -66,7 +66,6 @@ const sbtBabtClaim = async (babtTokenId: number, chainId: number, provider: Web3
                 const signInfo = await babtAdaptor.getSignInfo(babtTokenId)
                 const accountType = await controller.accountTypeOf(babtTokenId)
                 try {
-                    console.log(`accountType = ${accountType} signInfo = ${signInfo}`)
                     const tx = await controller.claim(accountType, signInfo, {gasLimit: 100000})
                     await tx.wait()
                 } catch(error: any) {
@@ -103,7 +102,9 @@ const getPremiumPrice = async (chainId: number, provider: Web3Provider): Promise
         if (controller) {
             const premiumAdaptorAddr = await controller.dIDAdaptor(premiumClaimHash)
             const premiumAdaptor = getPremiumAdaptor(premiumAdaptorAddr, chainId, provider)
+            //if (premiumAdaptor && (premiumAdaptorAddr !== ZERO_ADDR)) {
             if (premiumAdaptor) {
+                console.log(premiumAdaptor)
                 const price = await premiumAdaptor.price()
                 const paymentTokenAddr = await premiumAdaptor.money()
                 const paymentTokenDetails = await getPaymentTokenDetails(paymentTokenAddr, chainId, provider)
@@ -173,11 +174,48 @@ const babtExistXChain = async (account: string) => {
         const data = await response.data
         //console.log(data.result)
         const exists = (data.result === "0x0000000000000000000000000000000000000000000000000000000000000001")
-        console.log(`BABT exists on BNB chain = ${exists}`)
+        //console.log(`BABT exists on BNB chain = ${exists}`)
         return(exists)
     } catch(error: any) {
         console.log(`Error checking balanceOf BABT on BNB chain : ${error}`)
         return(undefined)
+    }
+
+}
+
+const babtIdXChain = async (account: string) => {
+
+    const network = getNetwork(56)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("tokenIdOf(address)").toString('hex').slice(0,8)
+
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['address'], [account])
+    ])
+    
+    const dataString = '{"method":"eth_call","params":[{"to":"' + babt.contract + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const id = parseInt(data.result, 16)
+        return(id)
+    } catch(error: any) {
+        console.log(`Error checking balanceOf BABT on BNB chain : ${error}`)
+        return(null)
     }
 
 }
@@ -202,6 +240,7 @@ export {
     sbtBabtClaim,
     sbtClaim,
     userBabtTokenId,
+    babtIdXChain,
     babtExistXChain,
     getPremiumPrice,
     //getDIDAdaptor,

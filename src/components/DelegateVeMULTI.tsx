@@ -163,13 +163,13 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     const [ myVeMulti, setMyVeMulti ] = useState<VeMultiDef[]>([])
     const [loading, setLoading] = useState<Boolean>(false)
 
-        const { provider, chainId, accounts, isActive } = useWeb3React()
+    const { provider, chainId, accounts, isActive } = useWeb3React()
 
     useEffect (() => {
         const getVeMultiParams = async () => { 
             const net = getNetwork(chainId)
             setNetw(net.name)
-            console.log(`DELEGATE network = ${net.name}`)
+            //console.log(`DELEGATE network = ${net.name}`)
             let VeMultiObj: VeMultiDef[] = []
             let veMultiId: number
             let veMultiLocked: number

@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react"
 import styled, { createGlobalStyle } from "styled-components"
 
 import { useWeb3React } from "@web3-react/core"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
 import Header from "./components/Header"
-//import Nav from "./components/Nav"
-import Footer from "./components/Footer"
+import Nav from "./components/Nav"
 
 import SBT from "./components/SBT"
+import DIDs from "./components/DIDs"
 
 import { Theme } from "./theme"
 
@@ -113,13 +113,18 @@ const App: React.FC = () => {
       <Header/>
 
       <Spacer/>
-
+      <BrowserRouter>
         <MainPage theme={ Theme }>
-
+          <Nav/>
           {
             isActive
               ? <AppContainer theme={ Theme }>
-                <SBT sbtNetwork = {[56, 137]}/>
+                <Routes>
+                  <Route path="/sbt" element={ <SBT sbtNetwork = {[56, 137]}/> }/>
+                  <Route path="/dID" element={<DIDs/>}/>
+                  <Route path="/*" element={ <Navigate to="/sbt"/> }/>
+                </Routes>
+                
               </AppContainer>
               : <AppContainer theme={ Theme }>
                   <NoConnection>
@@ -132,7 +137,7 @@ const App: React.FC = () => {
 
         </MainPage>
         
-        <Footer/>
+      </BrowserRouter>
     </>
   )
 

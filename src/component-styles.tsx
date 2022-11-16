@@ -2,6 +2,16 @@ import styled, { DefaultTheme, keyframes } from "styled-components"
 import { Theme } from "./theme"
 
 
+const DropDownIcon = () => <span className="material-symbols-outlined">expand_more</span>
+const InfoIcon = () => <span className="material-symbols-outlined">info</span>
+const ErrorIcon = () => <span className="material-symbols-outlined">error</span>
+const WarningIcon = () => <span className="material-symbols-outlined">warning</span>
+const CloseIcon = () => <span className="material-symbols-outlined">close</span>
+const SettingsIcon = () => <span className="material-symbols-outlined">settings</span>
+const ArrowIcon = () => <span className="material-symbols-outlined">arrow_outward</span>
+
+
+
 interface InputTokenProps {
   theme: DefaultTheme,
   isSelected: boolean
@@ -384,6 +394,34 @@ const ScanForVeMULTIButton = styled.button<ActiveElement>`
   }
 `
 
+// MODAL
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+`
+
+const ModalTitle = styled.div`
+  margin: 0 5px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 0.5rem;
+  color: ${props => props.theme.colors.text};
+  cursor: default;
+`
+
+const ModalClose = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 5px;
+  color: ${props => props.theme.colors.text};
+  cursor: pointer;
+`
 
 
 // ANIMATION
@@ -419,7 +457,72 @@ const ApprovalLoader = styled.span`
     animation-delay: 0.2s;
   }
 `
+
+
+// WALLET LIST
+const WalletListPopUp = styled.div`
+  position: fixed;
+  right: 50%;
+  width: 500px;
+  height: 210px;
+  margin: 300px -260px 0 0;
+  padding: 0 10px;
+  border-radius: 1.25rem;
+  background-color: ${props => props.theme.colors.secondary};
+  z-index: 1001;
+  @media (max-width: 700px) {
+    right: 0;
+    width: 96%;
+    margin: 100px 1%;
+    padding: 0 1%;
+  }
+`
+
+const WalletListTitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+`
+
+const WalletListItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 98%;
+  height: 60px;
+  margin: 0 auto;
+  padding: 0 5px;
+  border-radius: 0.4rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.1rem;
+  background-color: ${ props => props.theme.colors.main };
+  color: ${ props => props.theme.colors.text };
+  cursor: pointer;
+`
+
+const WalletListLogo = styled.img`
+  width: 50px;
+  height: 50px;
+`
+
+
+
 export {
+  DropDownIcon,
+  InfoIcon,
+  ErrorIcon,
+  WarningIcon,
+  CloseIcon,
+  SettingsIcon,
+  ArrowIcon,
+
+
+  ModalOverlay,
+  ModalTitle,
+  ModalClose,
+
   SubPage, 
   TitleRow,
   Title, 
@@ -439,5 +542,10 @@ export {
   ApprovalLoader,
   NetworkRow,
   ScanForVeMULTIButton,
-  NetworkButton
+  NetworkButton,
+
+  WalletListPopUp,
+  WalletListTitleRow,
+  WalletListItem,
+  WalletListLogo,
 }

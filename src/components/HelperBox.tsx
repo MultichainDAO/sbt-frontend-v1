@@ -154,6 +154,18 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
             title: "MultiCitizen Definition",
             message: "A MultiCitizen has enhanced functionality in the MultiDAO Discord group. You need to be a MultiCitizen to be able to make proposals. To become a MultiCitizen, you need to have more than 20 VEPoints, which you can get by attaching more than 100 veMULTI to your SBT. By clicking this button, you open another page for you to verify your role in Discord. You do not need to do this more than once.",
             link: "https://multidao.gitbook.io/multidao/the-multidao/roles/governance-role#multi-citizen"
+        },
+        {
+            id: 11,
+            title: "Decentralized Identity",
+            message: "A Decentralized Identity Token, or dID, is an NFT that is bound to your wallet address and having been issued to you, certifies your identity. A dID cannot be transferred to another wallet, except by revoking it and attesting it to another wallet. Ownership of dIDs can confer you benefits in the Multichain ecosystem.",
+            link: ""
+        },
+        {
+            id: 12,
+            title: "Claiming a BABT",
+            message: "A BABT is issued to Binance users who have completed KYC. You need to get the seed phrase for the new address that is created for you by Binance and then import it into MetaMask or WalletConnect. The instructions for claiming your BABT are linked below",
+            link: "https://www.binance.com/en/support/faq/how-to-mint-binance-account-bound-bab-token-bacaf9595b52440ea2b023195ba4a09c"
         }
     ], [])
 
