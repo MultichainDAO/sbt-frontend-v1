@@ -128,39 +128,39 @@ const isVeMultiDelegated = async (veId: number, veChainId: number, provider: Web
 }
 
 
-const getVePower =  (sbtId: number, chainId: number, provider: Web3Provider) => {
+const getVePower =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
-    const vePower = multiHonor.VEPower(sbtId)
+    const vePower = await multiHonor.VEPower(sbtId)
     return(vePower)
 }
 
-const getVePoint =  (sbtId: number, chainId: number, provider: Web3Provider) => {
+const getVePoint =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
-    const vePoint = multiHonor.VEPoint(sbtId)
+    const vePoint = await multiHonor.VEPoint(sbtId)
     return(vePoint)
 }
 
-const getEventPoint = (sbtId: number, chainId: number, provider: Web3Provider) => {
+const getEventPoint = async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
-    const eventPoint = multiHonor.EventPoint(sbtId)
+    const eventPoint = await multiHonor.EventPoint(sbtId)
     return(eventPoint)
 }
 
-const getPOC =  (sbtId: number, chainId: number, provider: Web3Provider) => {
+const getPOC =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
-    const POC = multiHonor.POC(sbtId)
+    const POC = await multiHonor.POC(sbtId)
     return(POC)
 }
 
-const getTotalPoint =  (sbtId: number, chainId: number, provider: Web3Provider) => {
+const getTotalPoint =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
-    const totalPoint = multiHonor.TotalPoint(sbtId)
+    const totalPoint = await multiHonor.TotalPoint(sbtId)
     return(totalPoint)
 }
 
-const getLevel =  (sbtId: number, chainId: number, provider: Web3Provider) => {
+const getLevel =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
-    const level = multiHonor.Level(sbtId)
+    const level = await multiHonor.Level(sbtId)
     return(level)
 }
 
@@ -178,8 +178,10 @@ const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number
     try {
         const tx = await oracleSender.delegateVEPower(veId, daoId)
         await tx.wait()
+        return(true)
     } catch(err: any) {
         console.log(err.message)
+        return(false)
     }
 }
 
@@ -212,6 +214,7 @@ const sbtExistXChain = async (account: string, chainId: number, sbtNetwork: [num
         if (chainId !== thisChainId) {
             //console.log(`Checking ${thisChainId}`)
             exist = await sbtExistXChainTarget(account, thisChainId)
+            console.log(`thisChainId = ${thisChainId} exist = ${exist}`)
             if (exist) return(thisChainId)
         }
     }

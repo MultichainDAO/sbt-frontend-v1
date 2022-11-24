@@ -27,9 +27,6 @@ const getPaymentTokenDetails = async (tokenAddr: string, chainId: number, provid
 }
 
 const checkApproveSbtPayment = async(sbtPrice: buySbt, didAdaptorAddr: string, account: string, chainId: number, provider:Web3Provider) => {
-    const network = getNetwork(chainId)
-
-    //const contractAddr = network.contracts.idCardProxy
 
     const val = BigNumber.from(String(sbtPrice.price))
 
@@ -43,11 +40,8 @@ const checkApproveSbtPayment = async(sbtPrice: buySbt, didAdaptorAddr: string, a
 }
 
 const approveSbtPayment = async (sbtPrice: buySbt, didAdaptorAddr: string, account: string, chainId: number, provider:Web3Provider) => {
-    //const network = getNetwork(chainId)
     const { ethersSigner } = getWeb3(provider)
     const val = BigNumber.from(String(sbtPrice.price))
-
-    //const contractAddr = network.contracts.idCardProxy
 
     const PaymentToken = new Contract(sbtPrice.paymentTokenAddr, ERC20, ethersSigner)
     

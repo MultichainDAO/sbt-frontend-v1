@@ -14,6 +14,7 @@ import {getDidAdaptorAddr, userBabtTokenId, sbtBabtClaim, sbtClaim, babtExistXCh
 import { Web3Provider } from "@ethersproject/providers"
 import DelegateVeMULTI from "./DelegateVeMULTI"
 import HelperBox from "./HelperBox"
+import UserMessage from "./UserMessage"
 import DiscordRole from "./DiscordRole"
 
 import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
@@ -25,7 +26,6 @@ import goldMedal from "../images/gold-medal-lores.png"
 import platinumMedal from "../images/platinum-medal-lores.png"
 import diamondMedal from "../images/diamond-medal-lores.png"
 import emptyMedal from "../images/empty-medal-lores.png"
-import { updateNamedExports } from "typescript"
 
 
 interface ValueBoxProps {
@@ -353,7 +353,9 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [claimsOutstanding, setClaimsOutstanding] = useState<number>(0)
     const [displayHelperModal, setDisplayHelperModal] = useState<Boolean>(false)
     const [displayDiscordRole, setDisplayDiscordRole] = useState<Boolean>(false)
-    const [helper, SetHelper] = useState<number>(0)
+    const [displayUserMessage, setDisplayUserMessage] = useState<Boolean>(false)
+    const [helper, setHelper] = useState<number>(0)
+    const [message, setMessage] = useState<number>(0)
     const [approveSBT, setApproveSBT] = useState<Boolean>(true)
     const [sbtBuyReady, setSbtBuyReady] = useState<Boolean>(false)
     const [babtExists, setBabtExists] = useState<boolean>(false)
@@ -530,12 +532,17 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         ret = await sbtBabtClaim(babtToken, chainId, provider)
                         setLoading(false)
                     }
-                    if (ret) 
+                    if (ret) {
                         if (chainId === 137) setSbtPolygonExists(true)
                         else if (chainId === 56) setSbtBnbExists(true)
+                        setMessage(2)
+                        setDisplayUserMessage(true)
+                    }
                 }
                 else {
                     console.log('Insufficient gas')
+                    setMessage(3)
+                    setDisplayUserMessage(true)
                 }
             }
         }
@@ -609,6 +616,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             }
             else {
                 console.log('Insufficient gas')
+                setMessage(3)
+                setDisplayUserMessage(true)
             }
         }
     }
@@ -800,7 +809,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const helperClickHandler = (helperNumber: number) => {
         return (
             <IconContext.Provider value = {{color: Theme.colors.highlight, size:"2vh",style: { verticalAlign: 'top' }}}>
-                <Info onClick = {() => {SetHelper(helperNumber); setDisplayHelperModal(true)}}/>
+                <Info onClick = {() => {setHelper(helperNumber); setDisplayHelperModal(true)}}/>
             </IconContext.Provider>
         )
     }
@@ -970,24 +979,25 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         <RowSpacer size={ "2px" }/>
         {sbtPolygonExists
         ?
-        <>
-        <TitleRow>
-            <ColumnSpacer size = {"20%"}/>
-            <Title theme={ Theme }>Select a chain to scan veMULTI {helperClickHandler(9)}</Title>
-        </TitleRow>
-        <RowSpacer size={ "5px" }/>
-        </>
-        :null}
+            <>
+            <TitleRow>
+                <ColumnSpacer size = {"20%"}/>
+                <Title theme={ Theme }>Select a chain to scan veMULTI {helperClickHandler(9)}</Title>
+            </TitleRow>
+            <RowSpacer size={ "5px" }/>
+            </>
+        :null
+        }
         <RowSpacer size={ "2px" }/>
         {
         sbtPolygonExists && chainId !== 137
         ?
-        <>
-        <VeMultiPage theme = {Theme}>
-            <DelegateVeMULTI sbtExists = {sbtPolygonExists} sbtId = {sbtInfo.sbtId} sbtChainId = {137}/>
-        </VeMultiPage>
-        <RowSpacer size={ "10px" }/>
-        </>
+            <>
+            <VeMultiPage theme = {Theme}>
+                <DelegateVeMULTI sbtExists = {sbtPolygonExists} sbtId = {sbtInfo.sbtId} sbtChainId = {137}/>
+            </VeMultiPage>
+            <RowSpacer size={ "10px" }/>
+            </>
         : null
         }
         {
@@ -996,6 +1006,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         }
         {
             displayDiscordRole?<DiscordRole onClose = {() => setDisplayDiscordRole(false)}/>
+            : null
+        }
+        {
+            displayUserMessage?<UserMessage selectedMessage = {message} onClose = {() => setDisplayUserMessage(false)}/>
             : null
         }
         </div>

@@ -6,7 +6,7 @@ import {getNetwork} from "../utils/web3Utils"
 import { Theme } from "../theme"
 import styled, { DefaultTheme, keyframes } from "styled-components"
 
-
+import UserMessage from "./UserMessage"
 
 import {delegateVeMultiToSBT} from "../utils/multiHonor"
 
@@ -161,6 +161,8 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
    
     const [ netw, setNetw] = useState<string>("")
     const [ myVeMulti, setMyVeMulti ] = useState<VeMultiDef[]>([])
+    const [displayUserMessage, setDisplayUserMessage] = useState<Boolean>(false)
+    const [message, setMessage] = useState<number>(0)
     const [loading, setLoading] = useState<Boolean>(false)
 
     const { provider, chainId, accounts, isActive } = useWeb3React()
@@ -195,7 +197,6 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     }
                     VeMultiObj.push(newVeMulti)
                 }
-                //console.log(VeMultiObj)
                 setMyVeMulti(VeMultiObj)
             }
         }
@@ -207,7 +208,6 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     const veMultiList = () => {
         return(
             myVeMulti.map(thisVeMulti => {
-                //console.log(thisVeMulti)
                 return (
                     veMultiDetails(thisVeMulti)
                 )
@@ -219,8 +219,12 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
         console.log(`chainId = ${chainId} sbtChainId = ${sbtChainId}`)
         if (!loading && chainId && chainId !== sbtChainId && provider){
             setLoading(true)
-            await delegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
+            const ret = await delegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
             setLoading(false)
+            if (ret) {
+                setMessage(1)
+                setDisplayUserMessage(true)
+            }
         }
     }
 
@@ -260,6 +264,10 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 }
                 
             </VeMULTI>
+            {
+                displayUserMessage?<UserMessage selectedMessage = {message} onClose = {() => setDisplayUserMessage(false)}/>
+                : null
+            }
             </>
         )
     }
