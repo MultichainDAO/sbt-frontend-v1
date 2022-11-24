@@ -302,6 +302,5 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     }
 }
 
-//<ConnectDelegate sbtExists = {sbtExists} defaultNetwork = {1}/>
 
 export default DelegateVeMULTI

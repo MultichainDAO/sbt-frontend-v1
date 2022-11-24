@@ -66,17 +66,19 @@ const sbtBabtClaim = async (babtTokenId: number, chainId: number, provider: Web3
                 const signInfo = await babtAdaptor.getSignInfo(babtTokenId)
                 const accountType = await controller.accountTypeOf(babtTokenId)
                 try {
-                    const tx = await controller.claim(accountType, signInfo, {gasLimit: 100000})
+                    const tx = await controller.claim(accountType, signInfo, {gasLimit: 300000})
                     await tx.wait()
+                    return(true)
                 } catch(error: any) {
                     console.log(error)
+                    return(false)
                 }
             }
-            else return(null)
+            else return(false)
         }
-        else return(null)
+        else return(false)
     }
-    else return(null)
+    else return(false)
 }
 
 const sbtClaim = async (chainId: number, provider: Web3Provider) => {
@@ -87,13 +89,17 @@ const sbtClaim = async (chainId: number, provider: Web3Provider) => {
                 console.log('claiming SBT')
                 const accountType = ethers.utils.formatBytes32String("Default")
                 const signInfo = ethers.utils.formatBytes32String("")
-                const tx = await controller.claim(accountType, signInfo, {gasLimit: 100000})
+                const tx = await controller.claim(accountType, signInfo, {gasLimit: 300000})
                 await tx.wait()
+                return(true)
             } catch (error: any) {
                 console.log(error)
+                return(false)
             }
         }
+        return(false)
     }
+    return(false)
 }
 
 const getPremiumPrice = async (chainId: number, provider: Web3Provider): Promise<buySbt|null> => {
@@ -104,7 +110,6 @@ const getPremiumPrice = async (chainId: number, provider: Web3Provider): Promise
             const premiumAdaptor = getPremiumAdaptor(premiumAdaptorAddr, chainId, provider)
             //if (premiumAdaptor && (premiumAdaptorAddr !== ZERO_ADDR)) {
             if (premiumAdaptor) {
-                console.log(premiumAdaptor)
                 const price = await premiumAdaptor.price()
                 const paymentTokenAddr = await premiumAdaptor.money()
                 const paymentTokenDetails = await getPaymentTokenDetails(paymentTokenAddr, chainId, provider)
@@ -233,8 +238,27 @@ const babtIdXChain = async (account: string) => {
 //     else return(null)
 // }
 
+const getDidAdaptorAddr = async (babtExists: boolean, chainId: number, provider: Web3Provider) => {
+    if (chainId === 56 || chainId === 137) {
+        const controller = getIDNFTController(chainId, provider)
+        if (controller && chainId === 56 && babtExists) {
+            const babtAdaptorAddr = await controller.dIDAdaptor(babt.babtClaimHash)
+            //console.log(`babtAdaptorAddr = ${babtAdaptorAddr}`)
+            return(babtAdaptorAddr)
+        }
+        else if (controller) {
+            const premiumAdaptorAddr = await controller.dIDAdaptor(premiumClaimHash)
+            //console.log(`premiumAdaptorAddr = ${premiumAdaptorAddr}`)
+            return(premiumAdaptorAddr)
+        }
+        else return(null)
+    }
+    else return(null)
+}
+
 
 export {
+    getDidAdaptorAddr,
     babt,
     getBabt,
     sbtBabtClaim,

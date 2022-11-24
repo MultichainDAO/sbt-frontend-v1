@@ -61,17 +61,39 @@ const getCurrentEpoch = async (chainId: number, provider: Web3Provider) => {
     return(Number(currentEpoch))
 }
 
-// Used for v1 code
-// const createSBT = async (chainId: number, provider: Web3Provider) => {
-//     const idNFT = getIdNFT(chainId, provider)
-//     //console.log(idNFT)
-//     try {
-//         const tx = await idNFT.claim({gasLimit: 100000})
-//         await tx.wait()
-//     }catch(err: any) {
-//         console.log(err.message)
-//     }
-// }
+const getCurrentEpochXChain = async (targetChainId: number) => {
+
+    
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("currentVEEpoch()").toString('hex').slice(0,8)
+
+    let calldata = func
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const epoch = parseInt(data.result, 16)
+        return(epoch)
+    } catch(error: any) {
+        console.log(`Error getting currentEpoch ${targetChainId} : ${error}`)
+        return(0)
+    }
+}
+
 
 const getSBTTokenId = async (account:string, chainId: number, provider: Web3Provider) => {
     if (chainId && provider) {
@@ -85,7 +107,7 @@ const getSBTTokenId = async (account:string, chainId: number, provider: Web3Prov
 const removeSBT = async (id: number, chainId: number, provider: Web3Provider) => {
     const idNFT = getIdNFT(chainId, provider)
     try {
-        const tx = await idNFT.burn(id, {gasLimit: 100000})
+        const tx = await idNFT.burn(id, {gasLimit: 300000})
         await tx.wait()
     }catch(err: any) {
         console.log(err.message)
@@ -240,6 +262,7 @@ export {
     getMultiHonor,
     sbtExistXChain,
     getCurrentEpoch,
+    getCurrentEpochXChain,
     getIdNFT,
     getSBTTokenId,
     checkSbtExists,
