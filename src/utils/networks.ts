@@ -60,7 +60,7 @@ const networks: Network[] = [
     nativeCurrency: {
       name: "Binance Coin",
       symbol: "BNB",
-      gasToLeave: 0.0025,
+      gasToLeave: 0.003,
     },
     contracts: {
       veOracleSender : "0x7c8D2965D9Bf39BE0Bc7258BA59E6b5f2c48f17f",

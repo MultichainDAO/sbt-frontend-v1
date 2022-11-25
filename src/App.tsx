@@ -120,7 +120,7 @@ const App: React.FC = () => {
             isActive
               ? <AppContainer theme={ Theme }>
                 <Routes>
-                  <Route path="/sbt" element={ <SBT sbtNetwork = {[56, 137]}/> }/>
+                  <Route path="/sbt" element={ <SBT sbtNetwork = {[137, 56]}/> }/>
                   <Route path="/dID" element={<DIDs/>}/>
                   <Route path="/*" element={ <Navigate to="/sbt"/> }/>
                 </Routes>

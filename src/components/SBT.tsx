@@ -310,7 +310,8 @@ interface buySbt {
     price: number,
     paymentTokenAddr: string,
     symbol: string,
-    decimals: number
+    decimals: number,
+    chainId: number
 }
 
 
@@ -373,12 +374,26 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 await updateBaseBal(accounts, provider)
                 const network = getNetwork(chainId)
                 setMinBal(network.nativeCurrency.gasToLeave)
+                
             }
         }
         
         updateNet()
     }
     ,[accounts, chainId, provider])
+
+    useEffect(() => {
+        const getSbtPriceData = async () => {
+            if (chainId && provider) {
+                const price = await getPremiumPrice(chainId, provider)
+                setSbtPrice(price)
+                if (sbtPrice)
+                    console.log(`price = ${sbtPrice.price}, paymentTokenAddr = ${sbtPrice.paymentTokenAddr}`)
+            }
+        }
+
+        if (!sbtPrice || sbtPrice.chainId !== chainId) getSbtPriceData()
+    }, [chainId, provider, sbtPrice])
 
     useEffect(()=>{
         const performSBTCheck = async() => {
@@ -427,7 +442,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             if (accounts && chainId && provider){
                 const existSBT = await checkSbtExists(accounts[0], chainId, provider)
                 if (existSBT) {
-                    console.log(`SBT exists locally: ${existSBT}`)
                     return(chainId)
                 }
                 else {
@@ -449,56 +463,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     
    
 
-    const displaySBT = useCallback(async (account: string, chainId: number, provider: Web3Provider) => {
-        if (((sbtPolygonExists && chainId === 137) || ( sbtBnbExists && chainId === 56)) && accounts && provider ){
-            console.log('getting SBT details')
-            let thisEpoch
-            let vePower
-            let vePoint
-            let POC
-            const sbtId = await getSBTTokenId(account, chainId, provider)
-            console.log(`sbtId = ${sbtId}`)
-            POC = await getPOC(sbtId, chainId, provider)
-            //console.log(`POC = ${POC}`)
-            if (chainId === 137) {
-                thisEpoch = await getCurrentEpoch(chainId, provider)
-                setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
-                setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
-                //console.log(`Current Epoch = ${thisEpoch}`)
-                vePower = await getVePower(sbtId, chainId, provider)
-                //console.log(`vePower = ${vePower}`)
-                vePoint = await getVePoint(sbtId, chainId, provider)
-                //console.log(`vePoint = ${vePoint}`)
-               
-            }
-            else {
-                thisEpoch = await getCurrentEpochXChain(137)
-                setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
-                setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
-                vePower = 0
-                vePoint = 0
-            }
-            const eventPoint = await getEventPoint(sbtId, chainId, provider)
-            //console.log(`EventPoint = ${eventPoint}`)
-            const totalPoint = await getTotalPoint(sbtId, chainId, provider)
-            //console.log(`TotalPoint = ${totalPoint}`)
-            const level = await getLevel(sbtId, chainId, provider)
-            //console.log(`Level = ${level}`)
-            const rewards = await findRewards(sbtId, chainId, provider)
-            setClaimsOutstanding(rewards)
     
-            setSbtInfo({
-                sbtId: Number(sbtId),
-                currentEpoch: thisEpoch,
-                level: Number(level),
-                totalPoint: Number(totalPoint),
-                vePower: Number(vePower),
-                vePoint: Number(vePoint),
-                POC: Number(POC),
-                eventPoint: Number(eventPoint),
-            })
-        }
-    },[accounts, sbtPolygonExists, sbtBnbExists])
 
 
     const handleRemoveSBTClick = () => {
@@ -551,19 +516,73 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
 
     useEffect(()=>{
+
+        const displaySBT = async (account: string, chainId: number, provider: Web3Provider) => {
+            if (((sbtPolygonExists && chainId === 137) || ( sbtBnbExists && chainId === 56)) && accounts && provider ){
+                console.log('getting SBT details')
+                let thisEpoch
+                let vePower
+                let vePoint
+                let POC
+                const sbtId = await getSBTTokenId(account, chainId, provider)
+                console.log(`sbtId = ${sbtId}`)
+                POC = await getPOC(sbtId, chainId, provider)
+                //console.log(`POC = ${POC}`)
+                if (chainId === 137) {
+                    thisEpoch = await getCurrentEpoch(chainId, provider)
+                    setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
+                    setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
+                    //console.log(`Current Epoch = ${thisEpoch}`)
+                    vePower = await getVePower(sbtId, chainId, provider)
+                    //console.log(`vePower = ${vePower}`)
+                    vePoint = await getVePoint(sbtId, chainId, provider)
+                    //console.log(`vePoint = ${vePoint}`)
+                   
+                }
+                else {
+                    thisEpoch = await getCurrentEpochXChain(137)
+                    setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
+                    setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
+                    vePower = 0
+                    vePoint = 0
+                }
+                const eventPoint = await getEventPoint(sbtId, chainId, provider)
+                //console.log(`EventPoint = ${eventPoint}`)
+                const totalPoint = await getTotalPoint(sbtId, chainId, provider)
+                //console.log(`TotalPoint = ${totalPoint}`)
+                const level = await getLevel(sbtId, chainId, provider)
+                //console.log(`Level = ${level}`)
+                const rewards = await findRewards(sbtId, chainId, provider)
+                setClaimsOutstanding(rewards)
+        
+                setSbtInfo({
+                    sbtId: Number(sbtId),
+                    currentEpoch: thisEpoch,
+                    level: Number(level),
+                    totalPoint: Number(totalPoint),
+                    vePower: Number(vePower),
+                    vePoint: Number(vePoint),
+                    POC: Number(POC),
+                    eventPoint: Number(eventPoint),
+                })
+            }
+        }
+
+
         if (isActive && provider !== undefined && chainId && accounts){
             if (sbtPolygonExists || sbtBnbExists){
                 displaySBT(accounts[0], chainId, provider)
             }
         }
-    },[displaySBT, isActive, provider, chainId, accounts, sbtPolygonExists, sbtBnbExists])
+    },[isActive, provider, chainId, accounts, sbtPolygonExists, sbtBnbExists])
 
 
     useEffect(() => {
         const sbtAllowance = async () => {
             if (((chainId === 137 && !sbtPolygonExists) || (chainId === 56 && !sbtBnbExists)) && accounts && provider) {
                 await updateBaseBal(accounts, provider)
-                if (sbtPrice) {
+                //console.log(sbtPrice)
+                if (sbtPrice && sbtPrice.chainId === chainId) {
                     const didAdaptorAddr = await getDidAdaptorAddr(babtExists, chainId, provider)
                     const enough = await checkApproveSbtPayment(sbtPrice, didAdaptorAddr, accounts[0], chainId, provider)
                     if(enough) {
@@ -581,18 +600,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (!babtToken) sbtAllowance()
     },[sbtPrice, accounts, babtToken, chainId, provider, sbtPolygonExists, sbtBnbExists, babtExists])
 
-    useEffect(() => {
-        const getSbtPriceData = async () => {
-            if (chainId && provider) {
-                const price = await getPremiumPrice(chainId, provider)
-                setSbtPrice(price)
-                if (sbtPrice)
-                    console.log(`price = ${sbtPrice.price}, paymentTokenAddr = ${sbtPrice.paymentTokenAddr}`)
-            }
-        }
-
-        if (!sbtPrice) getSbtPriceData()
-    }, [chainId, provider, sbtPrice])
+    
 
 
     const updateBaseBal = async (accounts: string[], provider: Web3Provider) => {

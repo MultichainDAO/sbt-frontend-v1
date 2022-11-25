@@ -131,7 +131,6 @@ const DIDs: React.FC = () => {
                     if (babt) {
                         babtTokenId = await babtIdXChain(accounts[0])
                     }
-                    console.log(`BABT exists = ${babt}`)
                 }
                 if (babtTokenId) {
                         newDid.id = babtTokenId

@@ -17,7 +17,8 @@ interface buySbt {
     price: number,
     paymentTokenAddr: string,
     symbol: string,
-    decimals: number
+    decimals: number,
+    chainId: number
 }
 
 const babt:Babt = {
@@ -113,7 +114,7 @@ const getPremiumPrice = async (chainId: number, provider: Web3Provider): Promise
                 const price = await premiumAdaptor.price()
                 const paymentTokenAddr = await premiumAdaptor.money()
                 const paymentTokenDetails = await getPaymentTokenDetails(paymentTokenAddr, chainId, provider)
-                return({price: Number(price), paymentTokenAddr: paymentTokenAddr, symbol: paymentTokenDetails.symbol, decimals: paymentTokenDetails.decimals})
+                return({price: Number(price), paymentTokenAddr: paymentTokenAddr, symbol: paymentTokenDetails.symbol, decimals: paymentTokenDetails.decimals, chainId: chainId})
             }
             else return(null)
         }
