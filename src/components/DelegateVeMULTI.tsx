@@ -281,7 +281,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 ?
                 <div>
                     <SubTitle theme = {Theme}>
-                    Choose a Network to Scan your veMULTI. None on {netw}
+                    No veMULTI on {netw}
                     </SubTitle> 
                      <RowSpacer size={ "5px" }/>
                 </div>
