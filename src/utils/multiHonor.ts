@@ -26,8 +26,8 @@ const getSbt = (chainId: number, provider: Web3Provider) : Contract => {
     return new Contract(sbtAddr, sbtContract.abi, provider)
 }
 
-const checkSbtExists = async (account: string, chainId: number, provider: Web3Provider) => {
-    if (chainId && provider) {
+const checkSbtExists = async (account: string, chainId: number, sbtNetwork: [number, number], provider: Web3Provider) => {
+    if (chainId && sbtNetwork.includes(chainId) && provider) {
         const sbt = getSbt(chainId, provider)
         const bal = await sbt.balanceOf(account)
         if (bal > 0) return(true)
@@ -212,9 +212,7 @@ const sbtExistXChain = async (account: string, chainId: number, sbtNetwork: [num
     for (var ii=0; ii<sbtNetwork.length; ii++) {
         thisChainId = sbtNetwork[ii]
         if (chainId !== thisChainId) {
-            //console.log(`Checking ${thisChainId}`)
             exist = await sbtExistXChainTarget(account, thisChainId)
-            console.log(`thisChainId = ${thisChainId} exist = ${exist}`)
             if (exist) return(thisChainId)
         }
     }

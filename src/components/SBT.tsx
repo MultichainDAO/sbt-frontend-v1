@@ -387,8 +387,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             if (chainId && provider) {
                 const price = await getPremiumPrice(chainId, provider)
                 setSbtPrice(price)
-                if (sbtPrice)
-                    console.log(`price = ${sbtPrice.price}, paymentTokenAddr = ${sbtPrice.paymentTokenAddr}`)
             }
         }
 
@@ -401,8 +399,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 const sbtChain = await checkSBT()
                 if (sbtChain === chainId) {
                     const sbtTokenId = await getSBTTokenId(accounts[0], chainId, provider)
-                    const isSbtOwned = await checkSbtOwned(accounts[0], sbtTokenId, sbtChain, provider)
-                    console.log(`sbtExists = ${true} isSbtOwned = ${isSbtOwned}`)
+                    const isSbtOwned = await checkSbtOwned(accounts[0], sbtTokenId, chainId, provider)
+                    //console.log(`sbtExists = ${true} isSbtOwned = ${isSbtOwned}`)
 
                     if (isSbtOwned) {
                         if (sbtChain === 137)
@@ -413,7 +411,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 }
                 else if (sbtChain) {
                     const net = getNetwork(sbtChain)
-                    console.log(`SBT exists remotely on ${sbtChain}`)
+                    //console.log(`SBT exists remotely on ${sbtChain}`)
                     if (sbtChain === 137)
                             setSbtPolygonExists(true)
                     else if (sbtChain === 56)
@@ -427,12 +425,12 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         setBabtExists(true)
                     }
                     else setBabtExists(false)
-                    console.log(`babtTokenId = ${babtTokenId}`)
+                    //console.log(`babtTokenId = ${babtTokenId}`)
                 }
                 else {
                     const babt = await babtExistXChain(accounts[0])
                     if (babt) setBabtExists(true)
-                    console.log(`BABT exists = ${babt}`)
+                    //console.log(`BABT exists = ${babt}`)
                 }
             }
         }
@@ -440,14 +438,13 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         const checkSBT = async () => {
 
             if (accounts && chainId && provider){
-                const existSBT = await checkSbtExists(accounts[0], chainId, provider)
+                const existSBT = await checkSbtExists(accounts[0], chainId, sbtNetwork, provider)
                 if (existSBT) {
                     return(chainId)
                 }
                 else {
                     const existSBTXChain = await sbtExistXChain(accounts[0], chainId, sbtNetwork)
                     if (existSBTXChain) {
-                        console.log(`SBT exists remotely on chain ${existSBTXChain}`)
                         return(existSBTXChain)
                     }
                 }
@@ -457,7 +454,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             else return(undefined)
         }
 
-        if (!sbtPolygonExists && !sbtBnbExists) performSBTCheck()
+        performSBTCheck()
     },[provider, chainId, accounts, isActive, sbtPolygonExists, sbtBnbExists, sbtNetwork])
 
     
@@ -581,7 +578,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         const sbtAllowance = async () => {
             if (((chainId === 137 && !sbtPolygonExists) || (chainId === 56 && !sbtBnbExists)) && accounts && provider) {
                 await updateBaseBal(accounts, provider)
-                //console.log(sbtPrice)
                 if (sbtPrice && sbtPrice.chainId === chainId) {
                     const didAdaptorAddr = await getDidAdaptorAddr(babtExists, chainId, provider)
                     const enough = await checkApproveSbtPayment(sbtPrice, didAdaptorAddr, accounts[0], chainId, provider)
@@ -631,7 +627,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     }
 
     const newSBT = () => {
-        //console.log('New SBT')
         return(
             <>
             <MainPanel theme={Theme}>
@@ -979,7 +974,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         </TitleRow>
         <RowSpacer size={ "10px" }/>
         <InfoPage theme={ Theme }>
-            {chainId === 137
+            {chainId === 137 || chainId !== 56
             ? renderPolygonSBT()
             : renderBnbSBT()
             }
