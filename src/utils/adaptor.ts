@@ -136,13 +136,18 @@ const getBabt = (chainId: number, provider: Web3Provider): Contract|null => {
 const userBabtTokenId = async (account: string, chainId: number, provider: Web3Provider) => {
     if (chainId === 56) {
         const babtContract = getBabt(chainId, provider)
+        
         if (babtContract){
-            try {
-                const babtTokenId = await babtContract.tokenIdOf(account)
-                return(Number(babtTokenId))
-            } catch (error:any) {
-                console.log(error.errorArgs)
-                return(null)
+            const bal = await babtContract.balanceOf(account)
+            if (Number(bal) === 0) return(null)
+            else {
+                try {
+                    const babtTokenId = await babtContract.tokenIdOf(account)
+                    return(Number(babtTokenId))
+                } catch (error:any) {
+                    console.log(error.errorArgs)
+                    return(null)
+                }
             }
         }
         else return(null)
@@ -190,6 +195,8 @@ const babtExistXChain = async (account: string) => {
 }
 
 const babtIdXChain = async (account: string) => {
+
+    if (!(await babtExistXChain(account))) return(null)
 
     const network = getNetwork(56)
 

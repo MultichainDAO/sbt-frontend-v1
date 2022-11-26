@@ -35,7 +35,7 @@ const networks: Network[] = [
     nativeCurrency: {
       name: "Ethereum",
       symbol: "ETH",
-      gasToLeave: 0.0000001,
+      gasToLeave: 0.01,
     },
     contracts: {
       veOracleSender : "0x5c1F69eC530d69b5271678ACcAF8490F0dE725d3",

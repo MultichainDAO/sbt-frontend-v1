@@ -171,7 +171,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
         const getVeMultiParams = async () => { 
             const net = getNetwork(chainId)
             setNetw(net.name)
-            //console.log(`DELEGATE network = ${net.name}`)
+            console.log(`DELEGATE network = ${net.name}`)
             let VeMultiObj: VeMultiDef[] = []
             let veMultiId: number
             let veMultiLocked: number

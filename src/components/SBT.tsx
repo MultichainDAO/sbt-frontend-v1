@@ -374,24 +374,14 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 await updateBaseBal(accounts, provider)
                 const network = getNetwork(chainId)
                 setMinBal(network.nativeCurrency.gasToLeave)
-                
+                const price = await getPremiumPrice(chainId, provider)
+                setSbtPrice(price)
             }
         }
         
         updateNet()
     }
     ,[accounts, chainId, provider])
-
-    useEffect(() => {
-        const getSbtPriceData = async () => {
-            if (chainId && provider) {
-                const price = await getPremiumPrice(chainId, provider)
-                setSbtPrice(price)
-            }
-        }
-
-        if (!sbtPrice || sbtPrice.chainId !== chainId) getSbtPriceData()
-    }, [chainId, provider, sbtPrice])
 
     useEffect(()=>{
         const performSBTCheck = async() => {
@@ -582,11 +572,9 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     const didAdaptorAddr = await getDidAdaptorAddr(babtExists, chainId, provider)
                     const enough = await checkApproveSbtPayment(sbtPrice, didAdaptorAddr, accounts[0], chainId, provider)
                     if(enough) {
-                        console.log('enough allowance')
                         setApproveSBT(false)
                         setSbtBuyReady(true)
                     } else {
-                        console.log('Not enough allowance')
                         setApproveSBT(true)
                         setSbtBuyReady(false)
                     }

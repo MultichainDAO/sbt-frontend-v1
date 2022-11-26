@@ -33,7 +33,6 @@ const checkApproveSbtPayment = async(sbtPrice: buySbt, didAdaptorAddr: string, a
     const PaymentToken = new Contract(sbtPrice.paymentTokenAddr, ERC20, provider)
 
     const allowance = await PaymentToken.allowance(account, didAdaptorAddr)
-    console.log(`Allowance = ${allowance}`)
 
     if(allowance >= val) return(true)
     else return(false)
