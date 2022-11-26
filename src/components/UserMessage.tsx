@@ -133,7 +133,7 @@ const UserMessage:React.FC<MessageBoxProps> =  ({onClose, selectedMessage}) => {
                 {message.title}
               </Title>
               <RowSpacer size = {"10px"}/>
-              <NormalText theme = {Theme}>
+              <NormalText width = {"800px"} theme = {Theme}>
                 {message.message}
               </NormalText>
               <RowSpacer size = {"10px"}/>
