@@ -163,7 +163,7 @@ const BigText = styled.div`
 
 
 const NormalText = styled.div<ValueBoxProps>`
-    text-align: ${props => props.align? props.align : "center"};
+    text-align: ${props => props.align? props.align : "left"};
     width: ${props => props.width? props.width : "50px"};
     height: ${props => props.height? props.height : "18px"};
 
@@ -176,6 +176,7 @@ const NormalText = styled.div<ValueBoxProps>`
     font-size: 0.9rem;
     font-weight: bold;
     overflow-wrap: break-word;
+    
 
     color: ${props => props.theme.colors.text};
 

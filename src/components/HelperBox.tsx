@@ -190,10 +190,10 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
                 {helper.title}
               </Title>
               <RowSpacer size = {"10px"}/>
-              <NormalText theme = {Theme}>
+              <NormalText width = {"800px"} theme = {Theme}>
                 {helper.message}
               </NormalText>
-              <RowSpacer size = {"10px"}/>
+              <RowSpacer size = {"50px"}/>
               {
                 helper.link.length > 0
                 ? helperLinkDisplay()
