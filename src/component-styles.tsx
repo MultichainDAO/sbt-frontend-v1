@@ -141,7 +141,7 @@ const BigText = styled.div`
 
 
 
-const NormalText = styled.text<ValueBoxProps>`
+const NormalText = styled.div<ValueBoxProps>`
     text-align: ${props => props.align? props.align : "center"};
     width: ${props => props.width? props.width : "50px"};
     height: ${props => props.height? props.height : "18px"};

@@ -197,7 +197,7 @@ const ClaimRow = styled.div `
 `
 
 
-const ValueBox = styled.text<ValueBoxProps>`
+const ValueBox = styled.div<ValueBoxProps>`
     text-align: right;
     width: ${props => props.width? props.width : "50px"};
     height: ${props => props.height? props.height : "18px"};

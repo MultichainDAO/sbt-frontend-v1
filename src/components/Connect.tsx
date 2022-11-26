@@ -129,11 +129,12 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
   const connect = useCallback(async (): Promise<void> => {
 
-    //console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
+    // console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
     if(!walletSelected ) return
 
     if(walletType === WalletListOptions.WalletConnect) {
       try {
+        console.log(walletConnect)
         await walletConnect.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
@@ -143,6 +144,7 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     } else if(walletType === WalletListOptions.MetaMask) {
       try {
+        console.log(metaMask)
         await metaMask.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
@@ -150,7 +152,7 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         console.log(`Connection Failed. ${ tsToTime() }`)
       }
 
-    } else {console.log("C")}
+    }
     setNewNetwork(false)
   }, [walletSelected, walletType, newNetworkChain])
 

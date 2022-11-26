@@ -207,9 +207,9 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
     const veMultiList = () => {
         return(
-            myVeMulti.map(thisVeMulti => {
+            myVeMulti.map((thisVeMulti, i) => {
                 return (
-                    veMultiDetails(thisVeMulti)
+                    veMultiDetails(thisVeMulti, i)
                 )
             })
         )
@@ -237,38 +237,37 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
     }
 
-    const veMultiDetails = (thisVeMulti: VeMultiDef) => {
+    const veMultiDetails = (thisVeMulti: VeMultiDef, i: number) => {
         return (
-            <>
-            <VeMULTI theme = {Theme}>
-                <TextVeMulti >
-                <b>veMULTI ID: </b>{thisVeMulti.iD} 
-                <b>     On </b> {thisVeMulti.network} <br/>
-                <b>     MULTI Locked: </b> {significantDigits(String(thisVeMulti.veMultiLocked), 10)}
-                <b>     Locked Until: </b> {thisVeMulti.lockedTimeEndString}
-                </TextVeMulti>
+            <div key={i}>
+                <VeMULTI theme = {Theme}>
+                    <TextVeMulti >
+                    <b>veMULTI ID: </b>{thisVeMulti.iD} 
+                    <b>     On </b> {thisVeMulti.network} <br/>
+                    <b>     MULTI Locked: </b> {significantDigits(String(thisVeMulti.veMultiLocked), 10)}
+                    <b>     Locked Until: </b> {thisVeMulti.lockedTimeEndString}
+                    </TextVeMulti>
+                    {
+                        thisVeMulti.delegated
+                        ? <DetachButton isActive={false} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
+                        {!loading
+                            ? "Attached"
+                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                        }
+                        </DetachButton>
+                        : <AttachButton isActive={true} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
+                        {!loading
+                            ? "Attach"
+                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                        }
+                        </AttachButton>
+                    }
+                </VeMULTI>
                 {
-                    thisVeMulti.delegated
-                    ? <DetachButton isActive={false} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
-                    {!loading
-                        ? "Attached"
-                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                    }
-                    </DetachButton>
-                    : <AttachButton isActive={true} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
-                    {!loading
-                        ? "Attach"
-                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                    }
-                    </AttachButton>
+                    displayUserMessage?<UserMessage selectedMessage = {message} onClose = {() => setDisplayUserMessage(false)}/>
+                    : null
                 }
-                
-            </VeMULTI>
-            {
-                displayUserMessage?<UserMessage selectedMessage = {message} onClose = {() => setDisplayUserMessage(false)}/>
-                : null
-            }
-            </>
+            </div>
         )
     }
 

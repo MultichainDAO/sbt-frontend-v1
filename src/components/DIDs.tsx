@@ -16,6 +16,10 @@ import babtLogo from "../images/BABT.png"
 import babtLogoGrey from "../images/BABTGrey.png"
 
 
+interface TextDidProps {
+    width: string;
+}
+
 
 const InfoPage = styled.div`
   display: flex;
@@ -79,7 +83,7 @@ const Did = styled.div`
     margin: 0 1%;
   }
   `
-  const TextDid = styled.text`
+  const TextDid = styled.div<TextDidProps>`
   width: ${props => props.width? props.width : "50px"};
   margin: 0 2%;
   font-family: "Source Code Pro", monospace;
@@ -161,18 +165,17 @@ const DIDs: React.FC = () => {
 
     const didList = () => {
         return (
-            myDids.map(thisDid => {
+            myDids.map((thisDid, i) => {
                 return(
-                   didDetails(thisDid)
+                   didDetails(thisDid, i)
                 )
             })
         )
     }
 
-    const didDetails = (thisDid: DidDef) => {
+    const didDetails = (thisDid: DidDef, i: number) => {
         return(
-            <>
-            <Did theme = {Theme}>
+            <Did key={i} theme = {Theme}>
                 <DidRow>
                     <DidImage src = {thisDid.logo} alt = ""/>
                     <b>{thisDid.name}</b>
@@ -184,7 +187,6 @@ const DIDs: React.FC = () => {
                     }
                 </DidRow>
             </Did>
-            </>
         )
     }
 
