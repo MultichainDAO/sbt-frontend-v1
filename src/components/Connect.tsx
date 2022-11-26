@@ -134,7 +134,6 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     if(walletType === WalletListOptions.WalletConnect) {
       try {
-        console.log(walletConnect)
         await walletConnect.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
@@ -144,7 +143,6 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     } else if(walletType === WalletListOptions.MetaMask) {
       try {
-        console.log(metaMask)
         await metaMask.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
