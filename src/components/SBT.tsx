@@ -223,6 +223,11 @@ const MedalImage = styled.img`
     height: 10vh;
     margin: 5px;
     min-width: 50px;
+
+    @media (max-width: 700px) {
+        height: 7vh;
+        width: 7vh;
+    }
 `
 
 const DiscordButton = styled.button<ActiveElement>`
@@ -693,6 +698,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <SbtInfoRow theme = {Theme}>
                         {totalPoints()}
                     </SbtInfoRow>
+                    <RowSpacer size = {"10px"}/>
                     {/*<RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>*/}
            
                 </SbtLeftPanel>
@@ -784,7 +790,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         return (
             <>
             <NormalText align = {"left"} left = {"10px"} width = {"150px"} top = {"30px"} theme = {Theme}>
-            Your Rewards are
+            Your Rewards:
             </NormalText>
             <ValueBox top = {"30px"} left = {"10px"} right = {"10px"} width = {"80px"} theme = {Theme}>{claimsOutstanding}</ValueBox>
             <ClaimButton isActive = {claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >

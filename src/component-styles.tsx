@@ -89,6 +89,11 @@ const Title = styled.div`
   color: ${props => props.theme.colors.text};
 
   cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 1rem;
+    letter-spacing: 0.3rem;
+  }
 `
 
 const SubTitle = styled.div`
@@ -105,6 +110,12 @@ const SubTitle = styled.div`
   color: ${props => props.theme.colors.text};
 
   cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 0.8rem;
+    font-weight: normal;
+    letter-spacing: 0.04rem;
+  }
 `
 
 const SmallText = styled.div`
@@ -121,6 +132,11 @@ const SmallText = styled.div`
   color: ${props => props.theme.colors.text};
 
   cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 0.7rem;
+    letter-spacing: 0.04rem;
+  }
 `
 
 const BigText = styled.div`
@@ -137,6 +153,11 @@ const BigText = styled.div`
   color: ${props => props.theme.colors.text};
 
   cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 1rem;
+    letter-spacing: 0.04rem;
+  }
 `
 
 
@@ -157,6 +178,11 @@ const NormalText = styled.div<ValueBoxProps>`
     overflow-wrap: break-word;
 
     color: ${props => props.theme.colors.text};
+
+    @media (max-width: 700px) {
+      font-size: 0.8rem;
+      letter-spacing: 0.04rem;
+    }
 
 `
 
