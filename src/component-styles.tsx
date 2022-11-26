@@ -183,6 +183,8 @@ const NormalText = styled.div<ValueBoxProps>`
     @media (max-width: 700px) {
       font-size: 0.8rem;
       letter-spacing: 0.04rem;
+      word-wrap: break-word;
+      height: 80px;
     }
 
 `

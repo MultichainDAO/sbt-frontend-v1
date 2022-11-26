@@ -25,6 +25,9 @@ const GlobalStyle = createGlobalStyle`
 
     @media (max-width: 800px) {
       overflow-y: scroll;
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 

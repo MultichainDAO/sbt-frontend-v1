@@ -14,6 +14,12 @@ const PopUp = styled.div`
   border-radius: 0.5rem;
   background-color: ${props => props.theme.colors.secondary};
   z-index: 1000;
+
+  @media (max-width: 700px) {
+    width: 90%;
+    margin: 35vh 5%;
+    padding: 0;
+  }
 `
 
 const Overlay = styled.div`
@@ -58,6 +64,11 @@ const Ok = styled.div`
     opacity: 1;
   }
   
+  @media (max-width: 700px) {
+    width: 98%;
+    margin: 2px 1%;
+    padding: 0;
+  }
 `
 
 
@@ -190,7 +201,7 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
                 {helper.title}
               </Title>
               <RowSpacer size = {"10px"}/>
-              <NormalText width = {"800px"} theme = {Theme}>
+              <NormalText width = {"90%"} left = {"2%"} right = {"2%"}   theme = {Theme}>
                 {helper.message}
               </NormalText>
               <RowSpacer size = {"50px"}/>

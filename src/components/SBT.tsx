@@ -56,6 +56,10 @@ const InfoPage = styled.div`
 
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
+  @media (max-width: 700px) {
+   flex-direction: column;
+    height: 600px;
+  }
 `
 
 const VeMultiPage = styled.div`
@@ -104,6 +108,14 @@ const SbtLeftPanel = styled.div `
 
     outline: 1px solid ${ props => props.theme.colors.tertiary };
     border-radius: 1.25rem;
+
+    @media (max-width: 700px) {
+        justify-content: flex-start;
+        width: 98%;
+        height: 250px;
+        margin: 0 1%;
+    }
+   
 `
 
 const SbtRightPanel = styled.div `
@@ -124,6 +136,12 @@ const SbtRightPanel = styled.div `
   
     font-family: "Source Code Pro", monospace;
     font-size: 0.9rem;
+
+    @media (max-width: 700px) {
+        width: 98%;
+        height: 250px;
+        margin: 0 1%;
+    }
 `
 
 const SbtInfoRow = styled.div `
@@ -138,6 +156,12 @@ const SbtInfoRow = styled.div `
 
     font-family: "Source Code Pro", monospace;
     font-size: 0.9rem;
+
+    @media (max-width: 700px) {
+        width: 98%;
+        height: 100px;
+        margin: 0 1%;
+    }
 `
 
 const SbtBuyRow = styled.div `
@@ -681,7 +705,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (sbtPolygonExists) {
             return(
                 <>
-                <ColumnSpacer size = {"5px"}/>
+                {/* <ColumnSpacer size = {"5px"}/> */}
                 <SbtLeftPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {vePower()}
@@ -702,7 +726,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     {/*<RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>*/}
            
                 </SbtLeftPanel>
-                <ColumnSpacer size = {"10px"}/>
+                {/* <ColumnSpacer size = {"10px"}/> */}
                 <SbtRightPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {attainmentLevel()}
@@ -714,7 +738,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         {claimRewards()}
                     </ClaimRow>
                 </SbtRightPanel>
-                <ColumnSpacer size = {"5px"}/>
+                {/* <ColumnSpacer size = {"5px"}/> */}
                 </>
 
             )
@@ -740,7 +764,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (sbtBnbExists) {
             return(
                 <>
-                <ColumnSpacer size = {"5px"}/>
+                {/* <ColumnSpacer size = {"5px"}/> */}
                 <SbtLeftPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {POC()}
@@ -752,7 +776,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         {totalPoints()}
                     </SbtInfoRow>
                 </SbtLeftPanel>
-                <ColumnSpacer size = {"10px"}/>
+                {/* <ColumnSpacer size = {"10px"}/> */}
                 <SbtRightPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {attainmentLevel()}
@@ -764,7 +788,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         {claimRewards()}
                     </ClaimRow>
                 </SbtRightPanel>
-                <ColumnSpacer size = {"5px"}/>
+                {/* <ColumnSpacer size = {"5px"}/> */}
                 </>
 
             )
