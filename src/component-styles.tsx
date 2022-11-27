@@ -210,16 +210,6 @@ const NormalText = styled.div<ValueBoxProps>`
 
 `
 
-const RowSpacer = styled.div<SizeProps>`
-  width: 100%;
-  height: ${props => props.size};
-`
-
-const ColumnSpacer = styled.div<SizeProps>`
-  height: 100%;
-  width: ${props => props.size};
-`
-
 
 const HeadingText = styled.div`
 
@@ -346,6 +336,12 @@ const ApproveSBTButton = styled.button<ActiveElement>`
   &:hover {
     opacity: 1;
   }
+
+  @media (max-width: 700px) {
+    width: 40%;
+    height: 60px;
+    margin: 0 1%;
+  }
 `
 
 const NewSBTButton = styled.button<ActiveElement>`
@@ -376,6 +372,12 @@ const NewSBTButton = styled.button<ActiveElement>`
 
   &:hover {
     opacity: 1;
+  }
+
+  @media (max-width: 700px) {
+    width: 40%;
+    height: 60px;
+    margin: 0 1%;
   }
 `
 

@@ -298,9 +298,9 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 {myVeMulti.length === 0
                 ?
                 <div>
-                    <SubTitle theme = {Theme}>
+                    <NormalText theme = {Theme}>
                     No veMULTI on {netw}
-                    </SubTitle> 
+                    </NormalText> 
                      {/* <RowSpacer size={ "5px" }/> */}
                 </div>
                 :
