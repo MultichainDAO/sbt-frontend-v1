@@ -9,7 +9,7 @@ import styled, { DefaultTheme, keyframes } from "styled-components"
 import { IconContext } from "react-icons"
 import {IoIosInformationCircle as Info} from "react-icons/io"
 
-import {getIdNFT, getCurrentEpoch, getCurrentEpochXChain, sbtExistXChain, getSBTTokenId, checkSbtExists, checkSbtOwned, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
+import {getCurrentEpoch, getCurrentEpochXChain, sbtExistXChain, getSBTTokenId, checkSbtExists, checkSbtOwned, getVePower, getVePoint, getPOC, getEventPoint, getTotalPoint, getLevel, removeSBT, findRewards, getRewards} from "../utils/multiHonor"
 import {getDidAdaptorAddr, userBabtTokenId, sbtBabtClaim, sbtClaim, babtExistXChain, getPremiumPrice} from "../utils/adaptor"
 import { Web3Provider } from "@ethersproject/providers"
 import DelegateVeMULTI from "./DelegateVeMULTI"
@@ -17,7 +17,7 @@ import HelperBox from "./HelperBox"
 import UserMessage from "./UserMessage"
 import DiscordRole from "./DiscordRole"
 
-import {SmallText, BigText, NormalText, Title, VeMultiTitle, TitleRow, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, VeMultiTitle, TitleRow, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
 import {checkApproveSbtPayment, approveSbtPayment} from "../utils/sbtPaymentUtils"
 
 import bronzeMedal from "../images/bronze-medal-lores.png"

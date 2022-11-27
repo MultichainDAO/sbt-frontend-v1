@@ -21,7 +21,6 @@ const discordauthurl = {
     0:"https://discord.com/api/oauth2/authorize?client_id=1018299383286075405&redirect_uri=https%3A%2F%2Fmultidao.netlify.app%2F&response_type=token&scope=identify"
 }
 
-
 const PopUp = styled.div`
   position: fixed;
   margin: 35vh 25vw;
@@ -30,6 +29,12 @@ const PopUp = styled.div`
   border-radius: 0.5rem;
   background-color: ${props => props.theme.colors.secondary};
   z-index: 1000;
+
+  @media (max-width: 700px) {
+    width: 90%;
+    margin: 35vh 5%;
+    padding: 0;
+  }
 `
 
 const Overlay = styled.div`
@@ -74,8 +79,12 @@ const Ok = styled.div`
     opacity: 1;
   }
   
+  @media (max-width: 700px) {
+    width: 98%;
+    margin: 2px 1%;
+    padding: 0;
+  }
 `
-
 
 
 
