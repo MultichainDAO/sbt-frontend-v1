@@ -68,6 +68,7 @@ const VeMultiPage = styled.div`
   align-items: center;
 
   height: 200px;
+  width: 90%;
   margin 0 auto;
 
   border-radius: 1.25rem;

@@ -37,28 +37,37 @@ const VeMULTI = styled.div`
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
   @media (max-width: 700px) {
-    width: 90%;
+    height: 9vh;
     margin: 0 1%;
   }
-  `
+`
 
-  const VeMultiList = styled.ul`
+const VeMultiList = styled.ul`
   list-style-type: none;
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `
 
-  const TextVeMulti = styled.div`
+const TextVeMulti = styled.div`
   width: ${props => props.title ? "10%" : ""};
   margin: 0 2%;
   font-family: "Source Code Pro", monospace;
   font-size: 0.9rem;
   font-weight: ${props => props.title ? "bold" : ""};
   overflow-wrap: break-word;
+
+  @media (max-width: 700px) {
+    font-size: 0.7rem;
+  }
 `
+
 const AttachButton = styled.button<ActiveElement>`
 
   display: flex;
@@ -91,6 +100,11 @@ const AttachButton = styled.button<ActiveElement>`
 
   &:hover {
     opacity: ${props => props.isActive ? `1` : `0.9`};
+  }
+
+  @media (max-width: 700px) {
+    width: 20%;
+    font-size: 0.6rem;
   }
 `
 
@@ -126,6 +140,11 @@ const DetachButton = styled.button<ActiveElement>`
 
   &:hover {
     opacity: ${props => props.isActive ? `1` : `0.9`};
+  }
+
+  @media (max-width: 700px) {
+    width: 20%;
+    font-size: 0.6rem;
   }
 `
 
@@ -288,7 +307,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 <>
                     
                 <VeMultiContainer>
-                    <SubTitle theme={Theme}>Your veMULTI </SubTitle>
+                    <NormalText left = {"20px"} theme={Theme}>Your veMULTI </NormalText>
                     {/* <RowSpacer size={ "5px" }/> */}
                     <VeMultiList>
                     {veMultiList()}
