@@ -72,7 +72,7 @@ const TitleRow = styled.div`
     
     width: 100%
     height: 80px;
-    margin 10px auto;
+    margin 1px auto;
 `
 
 const Title = styled.div`

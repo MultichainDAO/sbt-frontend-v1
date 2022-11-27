@@ -974,40 +974,33 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     return(
         <>
             <TitleRow>
-                {/* <ColumnSpacer size = {"40%"}/> */}
                 <Title theme={ Theme }>
                     Your SBT
                     {helperClickHandler(1)} 
                 </Title>
             </TitleRow>
             <TitleRow>
-                {/* <ColumnSpacer size = {"40%"}/> */}
                 {
                     (sbtPolygonExists && chainId === 137) || (sbtBnbExists && chainId === 56)
-                    ? <SubTitle theme={Theme}>ID {sbtInfo.sbtId}</SubTitle>
+                    ? <NormalText  theme={Theme}>ID {sbtInfo.sbtId}</NormalText>
                     : null
                 }
             </TitleRow>
-            {/* <RowSpacer size={ "10px" }/> */}
             <InfoPage theme={ Theme }>
                 {chainId === 137 || chainId !== 56
                 ? renderPolygonSBT()
                 : renderBnbSBT()
                 }
             </InfoPage>
-            {/* <RowSpacer size={ "2px" }/> */}
             {sbtPolygonExists
             ?
                 <>
                 <TitleRow>
-                    {/* <ColumnSpacer size = {"20%"}/> */}
                     <VeMultiTitle theme={ Theme }>Select a chain to scan veMULTI {helperClickHandler(9)}</VeMultiTitle>
                 </TitleRow>
-                {/* <RowSpacer size={ "5px" }/> */}
                 </>
             :null
             }
-            {/* <RowSpacer size={ "2px" }/> */}
             {
             sbtPolygonExists && chainId !== 137
             ?
@@ -1015,7 +1008,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 <VeMultiPage theme = {Theme}>
                     <DelegateVeMULTI sbtExists = {sbtPolygonExists} sbtId = {sbtInfo.sbtId} sbtChainId = {137}/>
                 </VeMultiPage>
-                {/* <RowSpacer size={ "10px" }/> */}
                 </>
             : null
             }
