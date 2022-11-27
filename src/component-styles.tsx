@@ -72,7 +72,7 @@ const TitleRow = styled.div`
     
     width: 100%
     height: 80px;
-    margin 0 auto;
+    margin 10px auto;
 `
 
 const Title = styled.div`
@@ -339,8 +339,8 @@ const ApproveSBTButton = styled.button<ActiveElement>`
 
   @media (max-width: 700px) {
     width: 40%;
-    height: 60px;
-    margin: 0 1%;
+    height: 50px;
+    margin: 10px 1%;
   }
 `
 
@@ -376,8 +376,8 @@ const NewSBTButton = styled.button<ActiveElement>`
 
   @media (max-width: 700px) {
     width: 40%;
-    height: 60px;
-    margin: 0 1%;
+    height: 50px;
+    margin: 10px 1%;
   }
 `
 

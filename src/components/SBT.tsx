@@ -168,6 +168,7 @@ const SbtBuyRow = styled.div `
 
     width: 100%;
     height: 100%;
+    margin 10px auto;
 
     font-family: "Source Code Pro", monospace;
     font-size: 0.9rem;
