@@ -24,9 +24,9 @@ const ConnectContainer = styled.div`
   height: 100%;
 
   @media (max-width: 700px) {
-    width: 98%;
+    width: 96%;
     height: 50%;
-    margin: 0 1%;
+    margin: 0 2%;
   }
 `
 
@@ -39,6 +39,7 @@ const ConnectedPage = styled.div`
   width: 100%;
   height: 60%;
 
+
   border-radius: 10px;
 
   box-shadow: 0 0 20px 0 ${ props => props.theme.colors.highlightFaint };
@@ -50,7 +51,7 @@ const Balance = styled.div`
   align-items: center;
 
   width: 50%;
-  min-width: 180px;
+  min-width: 175px;
   height: 100%;
 
   outline: 1.2px solid ${ props => props.theme.colors.tertiary };
@@ -70,7 +71,7 @@ const Account = styled.div`
   align-items: center;
 
   width: 50%;
-  min-width: 180px;
+  min-width: 175px;
   height: 100%;
 
   outline: 1.2px solid ${ props => props.theme.colors.tertiary };

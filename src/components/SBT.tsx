@@ -39,6 +39,37 @@ interface ValueBoxProps {
     width?: string
 }
 
+const SbtTitle = styled.div`
+
+  width: 100%;
+  height: 25px;
+
+  margin: 2px auto;
+
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 0.5rem;
+
+  color: ${props => props.theme.colors.text};
+
+  cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 1rem;
+    letter-spacing: 0.3rem;
+  }
+`
+
+const SbtIdRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100%
+    //height: 40px;
+    margin 8px auto;
+`
 
 
 const InfoPage = styled.div`
@@ -180,6 +211,8 @@ const LevelRow = styled.div `
     flex-direction: row;
     justify-content: start;
     align-items: start;
+
+    margin: 0 10px;
 
     width: 100%;
     height: 100%;
@@ -923,7 +956,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     chainId === 137
                     ?
                         <LevelRow theme = {Theme}>
-                        {/* <ColumnSpacer size = {"10px"}/> */}
                         <DiscordButton isActive = {sbtInfo.vePower>=multiCitizenThreshold?true:false} theme = {Theme} 
                             onClick = {() => {
                                 if (sbtInfo.vePower>=multiCitizenThreshold) setDisplayDiscordRole(true)
@@ -974,18 +1006,18 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     return(
         <>
             <TitleRow>
-                <Title theme={ Theme }>
+                <SbtTitle theme={ Theme }>
                     Your SBT
                     {helperClickHandler(1)} 
-                </Title>
+                </SbtTitle>
             </TitleRow>
-            <TitleRow>
+            <SbtIdRow>
                 {
                     (sbtPolygonExists && chainId === 137) || (sbtBnbExists && chainId === 56)
                     ? <NormalText  theme={Theme}>ID {sbtInfo.sbtId}</NormalText>
                     : null
                 }
-            </TitleRow>
+            </SbtIdRow>
             <InfoPage theme={ Theme }>
                 {chainId === 137 || chainId !== 56
                 ? renderPolygonSBT()

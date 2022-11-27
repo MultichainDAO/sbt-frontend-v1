@@ -205,7 +205,6 @@ const DiscordRole:React.FC<DiscordRoleProps> =  ({onClose}) => {
                 {<br></br>}
                 {discordUser?'':<a  href={discordauthurl[0]}  target="_blank" rel="noreferrer">Connect Discord</a>}
             
-            {/* <RowSpacer size = {"10px"}/> */}
               <Ok onClick={() => onClose()} theme = {Theme}>
                 OK
               </Ok>
