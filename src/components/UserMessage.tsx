@@ -4,8 +4,6 @@ import styled from 'styled-components'
 import { Theme } from "../theme"
 import {SmallText, BigText, NormalText, Title, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 
-
-
 const PopUp = styled.div`
   position: fixed;
   margin: 35vh 25vw;
@@ -14,6 +12,12 @@ const PopUp = styled.div`
   border-radius: 0.5rem;
   background-color: ${props => props.theme.colors.secondary};
   z-index: 1000;
+
+  @media (max-width: 700px) {
+    width: 90%;
+    margin: 35vh 5%;
+    padding: 0;
+  }
 `
 
 const Overlay = styled.div`
@@ -58,7 +62,14 @@ const Ok = styled.div`
     opacity: 1;
   }
   
+  @media (max-width: 700px) {
+    width: 98%;
+    margin: 14px 1%;
+    padding: 0;
+  }
 `
+
+
 
 interface MessageBoxProps {
     onClose: ()=>void,
@@ -132,17 +143,14 @@ const UserMessage:React.FC<MessageBoxProps> =  ({onClose, selectedMessage}) => {
               <Title theme = {Theme}>
                 {message.title}
               </Title>
-              {/* <RowSpacer size = {"10px"}/> */}
-              <NormalText width = {"800px"} theme = {Theme}>
+              <NormalText width = {"90%"} left = {"2%"} right = {"2%"}   theme = {Theme}>
                 {message.message}
               </NormalText>
-              {/* <RowSpacer size = {"10px"}/> */}
               {
                 message.link.length > 0
                 ? messageLinkDisplay()
                 : null
               }
-              {/* <RowSpacer size = {"10px"}/> */}
               <Ok onClick={() => onClose()} theme = {Theme}>
                 OK
               </Ok>
