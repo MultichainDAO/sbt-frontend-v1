@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from "react"
 import { useWeb3React } from "@web3-react/core"
 import styled, { DefaultTheme, keyframes } from "styled-components"
 
-import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, TitleRow, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
 import { Theme } from "../theme"
 import HelperBox from "./HelperBox"
 import { IconContext } from "react-icons"
@@ -51,13 +51,19 @@ const DidList = styled.ul`
   margin: 0;
   padding: 0;
   overflow-y: scroll;
+
+  @media (max-width: 700px) {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+  }
 `
 
-const DidRow = styled.div `
+const DidRow = styled.li`
     display: flex;
     flex: 3;
     flex-direction: row;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
 
     width: 100%;
@@ -79,11 +85,12 @@ const Did = styled.div`
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
   @media (max-width: 700px) {
-    width: 90%;
+    width: 100%;
     margin: 0 1%;
   }
-  `
-  const TextDid = styled.div<TextDidProps>`
+`
+
+const TextDid = styled.div<TextDidProps>`
   width: ${props => props.width? props.width : "50px"};
   margin: 0 2%;
   font-family: "Source Code Pro", monospace;
@@ -93,8 +100,8 @@ const Did = styled.div`
 `
 
   const DidImage = styled.img`
-    width: 9vh;
-    height: 9vh;
+    width: 70px;
+    height: 70px;
     margin: 5px;
     min-width: 50px;
 `
@@ -179,11 +186,11 @@ const DIDs: React.FC = () => {
                 <DidRow>
                     <DidImage src = {thisDid.logo} alt = ""/>
                     <b>{thisDid.name}</b>
-                    <ColumnSpacer size = {"50px"}/>
+                    {/* <ColumnSpacer size = {"50px"}/> */}
                     {
                         thisDid.id
-                        ? <TextDid width = {"400px"}> {thisDid.description} {"  "} Your ID is {thisDid.id}  </TextDid>
-                        : <TextDid width = {"400px"}> {"    "} {thisDid.description} {helperClickHandler(12)}</TextDid>
+                        ? <TextDid width = {"200px"}> {thisDid.description} {"  "} Your ID is {thisDid.id}  </TextDid>
+                        : <TextDid width = {"200px"}> {"    "} {thisDid.description} {helperClickHandler(12)}</TextDid>
                     }
                 </DidRow>
             </Did>
@@ -193,22 +200,22 @@ const DIDs: React.FC = () => {
     return(
         <div>
             <TitleRow>
-                <ColumnSpacer size = {"40%"}/>
+                {/* <ColumnSpacer size = {"40%"}/> */}
                 <Title theme={ Theme }>
                     Your Decentralized IDs
                     {helperClickHandler(11)} 
                 </Title>
             </TitleRow>
-            <RowSpacer size={ "10px" }/>
+            {/* <RowSpacer size={ "10px" }/> */}
             <InfoPage theme={ Theme }>
                 <DidContainer>
-                    <RowSpacer size={ "5px" }/>
+                    {/* <RowSpacer size={ "5px" }/> */}
                     <DidList>
                         {didList()}
                     </DidList>
                 </DidContainer>
             </InfoPage>
-        <RowSpacer size={ "2px" }/>
+        {/* <RowSpacer size={ "2px" }/> */}
             {
             displayHelperModal?<HelperBox selectedHelper = {helper} onClose = {() => setDisplayHelperModal(false)}/>
             : null

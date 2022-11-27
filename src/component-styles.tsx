@@ -78,7 +78,7 @@ const TitleRow = styled.div`
 const Title = styled.div`
 
   width: 100%;
-  height: 20px;
+  height: 50px;
 
   margin: 0 auto;
 
@@ -93,6 +93,28 @@ const Title = styled.div`
   @media (max-width: 700px) {
     font-size: 1rem;
     letter-spacing: 0.3rem;
+  }
+`
+
+const VeMultiTitle = styled.div`
+
+  width: 100%;
+  height: 30px;
+
+  margin: 0 auto;
+
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 0.5rem;
+
+  color: ${props => props.theme.colors.text};
+
+  cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 0.8rem;
+    letter-spacing: 0.3rem;
+    text-align: center;
   }
 `
 
@@ -164,8 +186,8 @@ const BigText = styled.div`
 
 const NormalText = styled.div<ValueBoxProps>`
     text-align: ${props => props.align? props.align : "left"};
-    width: ${props => props.width? props.width : "50px"};
-    height: ${props => props.height? props.height : "18px"};
+    width: ${props => props.width? props.width : "inherited"};
+    height: ${props => props.height? props.height : "inherited"};
 
     margin-top: ${ props => props.top};
     margin-right: ${ props => props.right};
@@ -184,7 +206,6 @@ const NormalText = styled.div<ValueBoxProps>`
       font-size: 0.8rem;
       letter-spacing: 0.04rem;
       word-wrap: break-word;
-      height: 80px;
     }
 
 `
@@ -247,11 +268,17 @@ const NetworkRow = styled.div<MainRowProps>`
   align-items: center;
   margin 0 50px;
 
-  width: 100%
+  width: 450px;
   height: 100%;
 
   font-family: "Source Code Pro", monospace;
   font-size: 0.9rem;
+
+  @media (max-width: 700px) {
+    width: 90%;
+    height: 100px;
+    margin: 0 auto;
+  }
 `
 
 
@@ -261,10 +288,9 @@ const NetworkButton = styled.button<ActiveElement>`
   justify-content: center;
   align-items: center;
 
-  margin: 0 5px 0 0;
-  padding: 6px 6px;
+  // padding: 6px 6px;
 
-  width: 80%;
+  width: 24%;
   height: 70%;
 
   border: none;
@@ -555,12 +581,11 @@ export {
   SubPage, 
   TitleRow,
   Title, 
+  VeMultiTitle,
   SubTitle,
   SmallText,
   BigText,
   NormalText,
-  RowSpacer,
-  ColumnSpacer,
   HeadingText,
   MainRow,
   InfoDisplayData,

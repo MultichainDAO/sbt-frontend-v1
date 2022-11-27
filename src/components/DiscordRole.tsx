@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { useWeb3React } from "@web3-react/core"
 import styled from 'styled-components'
 import { Theme } from "../theme"
-import {SmallText, BigText, NormalText, Title, RowSpacer, ColumnSpacer, MainRow, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, MainRow, SubTitle} from "../component-styles"
 
 
 interface DiscordRoleProps {
@@ -205,7 +205,7 @@ const DiscordRole:React.FC<DiscordRoleProps> =  ({onClose}) => {
                 {<br></br>}
                 {discordUser?'':<a  href={discordauthurl[0]}  target="_blank" rel="noreferrer">Connect Discord</a>}
             
-            <RowSpacer size = {"10px"}/>
+            {/* <RowSpacer size = {"10px"}/> */}
               <Ok onClick={() => onClose()} theme = {Theme}>
                 OK
               </Ok>

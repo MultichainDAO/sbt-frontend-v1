@@ -12,7 +12,7 @@ import {delegateVeMultiToSBT} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {NormalText, SubTitle, TitleRow, RowSpacer, ColumnSpacer, ApprovalLoader} from "../component-styles"
+import {NormalText, SubTitle, TitleRow, ApprovalLoader} from "../component-styles"
 import {isVeDelegatedXChain, veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
@@ -275,27 +275,27 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     if (sbtExists) {
         return(
             <>
-                <RowSpacer size={ "5px" }/>
+                {/* <RowSpacer size={ "5px" }/> */}
                 {myVeMulti.length === 0
                 ?
                 <div>
                     <SubTitle theme = {Theme}>
                     No veMULTI on {netw}
                     </SubTitle> 
-                     <RowSpacer size={ "5px" }/>
+                     {/* <RowSpacer size={ "5px" }/> */}
                 </div>
                 :
                 <>
                     
                 <VeMultiContainer>
                     <SubTitle theme={Theme}>Your veMULTI </SubTitle>
-                    <RowSpacer size={ "5px" }/>
+                    {/* <RowSpacer size={ "5px" }/> */}
                     <VeMultiList>
                     {veMultiList()}
                     </VeMultiList>
                 </VeMultiContainer>
                     
-                <RowSpacer size={ "5px" }/>
+                {/* <RowSpacer size={ "5px" }/> */}
                 </>
                 }
             </>

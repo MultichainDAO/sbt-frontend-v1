@@ -17,7 +17,7 @@ import HelperBox from "./HelperBox"
 import UserMessage from "./UserMessage"
 import DiscordRole from "./DiscordRole"
 
-import {SmallText, BigText, NormalText, Title, TitleRow, RowSpacer, ColumnSpacer, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, VeMultiTitle, TitleRow, MainRow, ApproveSBTButton, NewSBTButton, RemoveSBTButton, ApprovalLoader, SubTitle} from "../component-styles"
 import {checkApproveSbtPayment, approveSbtPayment} from "../utils/sbtPaymentUtils"
 
 import bronzeMedal from "../images/bronze-medal-lores.png"
@@ -47,18 +47,17 @@ const InfoPage = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  padding: "10px";
+  width: 100%;
 
-  height: 200px;
-  margin 0 auto;
+  margin 0;
 
   border-radius: 1.25rem;
 
-  box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
+  // box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
   @media (max-width: 700px) {
-   flex-direction: column;
-    height: 600px;
+    flex-direction: column;
+    width: 100%;
   }
 `
 
@@ -67,8 +66,6 @@ const VeMultiPage = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
-  padding: "10px";
 
   height: 200px;
   margin 0 auto;
@@ -89,7 +86,7 @@ const MainPanel = styled.div `
 
     width: 100%;
     height: 100%;
-    margin: 0 auto;
+    //margin: 0 auto;
 
 `
 
@@ -97,14 +94,15 @@ const MainPanel = styled.div `
 
 const SbtLeftPanel = styled.div `
     display: flex;
-    flex: 1;
+    // flex: 1;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: flex-start;
 
-    width: 45%;
-    height: 100%;
-    margin: 0 auto;
+    width: 405px;
+    height: 200px;
+    margin: 0 0 0 10px;
+
 
     outline: 1px solid ${ props => props.theme.colors.tertiary };
     border-radius: 1.25rem;
@@ -112,23 +110,20 @@ const SbtLeftPanel = styled.div `
     @media (max-width: 700px) {
         justify-content: flex-start;
         width: 98%;
-        height: 250px;
-        margin: 0 1%;
-    }
-   
+        margin: 5px 1%;
+    } 
 `
-
 const SbtRightPanel = styled.div `
     display: flex;
-    flex: 1;
+    // flex: 1;
     flex-direction: column;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
 
 
-    width: 45%;
-    height: 100%;
-    margin: 0 auto;
+    width: 405px;
+    height: 200px;
+    margin: 0 10px 0 0;
 
     outline: 1px solid ${ props => props.theme.colors.tertiary };
     border-radius: 1.25rem;
@@ -139,8 +134,7 @@ const SbtRightPanel = styled.div `
 
     @media (max-width: 700px) {
         width: 98%;
-        height: 250px;
-        margin: 0 1%;
+        margin: 5px 1%;
     }
 `
 
@@ -196,8 +190,8 @@ const LevelColumn = styled.div `
     display: flex;
     flex: 3;
     flex-direction: column;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
 
     width: 100%;
     height: 100%;
@@ -210,8 +204,10 @@ const ClaimRow = styled.div `
     display: flex;
     flex: 3;
     flex-direction: row;
-    justify-content: start;
-    align-items: start;
+    justify-content: center;
+    align-items: flex-start;
+
+    margin: 5px 0;
 
     width: 100%;
     height: 100%;
@@ -248,10 +244,10 @@ const MedalImage = styled.img`
     margin: 5px;
     min-width: 50px;
 
-    @media (max-width: 700px) {
-        height: 7vh;
-        width: 7vh;
-    }
+    // @media (max-width: 700px) {
+    //     height: 7vh;
+    //     width: 7vh;
+    // }
 `
 
 const DiscordButton = styled.button<ActiveElement>`
@@ -646,57 +642,57 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const newSBT = () => {
         return(
             <>
-            <MainPanel theme={Theme}>
-                <RowSpacer size={"20px"}/>
-                {
-                babtToken && chainId === 56
-                ? 
-                    <>
-                    <SbtBuyRow>
-                    <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                        {!loading
-                            ? "New SBT"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                            }
-                    </NewSBTButton>
-                    </SbtBuyRow>
-                    <SbtBuyRow>
-                        <NormalText left = {"50px"} text-align = {"left"} width = {"300px"} theme = {Theme}>
-                        BABT Owner. Claim your FREE SBT
-                        </NormalText>
-                    </SbtBuyRow>
-                    </>
-                :
-                    <>
-                    <SbtBuyRow>
-                        <ApproveSBTButton isActive = {approveSBT && !sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleApproveSBTClick()}>
+                <MainPanel theme={Theme}>
+                    {/* <RowSpacer size={"20px"}/> */}
+                    {
+                    babtToken && chainId === 56
+                    ? 
+                        <>
+                        <SbtBuyRow>
+                        <NewSBTButton isActive = {true} theme={ Theme } onClick = {() => handleNewSBTClick()}>
                             {!loading
-                            ? "Approve"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                            }
-                        </ApproveSBTButton>
-                        
-                        <NewSBTButton isActive = {sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleNewSBTClick()}>
-                        {!loading
-                            ? "New SBT"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                            }
+                                ? "New SBT"
+                                : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
                         </NewSBTButton>
-                    </SbtBuyRow>
-                    <SbtBuyRow>
-                        {sbtPrice && sbtPrice.symbol
-                        ?
-                        <NormalText text-align = {"left"} width = {"300px"} theme = {Theme}>
-                        {`Pay ${sbtPrice.price/(10**sbtPrice.decimals)} ${sbtPrice.symbol} for a new SBT`}
-                        </NormalText>
-                        :
-                        null
-                        }
-                    </SbtBuyRow>
-                    </>
+                        </SbtBuyRow>
+                        <SbtBuyRow>
+                            <NormalText left = {"50px"} text-align = {"left"} theme = {Theme}>
+                            BABT Owner. Claim your FREE SBT
+                            </NormalText>
+                        </SbtBuyRow>
+                        </>
+                    :
+                        <>
+                        <SbtBuyRow>
+                            <ApproveSBTButton isActive = {approveSBT && !sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleApproveSBTClick()}>
+                                {!loading
+                                ? "Approve"
+                                : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
+                            </ApproveSBTButton>
+                        
+                            <NewSBTButton isActive = {sbtBuyReady?true:false} theme={ Theme } onClick = {() => handleNewSBTClick()}>
+                            {!loading
+                                ? "New SBT"
+                                : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
+                            </NewSBTButton>
+                        </SbtBuyRow>
+                        <SbtBuyRow>
+                            {sbtPrice && sbtPrice.symbol
+                            ?
+                            <NormalText text-align = {"left"} theme = {Theme}>
+                            {`Pay ${sbtPrice.price/(10**sbtPrice.decimals)} ${sbtPrice.symbol} for a new SBT`}
+                            </NormalText>
+                            :
+                            null
+                            }
+                        </SbtBuyRow>
+                        </>
                     
-                }
-            </MainPanel>
+                    }
+                </MainPanel>
             </>
         )
     }
@@ -722,7 +718,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <SbtInfoRow theme = {Theme}>
                         {totalPoints()}
                     </SbtInfoRow>
-                    <RowSpacer size = {"10px"}/>
+                    {/* <RowSpacer size = {"10px"}/> */}
                     {/*<RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>*/}
            
                 </SbtLeftPanel>
@@ -750,7 +746,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 return(
                     <>
                         <MainRow isBottom={false}>
-                            <NormalText align = {"center"} left = {"0px"} width = {"350px"} top = {"30px"} theme = {Theme}>
+                            <NormalText align = {"center"} left = {"0px"} top = {"30px"} theme = {Theme}>
                             Choose BNB Chain or Polygon for your SBT
                             </NormalText>
                         </MainRow>
@@ -800,7 +796,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 return(
                     <>
                         <MainRow isBottom={false}>
-                            <NormalText align = {"center"} left = {"0px"} width = {"350px"} top = {"30px"} theme = {Theme}>
+                            <NormalText align = {"center"} left = {"0px"} top = {"30px"} theme = {Theme}>
                             Choose BNB Chain or Polygon for your SBT
                             </NormalText>
                         </MainRow>
@@ -813,7 +809,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const claimRewards = () => {
         return (
             <>
-            <NormalText align = {"left"} left = {"10px"} width = {"150px"} top = {"30px"} theme = {Theme}>
+            <NormalText align = {"left"} left = {"10px"} top = {"30px"} theme = {Theme}>
             Your Rewards:
             </NormalText>
             <ValueBox top = {"30px"} left = {"10px"} right = {"10px"} width = {"80px"} theme = {Theme}>{claimsOutstanding}</ValueBox>
@@ -925,7 +921,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     chainId === 137
                     ?
                         <LevelRow theme = {Theme}>
-                        <ColumnSpacer size = {"10px"}/>
+                        {/* <ColumnSpacer size = {"10px"}/> */}
                         <DiscordButton isActive = {sbtInfo.vePower>=multiCitizenThreshold?true:false} theme = {Theme} 
                             onClick = {() => {
                                 if (sbtInfo.vePower>=multiCitizenThreshold) setDisplayDiscordRole(true)
@@ -974,66 +970,66 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
 
     return(
-        <div>
-        <TitleRow>
-            <ColumnSpacer size = {"40%"}/>
-            <Title theme={ Theme }>
-                Your SBT
-                {helperClickHandler(1)} 
-            </Title>
-        </TitleRow>
-        <TitleRow>
-            <ColumnSpacer size = {"40%"}/>
+        <>
+            <TitleRow>
+                {/* <ColumnSpacer size = {"40%"}/> */}
+                <Title theme={ Theme }>
+                    Your SBT
+                    {helperClickHandler(1)} 
+                </Title>
+            </TitleRow>
+            <TitleRow>
+                {/* <ColumnSpacer size = {"40%"}/> */}
+                {
+                    (sbtPolygonExists && chainId === 137) || (sbtBnbExists && chainId === 56)
+                    ? <SubTitle theme={Theme}>ID {sbtInfo.sbtId}</SubTitle>
+                    : null
+                }
+            </TitleRow>
+            {/* <RowSpacer size={ "10px" }/> */}
+            <InfoPage theme={ Theme }>
+                {chainId === 137 || chainId !== 56
+                ? renderPolygonSBT()
+                : renderBnbSBT()
+                }
+            </InfoPage>
+            {/* <RowSpacer size={ "2px" }/> */}
+            {sbtPolygonExists
+            ?
+                <>
+                <TitleRow>
+                    {/* <ColumnSpacer size = {"20%"}/> */}
+                    <VeMultiTitle theme={ Theme }>Select a chain to scan veMULTI {helperClickHandler(9)}</VeMultiTitle>
+                </TitleRow>
+                {/* <RowSpacer size={ "5px" }/> */}
+                </>
+            :null
+            }
+            {/* <RowSpacer size={ "2px" }/> */}
             {
-                (sbtPolygonExists && chainId === 137) || (sbtBnbExists && chainId === 56)
-                ? <SubTitle theme={Theme}>ID {sbtInfo.sbtId}</SubTitle>
+            sbtPolygonExists && chainId !== 137
+            ?
+                <>
+                <VeMultiPage theme = {Theme}>
+                    <DelegateVeMULTI sbtExists = {sbtPolygonExists} sbtId = {sbtInfo.sbtId} sbtChainId = {137}/>
+                </VeMultiPage>
+                {/* <RowSpacer size={ "10px" }/> */}
+                </>
+            : null
+            }
+            {
+                displayHelperModal?<HelperBox selectedHelper = {helper} onClose = {() => setDisplayHelperModal(false)}/>
                 : null
             }
-        </TitleRow>
-        <RowSpacer size={ "10px" }/>
-        <InfoPage theme={ Theme }>
-            {chainId === 137 || chainId !== 56
-            ? renderPolygonSBT()
-            : renderBnbSBT()
+            {
+                displayDiscordRole?<DiscordRole onClose = {() => setDisplayDiscordRole(false)}/>
+                : null
             }
-        </InfoPage>
-        <RowSpacer size={ "2px" }/>
-        {sbtPolygonExists
-        ?
-            <>
-            <TitleRow>
-                <ColumnSpacer size = {"20%"}/>
-                <Title theme={ Theme }>Select a chain to scan veMULTI {helperClickHandler(9)}</Title>
-            </TitleRow>
-            <RowSpacer size={ "5px" }/>
-            </>
-        :null
-        }
-        <RowSpacer size={ "2px" }/>
-        {
-        sbtPolygonExists && chainId !== 137
-        ?
-            <>
-            <VeMultiPage theme = {Theme}>
-                <DelegateVeMULTI sbtExists = {sbtPolygonExists} sbtId = {sbtInfo.sbtId} sbtChainId = {137}/>
-            </VeMultiPage>
-            <RowSpacer size={ "10px" }/>
-            </>
-        : null
-        }
-        {
-            displayHelperModal?<HelperBox selectedHelper = {helper} onClose = {() => setDisplayHelperModal(false)}/>
-            : null
-        }
-        {
-            displayDiscordRole?<DiscordRole onClose = {() => setDisplayDiscordRole(false)}/>
-            : null
-        }
-        {
-            displayUserMessage?<UserMessage selectedMessage = {message} onClose = {() => setDisplayUserMessage(false)}/>
-            : null
-        }
-        </div>
+            {
+                displayUserMessage?<UserMessage selectedMessage = {message} onClose = {() => setDisplayUserMessage(false)}/>
+                : null
+            }
+        </>
     )
 }
 

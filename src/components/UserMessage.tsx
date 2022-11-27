@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { Theme } from "../theme"
-import {SmallText, BigText, NormalText, Title, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 
 
 
@@ -132,17 +132,17 @@ const UserMessage:React.FC<MessageBoxProps> =  ({onClose, selectedMessage}) => {
               <Title theme = {Theme}>
                 {message.title}
               </Title>
-              <RowSpacer size = {"10px"}/>
+              {/* <RowSpacer size = {"10px"}/> */}
               <NormalText width = {"800px"} theme = {Theme}>
                 {message.message}
               </NormalText>
-              <RowSpacer size = {"10px"}/>
+              {/* <RowSpacer size = {"10px"}/> */}
               {
                 message.link.length > 0
                 ? messageLinkDisplay()
                 : null
               }
-              <RowSpacer size = {"10px"}/>
+              {/* <RowSpacer size = {"10px"}/> */}
               <Ok onClick={() => onClose()} theme = {Theme}>
                 OK
               </Ok>

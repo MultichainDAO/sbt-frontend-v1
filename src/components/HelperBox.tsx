@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { Theme } from "../theme"
-import {SmallText, BigText, NormalText, Title, RowSpacer, ColumnSpacer, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
+import {SmallText, BigText, NormalText, Title, MainRow, NewSBTButton, RemoveSBTButton, SubTitle} from "../component-styles"
 
 
 
@@ -200,17 +200,17 @@ const HelperBox:React.FC<HelperBoxProps> =  ({onClose, selectedHelper}) => {
               <Title theme = {Theme}>
                 {helper.title}
               </Title>
-              <RowSpacer size = {"10px"}/>
+              {/* <RowSpacer size = {"10px"}/> */}
               <NormalText width = {"90%"} left = {"2%"} right = {"2%"}   theme = {Theme}>
                 {helper.message}
               </NormalText>
-              <RowSpacer size = {"50px"}/>
+              {/* <RowSpacer size = {"50px"}/> */}
               {
                 helper.link.length > 0
                 ? helperLinkDisplay()
                 : null
               }
-              <RowSpacer size = {"10px"}/>
+              {/* <RowSpacer size = {"10px"}/> */}
               <Ok onClick={() => onClose()} theme = {Theme}>
                 OK
               </Ok>

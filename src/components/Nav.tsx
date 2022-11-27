@@ -30,7 +30,7 @@ const Tab = styled.div<TabProps>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 360px;
+  width: 425px;
   height: 40px;
   margin: 0 auto;
   border-top-left-radius: ${ props => props.first ? "1.25rem" : "0" };
