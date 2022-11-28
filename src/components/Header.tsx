@@ -2,7 +2,8 @@
 import React from "react"
 import styled from "styled-components"
 
-import multiDAO from "../images/MultiDAO.png"
+// import multiDAO from "../images/MultiDAO.png"
+import multiDAO from "../images/MultiDAO-logo.png"
 
 import Connect from "./Connect"
 
@@ -45,8 +46,8 @@ const MultiDAOIcon = styled.img`
   margin: 5px 15px;
 
   @media (max-width: 700px) {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     margin: 0 5px;
   }
 `

@@ -140,18 +140,27 @@ const SubTitle = styled.div`
   }
 `
 
-const SmallText = styled.div`
+const SmallText = styled.div<ValueBoxProps>`
 
   width: 100%;
   height: 20px;
 
-  margin: 10px 10px 0;
+  text-align: ${props => props.align? props.align : "left"};
+  width: ${props => props.width? props.width : "inherited"};
+  height: ${props => props.height? props.height : "inherited"};
+
+  margin-top: ${ props => props.top};
+  margin-right: ${ props => props.right};
+  margin-bottom: ${props => props.bottom};
+  margin-left: ${props => props.left};
+
+  //margin: 10px 10px 0;
 
   font-size: 0.7rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
 
-  color: ${props => props.theme.colors.text};
+  color: ${props => props.color? props.color : props.theme.colors.text};
 
   cursor: default;
 

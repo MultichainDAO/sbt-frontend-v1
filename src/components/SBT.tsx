@@ -995,7 +995,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const epochInfo = () => {
         return (
-            <SmallText theme = {Theme}>
+            <SmallText top = {"10px"} left = {"10px"} theme = {Theme}>
             The current 12 week Epoch is {sbtInfo.currentEpoch} {helperClickHandler(8)}<br></br>
             {epochStart} to {epochEnd}
             </SmallText>

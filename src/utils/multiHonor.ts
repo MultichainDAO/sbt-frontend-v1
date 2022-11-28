@@ -258,10 +258,50 @@ const sbtExistXChainTarget = async (account: string, targetChainId: number) => {
 
 }
 
+const sbtExistXChainAny = async (sbtId: number) => {
+
+    
+    const network = getNetwork(137)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("exists(uint256)").toString('hex').slice(0,8)
+
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+    
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.idCardProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const exists = (data.result === "0x0000000000000000000000000000000000000000000000000000000000000001")
+        //console.log(`SBT exists on chainId ${targetChainId} = ${exists}`)
+        return(exists)
+    } catch(error: any) {
+        console.log(`Error checking balanceOf SBT on Polygon : ${error}`)
+        return(undefined)
+    }
+
+}
+
 
 export {
     getMultiHonor,
     sbtExistXChain,
+    sbtExistXChainAny,
     getCurrentEpoch,
     getCurrentEpochXChain,
     getIdNFT,

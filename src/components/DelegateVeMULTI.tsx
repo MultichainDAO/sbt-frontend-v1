@@ -8,21 +8,52 @@ import styled, { DefaultTheme, keyframes } from "styled-components"
 
 import UserMessage from "./UserMessage"
 
-import {delegateVeMultiToSBT} from "../utils/multiHonor"
+import {checkSbtExists, delegateVeMultiToSBT, sbtExistXChainAny} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {NormalText, SubTitle, TitleRow, ApprovalLoader} from "../component-styles"
+import {NormalText, SubTitle, TitleRow, ApprovalLoader, SmallText} from "../component-styles"
 import {isVeDelegatedXChain, veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
+interface InputIdProps {
+    theme: DefaultTheme
+}
+
+interface ValueBoxProps {
+    theme: DefaultTheme,
+    align?: string,
+    top?: string,
+    bottom?: string,
+    left?: string,
+    right?: string,
+    height?: string,
+    width?: string
+}
 
 const VeMultiContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: flex-start;
   width: 100%;
-  height: 20vh;
+  height: 100%;
+`
+
+const DaoIdContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 15%;
+  height: 90%;
+  
+  @media (max-width: 700px) {
+    height: 9vh;
+    width: 90%;
+    margin: 0 1%;
+    flex-direction: row;
+  }
 `
 
 const VeMULTI = styled.div`
@@ -37,8 +68,9 @@ const VeMULTI = styled.div`
   box-shadow: 0 0 40px 0 ${ props => props.theme.colors.highlightFaint };
 
   @media (max-width: 700px) {
-    height: 9vh;
+    height: 12vh;
     margin: 0 1%;
+    flex-direction: column;
   }
 `
 
@@ -46,7 +78,7 @@ const VeMultiList = styled.ul`
   list-style-type: none;
   width: 100%;
   height: 100%;
-  margin: 0;
+  margin: 2;
   padding: 0;
   overflow-y: scroll;
 
@@ -56,7 +88,7 @@ const VeMultiList = styled.ul`
 `
 
 const TextVeMulti = styled.div`
-  width: ${props => props.title ? "10%" : ""};
+  width: "60%";
   margin: 0 2%;
   font-family: "Source Code Pro", monospace;
   font-size: 0.9rem;
@@ -65,6 +97,35 @@ const TextVeMulti = styled.div`
 
   @media (max-width: 700px) {
     font-size: 0.7rem;
+  }
+`
+
+const AttachText = styled.div<ValueBoxProps>`
+
+  width: 100%;
+  height: 20px;
+
+  text-align: ${props => props.align? props.align : "left"};
+  width: ${props => props.width? props.width : "inherited"};
+  height: ${props => props.height? props.height : "inherited"};
+
+  margin-top: ${ props => props.top};
+  margin-right: ${ props => props.right};
+  margin-bottom: ${props => props.bottom};
+  margin-left: ${props => props.left};
+
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+
+  color: ${props => props.color? props.color : props.theme.colors.text};
+
+  cursor: default;
+
+  @media (max-width: 700px) {
+    font-size: 0.85rem;
+    letter-spacing: 0.04rem;
+    margin 1px 2px 1px 10px;
   }
 `
 
@@ -77,7 +138,7 @@ const AttachButton = styled.button<ActiveElement>`
   margin: 0 5px 0 0;
   padding: 6px 6px;
 
-  width: 12%;
+  width: 10%;
   height: 60%;
 
   border: none;
@@ -103,8 +164,10 @@ const AttachButton = styled.button<ActiveElement>`
   }
 
   @media (max-width: 700px) {
-    width: 20%;
-    font-size: 0.6rem;
+    width: 80%;
+    height: 30%;
+    margin: 4px auto;
+    font-size: 0.9rem;
   }
 `
 
@@ -143,8 +206,35 @@ const DetachButton = styled.button<ActiveElement>`
   }
 
   @media (max-width: 700px) {
-    width: 20%;
-    font-size: 0.6rem;
+    width: 80%;
+    height: 30%;
+    margin: 4px auto;
+    font-size: 0.9rem;
+  }
+`
+
+const InputId = styled.input<InputIdProps>`
+  width: 100%;
+  height: 100%;
+  margin: 0 0 0 5px;
+  padding: 0 10px;
+  outline: 0px solid ${props => props.theme.colors.secondary};
+  border: none;
+  border-radius: 0.4rem;
+  font-family: "Source Code Pro", monospace;
+  font-size: 1rem;
+  background-color: ${props => props.theme.colors.secondary};
+  outline: 1px solid ${ props => props.theme.colors.tertiary }};
+  color: ${props => props.theme.colors.text};
+  transition: outline 0.01s ease;
+  &:hover {
+    outline: 2px solid ${props => props.theme.colors.tertiary};
+  }
+
+  @media (max-width: 700px) {
+    height: 3vh;
+    margin: 0 1%;
+    flex-direction: column;
   }
 `
 
@@ -180,11 +270,28 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
    
     const [ netw, setNetw] = useState<string>("")
     const [ myVeMulti, setMyVeMulti ] = useState<VeMultiDef[]>([])
+    const [delegateDaoId, setDelegateDaoId] = useState<number|null> (null)
+    const [xChainSbtExists, setXChainSbtExists] = useState<boolean|undefined> (undefined)
     const [displayUserMessage, setDisplayUserMessage] = useState<Boolean>(false)
     const [message, setMessage] = useState<number>(0)
     const [loading, setLoading] = useState<Boolean>(false)
 
     const { provider, chainId, accounts, isActive } = useWeb3React()
+
+    useEffect(() => {
+        setDelegateDaoId(props.sbtId)
+    }, [props.sbtId])
+
+    useEffect(() => {
+        const checkSbtExists = async() => {
+            if (delegateDaoId) {
+                const exists = await sbtExistXChainAny(delegateDaoId)
+                setXChainSbtExists(exists)
+            }
+        }
+
+        if (delegateDaoId) checkSbtExists()
+    }, [delegateDaoId])
 
     useEffect (() => {
         const getVeMultiParams = async () => { 
@@ -212,7 +319,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                         delegated: isDel,
                         veMultiLocked: veMultiLocked,
                         lockedTimeEnd: endTime,
-                        lockedTimeEndString: new Date(endTime * 1000).toISOString().slice(0, 19).replace("T", " ")
+                        lockedTimeEndString: new Date(endTime * 1000).toISOString().slice(0, 11).replace("T", " ")
                     }
                     VeMultiObj.push(newVeMulti)
                 }
@@ -236,9 +343,9 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
     const attachClickHandler = async (thisVeMulti: VeMultiDef) => {
         console.log(`chainId = ${chainId} sbtChainId = ${sbtChainId}`)
-        if (!loading && chainId && chainId !== sbtChainId && provider){
+        if (!loading && delegateDaoId && xChainSbtExists && chainId && chainId !== sbtChainId && provider){
             setLoading(true)
-            const ret = await delegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
+            const ret = await delegateVeMultiToSBT(thisVeMulti.iD, delegateDaoId, chainId, provider)
             setLoading(false)
             if (ret) {
                 setMessage(1)
@@ -268,6 +375,35 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     </TextVeMulti>
                     {
                         thisVeMulti.delegated
+                        ? null
+                        :
+                        <DaoIdContainer theme = {Theme}>
+                            {
+                                delegateDaoId === props.sbtId
+                                ?
+                                    <AttachText bottom = {"4px"} theme = {Theme}>
+                                    Your DAO ID
+                                    </AttachText>
+                                :
+                                    xChainSbtExists
+                                    ?
+                                        <AttachText color = {"green"} bottom = {"4px"} theme = {Theme}>
+                                        NOT Your DAO ID
+                                        </AttachText>
+                                    :
+                                        <AttachText color = {"red"} bottom = {"4px"} theme = {Theme}>
+                                        No Such DAO ID
+                                        </AttachText>
+                            }
+                            {
+                                delegateDaoId
+                                ? <InputId type="number" step="1"  min="1" placeholder={ "-" } value={ delegateDaoId?delegateDaoId:"-" } onChange={ e => handleDaoIdChange(e.target.value) } theme={ Theme }/>
+                                : null
+                            }
+                        </DaoIdContainer>
+                    }
+                    {
+                        thisVeMulti.delegated
                         ? <DetachButton isActive={false} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
                         {!loading
                             ? "Attached"
@@ -290,31 +426,36 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
         )
     }
 
+    const handleDaoIdChange = (id: string) => {
+        if (!isNaN(Number(id)) && id.length > 0) {
+            setDelegateDaoId(parseInt(id))
+        }
+        else if (id.length === 0) {
+            setDelegateDaoId(null)
+        }
+    }
+
 
     if (sbtExists) {
         return(
             <>
-                {/* <RowSpacer size={ "5px" }/> */}
                 {myVeMulti.length === 0
                 ?
                 <div>
                     <NormalText theme = {Theme}>
                     No veMULTI on {netw}
                     </NormalText> 
-                     {/* <RowSpacer size={ "5px" }/> */}
                 </div>
                 :
                 <>
                     
                 <VeMultiContainer>
                     <NormalText left = {"20px"} theme={Theme}>Your veMULTI </NormalText>
-                    {/* <RowSpacer size={ "5px" }/> */}
                     <VeMultiList>
                     {veMultiList()}
                     </VeMultiList>
                 </VeMultiContainer>
                     
-                {/* <RowSpacer size={ "5px" }/> */}
                 </>
                 }
             </>
