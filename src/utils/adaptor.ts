@@ -59,13 +59,13 @@ const getPremiumAdaptor = (premiumAdaptorAddr: string, chainId: number, provider
 const sbtBabtClaim = async (babtTokenId: number, chainId: number, provider: Web3Provider) => {
     if (chainId === 56) {
         const controller = getIDNFTController(chainId, provider)
-
+        
         if (controller) {
             const babtAdaptorAddr = await controller.dIDAdaptor(babt.babtClaimHash)
             const babtAdaptor = getBabtAdaptor(babtAdaptorAddr, chainId, provider)
             if (babtAdaptor) {
                 const signInfo = await babtAdaptor.getSignInfo(babtTokenId)
-                const accountType = await controller.accountTypeOf(babtTokenId)
+                const accountType = babt.babtClaimHash
                 try {
                     const tx = await controller.claim(accountType, signInfo, {gasLimit: 300000})
                     await tx.wait()
