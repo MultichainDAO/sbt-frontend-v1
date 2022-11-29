@@ -63,6 +63,10 @@ const Balance = styled.div`
 
   color: ${ props => props.theme.colors.text };
   background-color: ${ props => props.theme.colors.main };
+
+  @media (max-width: 700px) {
+    font-size: 0.9rem;
+  }
 `
 
 const Account = styled.div`
@@ -83,6 +87,10 @@ const Account = styled.div`
 
   color: ${ props => props.theme.colors.text };
   background-color: ${ props => props.theme.colors.main };
+
+  @media (max-width: 700px) {
+    font-size: 0.9rem;
+  }
 `
 
 const BalAmount = styled.div`
