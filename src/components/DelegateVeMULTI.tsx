@@ -397,7 +397,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                                         </AttachText>
                             }
                             {
-                                (delegateDaoId || delegateDaoId === 0) && !thisVeMulti.delegated
+                                (delegateDaoId || delegateDaoId === 0)
                                 ? <InputId type="number" step="1"  min="1" placeholder={ "-" } value={ delegateDaoId?delegateDaoId:"-" } onChange={ e => handleDaoIdChange(e.target.value) } theme={ Theme }/>
                                 : null
                             }
