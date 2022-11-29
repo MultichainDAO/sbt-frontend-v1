@@ -334,6 +334,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     const veMultiList = () => {
         return(
             myVeMulti.map((thisVeMulti, i) => {
+                
                 return (
                     veMultiDetails(thisVeMulti, i)
                 )
@@ -396,7 +397,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                                         </AttachText>
                             }
                             {
-                                delegateDaoId || delegateDaoId === 0
+                                (delegateDaoId || delegateDaoId === 0) && !thisVeMulti.delegated
                                 ? <InputId type="number" step="1"  min="1" placeholder={ "-" } value={ delegateDaoId?delegateDaoId:"-" } onChange={ e => handleDaoIdChange(e.target.value) } theme={ Theme }/>
                                 : null
                             }
