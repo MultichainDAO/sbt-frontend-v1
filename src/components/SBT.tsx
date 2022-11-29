@@ -601,18 +601,18 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 let POC
                 let sbtId
                 sbtId = await getSBTTokenId(account, chainId, provider)
-                console.log(`sbtId = ${sbtId}`)
+                //console.log(`sbtId = ${sbtId}`)
                 POC = await getPOC(sbtId, chainId, provider)
-                console.log(`POC = ${POC}`)
+                //console.log(`POC = ${POC}`)
                 if (chainId === 137) {
                     thisEpoch = await getCurrentEpoch(chainId, provider)
                     setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
                     setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
-                    console.log(`Current Epoch = ${thisEpoch}`)
+                    //console.log(`Current Epoch = ${thisEpoch}`)
                     vePower = await getVePower(sbtId, chainId, provider)
-                    console.log(`vePower = ${vePower}`)
+                    //console.log(`vePower = ${vePower}`)
                     vePoint = await getVePoint(sbtId, chainId, provider)
-                    console.log(`vePoint = ${vePoint}`)
+                    //console.log(`vePoint = ${vePoint}`)
                    
                 }
                 else {
@@ -623,11 +623,11 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     vePoint = 0
                 }
                 const eventPoint = await getEventPoint(sbtId, chainId, provider)
-                console.log(`EventPoint = ${eventPoint}`)
+                //console.log(`EventPoint = ${eventPoint}`)
                 const totalPoint = await getTotalPoint(sbtId, chainId, provider)
-                console.log(`TotalPoint = ${totalPoint}`)
+                //console.log(`TotalPoint = ${totalPoint}`)
                 const level = await getLevel(sbtId, chainId, provider)
-                console.log(`Level = ${level}`)
+                //console.log(`Level = ${level}`)
                 const rewards = await findRewards(sbtId, chainId, provider)
                 setClaimsOutstanding(rewards)
         
@@ -644,23 +644,23 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             }
             else if (sbtPolygonExists && chainId !== 137) {
                 const thisEpoch = await getCurrentEpochXChain(137)
-                console.log(`cross chain thisEpoch = ${thisEpoch}`)
+                //console.log(`cross chain thisEpoch = ${thisEpoch}`)
                 setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
                 setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
                 const sbtId = await getSBTTokenIdXChain(account, 137)
-                console.log(`cross chain sbtId = ${sbtId}`)
+                //console.log(`cross chain sbtId = ${sbtId}`)
                 const level = await getLevelXChain(sbtId, 137)
-                console.log(`cross chain level = ${level}`)
+                //console.log(`cross chain level = ${level}`)
                 const totalPoint = await getTotalPointXChain(sbtId, 137)
-                console.log(`cross chain totalPoint = ${totalPoint}`)
+                //console.log(`cross chain totalPoint = ${totalPoint}`)
                 const vePower = await getVePowerXChain(sbtId, 137)
-                console.log(`cross chain vePower = ${vePower}`)
+                //console.log(`cross chain vePower = ${vePower}`)
                 const vePoint = await getVePointXChain(sbtId, 137)
-                console.log(`cross chain vePoint = ${vePoint}`)
+                //console.log(`cross chain vePoint = ${vePoint}`)
                 const POC = await getPOCXChain(sbtId, 137)
-                console.log(`cross chain POC = ${POC}`)
+                //console.log(`cross chain POC = ${POC}`)
                 const eventPoint = await getEventPointXChain(sbtId, 137)
-                console.log(`cross chain eventPoint = ${eventPoint}`)
+                //console.log(`cross chain eventPoint = ${eventPoint}`)
 
                 setSbtInfo({
                     sbtId: Number(sbtId),
