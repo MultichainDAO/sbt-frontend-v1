@@ -445,7 +445,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                 {myVeMulti.length === 0
                 ?
                 <div>
-                    <NormalText theme = {Theme}>
+                    <NormalText top = {"10px"} theme = {Theme}>
                     No veMULTI on {netw}
                     </NormalText> 
                 </div>

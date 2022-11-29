@@ -104,6 +104,42 @@ const getSBTTokenId = async (account:string, chainId: number, provider: Web3Prov
     return(null)
 }
 
+const getSBTTokenIdXChain = async (account:string, targetChainId: number) => {
+
+    
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("tokenOfOwnerByIndex(address,uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['address','uint256'], [account, 0])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.idCardProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const sbtId = parseInt(data.result, 16)
+        return(sbtId)
+    } catch(error: any) {
+        console.log(`Error getting crosschain sbtId ${targetChainId} : ${error}`)
+        return(0)
+    }
+}
+
 const removeSBT = async (id: number, chainId: number, provider: Web3Provider) => {
     const idNFT = getIdNFT(chainId, provider)
     try {
@@ -134,10 +170,80 @@ const getVePower =  async (sbtId: number, chainId: number, provider: Web3Provide
     return(vePower)
 }
 
+const getVePowerXChain = async (sbtId: number, targetChainId: number) => {
+
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("VEPower(uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const vePower = parseInt(data.result, 16)
+        return(vePower)
+    } catch(error: any) {
+        console.log(`Error getting vePower ${targetChainId} : ${error}`)
+        return(0)
+    }
+}
+
 const getVePoint =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     const vePoint = await multiHonor.VEPoint(sbtId)
     return(vePoint)
+}
+
+const getVePointXChain = async (sbtId: number, targetChainId: number) => {
+
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("VEPoint(uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const vePoint = parseInt(data.result, 16)
+        return(vePoint)
+    } catch(error: any) {
+        console.log(`Error getting vePoint ${targetChainId} : ${error}`)
+        return(0)
+    }
 }
 
 const getEventPoint = async (sbtId: number, chainId: number, provider: Web3Provider) => {
@@ -146,10 +252,80 @@ const getEventPoint = async (sbtId: number, chainId: number, provider: Web3Provi
     return(eventPoint)
 }
 
+const getEventPointXChain = async (sbtId: number, targetChainId: number) => {
+
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("EventPoint(uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const eventPoint = parseInt(data.result, 16)
+        return(eventPoint)
+    } catch(error: any) {
+        console.log(`Error getting eventPoint ${targetChainId} : ${error}`)
+        return(0)
+    }
+}
+
 const getPOC =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     const POC = await multiHonor.POC(sbtId)
     return(POC)
+}
+
+const getPOCXChain = async (sbtId: number, targetChainId: number) => {
+
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("POC(uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const poc = parseInt(data.result, 16)
+        return(poc)
+    } catch(error: any) {
+        console.log(`Error getting POC ${targetChainId} : ${error}`)
+        return(0)
+    }
 }
 
 const getTotalPoint =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
@@ -158,10 +334,81 @@ const getTotalPoint =  async (sbtId: number, chainId: number, provider: Web3Prov
     return(totalPoint)
 }
 
+const getTotalPointXChain = async (sbtId: number, targetChainId: number) => {
+
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("TotalPoint(uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const totalPoint = parseInt(data.result, 16)
+        return(totalPoint)
+    } catch(error: any) {
+        console.log(`Error getting totalPoint ${targetChainId} : ${error}`)
+        return(0)
+    }
+}
+
+
 const getLevel =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     const level = await multiHonor.Level(sbtId)
     return(level)
+}
+
+const getLevelXChain = async (sbtId: number, targetChainId: number) => {
+
+    const network = getNetwork(targetChainId)
+
+    var headers = {
+        'Content-Type': 'application/json'
+    }
+
+    const func = '0x' + keccak256("Level(uint256)").toString('hex').slice(0,8)
+
+    let calldata = ethers.utils.hexConcat([
+        func,
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [sbtId])
+    ])
+
+    const dataString = '{"method":"eth_call","params":[{"to":"' + String(network.contracts.multiHonorProxy) + '","data":"' + calldata + '"},"latest"],"id":1,"jsonrpc":"2.0"}'
+
+    const options = {
+        url: network.rpcUrl,
+        method: 'POST',
+        headers: headers,
+        data: dataString
+    }
+
+    try {
+        const response = await axios(options)
+        const data = await response.data
+        const level = parseInt(data.result, 16)
+        return(level)
+    } catch(error: any) {
+        console.log(`Error getting Level ${targetChainId} : ${error}`)
+        return(0)
+    }
 }
 
 
@@ -306,16 +553,23 @@ export {
     getCurrentEpochXChain,
     getIdNFT,
     getSBTTokenId,
+    getSBTTokenIdXChain,
     checkSbtExists,
     checkSbtOwned,
     removeSBT,
     isVeMultiDelegated,
     getVePower,
+    getVePowerXChain,
     getVePoint,
+    getVePointXChain,
     getPOC,
+    getPOCXChain,
     getEventPoint,
+    getEventPointXChain,
     getTotalPoint,
+    getTotalPointXChain,
     getLevel,
+    getLevelXChain,
     delegateVeMultiToSBT,
     findRewards,
     getRewards
