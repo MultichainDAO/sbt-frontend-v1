@@ -606,8 +606,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 //console.log(`POC = ${POC}`)
                 if (chainId === 137) {
                     thisEpoch = await getCurrentEpoch(chainId, provider)
-                    setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
-                    setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
+                    if (thisEpoch) {
+                        setEpochStart(new Date(7257600 * thisEpoch * 1000).toISOString().slice(0, 10).replace("T", " "))
+                        setEpochEnd(new Date(7257600 * (thisEpoch + 1) * 1000).toISOString().slice(0, 10).replace("T", " "))
+                    }
                     //console.log(`Current Epoch = ${thisEpoch}`)
                     vePower = await getVePower(sbtId, chainId, provider)
                     //console.log(`vePower = ${vePower}`)
