@@ -375,9 +375,9 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     </TextVeMulti>
                     {
                         thisVeMulti.delegated
-                       
-                        ?
-                        <DaoIdContainer theme = {Theme}>
+                        ? null
+                        
+                        : <DaoIdContainer theme = {Theme}>
                             {
                                 delegateDaoId === props.sbtId
                                 ?
@@ -401,7 +401,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                                 : null
                             }
                         </DaoIdContainer>
-                         : null
+                         
                     }
                     {
                         thisVeMulti.delegated
