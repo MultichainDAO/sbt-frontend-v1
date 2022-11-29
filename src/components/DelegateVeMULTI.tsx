@@ -375,8 +375,8 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     </TextVeMulti>
                     {
                         thisVeMulti.delegated
-                        ? null
-                        :
+                       
+                        ?
                         <DaoIdContainer theme = {Theme}>
                             {
                                 delegateDaoId === props.sbtId
@@ -396,11 +396,12 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                                         </AttachText>
                             }
                             {
-                                delegateDaoId
+                                delegateDaoId || delegateDaoId === 0
                                 ? <InputId type="number" step="1"  min="1" placeholder={ "-" } value={ delegateDaoId?delegateDaoId:"-" } onChange={ e => handleDaoIdChange(e.target.value) } theme={ Theme }/>
                                 : null
                             }
                         </DaoIdContainer>
+                         : null
                     }
                     {
                         thisVeMulti.delegated
@@ -427,12 +428,13 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     }
 
     const handleDaoIdChange = (id: string) => {
-        if (!isNaN(Number(id)) && id.length > 0) {
+        if (id.length > 0) {
             setDelegateDaoId(parseInt(id))
         }
-        else if (id.length === 0) {
-            setDelegateDaoId(null)
+        else {
+            setDelegateDaoId(0)
         }
+        
     }
 
 
