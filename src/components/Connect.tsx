@@ -13,6 +13,7 @@ import WalletList from "./WalletList"
 import {NetworkRow, NetworkButton} from "../component-styles"
 
 import { Theme } from "../theme"
+import { ethers } from "ethers"
 
 
 const ConnectContainer = styled.div`
@@ -141,6 +142,9 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     // console.log(`In connect newNetwork = ${newNetwork} walletSelected = ${walletSelected} displayWalletList = ${displayWalletList} newNetworkChain = ${newNetworkChain}`)
     if(!walletSelected ) return
 
+    const network = getNetwork(newNetworkChain)
+
+
     if(walletType === WalletListOptions.WalletConnect) {
       try {
         await walletConnect.activate(newNetworkChain)
@@ -155,8 +159,26 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         await metaMask.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
-        console.log(err.message)
-        console.log(`Connection Failed. ${ tsToTime() }`)
+        console.log(`err.code = ${err.code} `)
+        if (err.code === 4902 && window.ethereum) {
+          console.log(`Adding new chain ${network.name}`)
+          await (window as any).ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: network.name,
+                chainId: ethers.utils.hexlify(network.chainId),
+                nativeCurrency: { name: network.nativeCurrency.name, decimals: 18, symbol: network.nativeCurrency.symbol },
+                rpcUrls: [network.rpcUrl],
+                blockExplorerUrls: [network.blockExplorerURL]
+              }
+            ]
+          })
+        }
+        else {
+          console.log(err.message)
+          console.log(`Connection Failed. ${ tsToTime() }`)
+        }
       }
 
     }

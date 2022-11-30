@@ -5,6 +5,7 @@ interface Network {
   name: string,
   explorer: string,
   rpcUrl: string,
+  blockExplorerURL: string,
   nativeCurrency: {
     name: string,
     symbol: string,
@@ -32,6 +33,7 @@ const networks: Network[] = [
     name: "Ethereum",
     explorer: "https://etherscan.io/",
     rpcUrl: "https://mainnet.infura.io/v3/",
+    blockExplorerURL: "https://etherscan.io",
     nativeCurrency: {
       name: "Ethereum",
       symbol: "ETH",
@@ -57,6 +59,7 @@ const networks: Network[] = [
     name: "BNB Chain",
     explorer: "https://bscscan.com/",
     rpcUrl: "https://rpc.ankr.com/bsc",
+    blockExplorerURL: "https://bscscan.com",
     nativeCurrency: {
       name: "Binance Coin",
       symbol: "BNB",
@@ -82,6 +85,7 @@ const networks: Network[] = [
     name: "Fantom",
     explorer: "https://ftmscan.com/",
     rpcUrl: "https://rpc.ftm.tools/",
+    blockExplorerURL: "https://ftmscan.com",
     nativeCurrency: {
       name: "Fantom",
       symbol: "FTM",
@@ -107,6 +111,7 @@ const networks: Network[] = [
     name: "Polygon",
     explorer: "https://polygonscan.com/",
     rpcUrl: "https://polygon-rpc.com",
+    blockExplorerURL: "https://polygonscan.com",
     nativeCurrency: {
       name: "Matic",
       symbol: "MATIC",
@@ -132,6 +137,7 @@ const networks: Network[] = [
       name: "Local Node",
       explorer: "",
       rpcUrl: "http://localhost:8545/",
+      blockExplorerURL: "",
       nativeCurrency: {
         name: "Fusion",
         symbol: "FSN",
@@ -159,6 +165,7 @@ const nullNetwork: Network = {
   name: "",
   explorer: "",
   rpcUrl: "",
+  blockExplorerURL: "",
   nativeCurrency: {
     name: "",
     symbol: "",

@@ -740,7 +740,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         return(
             <>
                 <MainPanel theme={Theme}>
-                    {/* <RowSpacer size={"20px"}/> */}
                     {
                     babtToken && chainId === 56
                     ? 
@@ -798,7 +797,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (sbtPolygonExists) {
             return(
                 <>
-                {/* <ColumnSpacer size = {"5px"}/> */}
                 <SbtLeftPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {vePower()}
@@ -815,7 +813,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <SbtInfoRow theme = {Theme}>
                         {totalPoints()}
                     </SbtInfoRow>
-                    {/* <RowSpacer size = {"10px"}/> */}
                     {/*<RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>*/}
            
                 </SbtLeftPanel>
@@ -831,7 +828,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         {claimRewards()}
                     </ClaimRow>
                 </SbtRightPanel>
-                {/* <ColumnSpacer size = {"5px"}/> */}
                 </>
 
             )
@@ -857,7 +853,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (sbtBnbExists) {
             return(
                 <>
-                {/* <ColumnSpacer size = {"5px"}/> */}
                 <SbtLeftPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {POC()}
@@ -869,7 +864,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         {totalPoints()}
                     </SbtInfoRow>
                 </SbtLeftPanel>
-                {/* <ColumnSpacer size = {"10px"}/> */}
                 <SbtRightPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {attainmentLevel()}
@@ -881,7 +875,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                         {claimRewards()}
                     </ClaimRow>
                 </SbtRightPanel>
-                {/* <ColumnSpacer size = {"5px"}/> */}
                 </>
 
             )
