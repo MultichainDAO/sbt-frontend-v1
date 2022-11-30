@@ -68,8 +68,14 @@ const getIdNFT = (chainId: number, provider: Web3Provider): Contract => {
 const getCurrentEpoch = async (chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     if (multiHonor) {
-        const currentEpoch = await multiHonor.currentVEEpoch()
-        return(Number(currentEpoch))
+        try {
+            const currentEpoch = await multiHonor.currentVEEpoch()
+            return(Number(currentEpoch))
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err)
+            return(0)
+        }
     }
     else return(0)
 }
@@ -111,8 +117,14 @@ const getCurrentEpochXChain = async (targetChainId: number) => {
 const getSBTTokenId = async (account:string, chainId: number, provider: Web3Provider) => {
     if (chainId && provider) {
         const sbt = getSbt(chainId, provider)
-        const tokenId = await sbt.tokenOfOwnerByIndex(account, 0)
-        return(tokenId)
+        try {
+            const tokenId = await sbt.tokenOfOwnerByIndex(account, 0)
+            return(tokenId)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err.message)
+            return(0)
+        }
     }
     return(null)
 }
@@ -180,8 +192,14 @@ const isVeMultiDelegated = async (veId: number, veChainId: number, provider: Web
 const getVePower =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     if (multiHonor) {
-        const vePower = await multiHonor.VEPower(sbtId)
-        return(vePower)
+        try {
+            const vePower = await multiHonor.VEPower(sbtId)
+            return(vePower)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err)
+            return(0)
+        }
     }
     else return(null)
 }
@@ -225,8 +243,14 @@ const getVePoint =  async (sbtId: number, chainId: number, provider: Web3Provide
     const multiHonor = getMultiHonor(chainId, provider)
     
     if (multiHonor) {
-        const vePoint = await multiHonor.VEPoint(sbtId)
-        return(vePoint)
+        try {
+            const vePoint = await multiHonor.VEPoint(sbtId)
+            return(vePoint)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err.message)
+            return(0)
+        }
     }
     else return(null)
 }
@@ -269,8 +293,14 @@ const getVePointXChain = async (sbtId: number, targetChainId: number) => {
 const getEventPoint = async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     if (multiHonor) {
-    const eventPoint = await multiHonor.EventPoint(sbtId)
-    return(eventPoint)
+        try {
+            const eventPoint = await multiHonor.EventPoint(sbtId)
+            return(eventPoint)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err.message)
+            return(0)
+        }
     }
     else return(null)
 }
@@ -313,8 +343,14 @@ const getEventPointXChain = async (sbtId: number, targetChainId: number) => {
 const getPOC =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     if (multiHonor) {
-        const POC = await multiHonor.POC(sbtId)
-        return(POC)
+        try {
+            const POC = await multiHonor.POC(sbtId)
+            return(POC)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err.message)
+            return(0)
+        }
     }
     else return(null)
 }
@@ -357,8 +393,14 @@ const getPOCXChain = async (sbtId: number, targetChainId: number) => {
 const getTotalPoint =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     if (multiHonor) {
-        const totalPoint = await multiHonor.TotalPoint(sbtId)
-        return(totalPoint)
+        try {
+            const totalPoint = await multiHonor.TotalPoint(sbtId)
+            return(totalPoint)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err.message)
+            return(0)
+        }
     }
     else return(null)
     
@@ -403,8 +445,14 @@ const getTotalPointXChain = async (sbtId: number, targetChainId: number) => {
 const getLevel =  async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const multiHonor = getMultiHonor(chainId, provider)
     if (multiHonor) {
-        const level = await multiHonor.Level(sbtId)
-        return(level)
+        try {
+            const level = await multiHonor.Level(sbtId)
+            return(level)
+        } catch(err: any) {
+            console.log(`err.code = ${err.code}`)
+            console.log(err.message)
+            return(0)
+        }
     }
     else return(null)
     
