@@ -159,7 +159,6 @@ const Connect: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         await metaMask.activate(newNetworkChain)
         console.log(`Connection Successful. ${ tsToTime() }`)
       } catch(err: any) {
-        console.log(`err.code = ${err.code} `)
         if (err.code === 4902 && window.ethereum) {
           console.log(`Adding new chain ${network.name}`)
           await (window as any).ethereum.request({
