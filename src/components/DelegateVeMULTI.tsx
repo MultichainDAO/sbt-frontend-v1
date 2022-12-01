@@ -416,7 +416,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                             : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
                         }
                         </DetachButton>
-                        : <AttachButton isActive={true} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
+                        : <AttachButton isActive={xChainSbtExists?xChainSbtExists:false} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
                         {!loading
                             ? "Attach"
                             : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
