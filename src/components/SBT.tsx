@@ -1093,22 +1093,14 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             :null
             }
             {
-            sbtPolygonExists && chainId !== 137 && sbtPolygonId
-            ?
+            chainId === 137
+            ? null
+            :
                 <>
                 <VeMultiPage theme = {Theme}>
                     <DelegateVeMULTI sbtExists = {sbtPolygonExists} sbtId = {sbtPolygonId} sbtChainId = {137}/>
                 </VeMultiPage>
                 </>
-            : 
-                chainId === 137
-                ? null
-                :
-                    <>
-                    <VeMultiPage theme = {Theme}>
-                        <NormalText top = {"10px"} theme = {Theme}>To Attach veMULTI, please create an SBT on Polygon</NormalText>
-                    </VeMultiPage>
-                    </>
             }
             {
                 displayHelperModal?<HelperBox selectedHelper = {helper} onClose = {() => setDisplayHelperModal(false)}/>

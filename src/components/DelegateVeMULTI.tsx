@@ -240,7 +240,7 @@ const InputId = styled.input<InputIdProps>`
 
 interface DelegateProps {
     sbtExists: Boolean,
-    sbtId: number,
+    sbtId: number|null,
     sbtChainId: number
 }
 
@@ -290,7 +290,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
             }
         }
 
-        if (delegateDaoId) checkSbtExists()
+        checkSbtExists()
     }, [delegateDaoId])
 
     useEffect (() => {
@@ -327,7 +327,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
             }
         }
 
-        if (sbtExists) getVeMultiParams()
+        getVeMultiParams()
 
     }, [sbtExists, chainId, accounts, provider, sbtChainId])
 
@@ -377,23 +377,28 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     {
                         thisVeMulti.delegated
                         ? null
-                        
                         : <DaoIdContainer theme = {Theme}>
                             {
-                                delegateDaoId === props.sbtId
+                                props.sbtId && delegateDaoId === props.sbtId
                                 ?
                                     <AttachText bottom = {"4px"} theme = {Theme}>
-                                    Your DAO ID
+                                    Your SBT ID
                                     </AttachText>
                                 :
                                     xChainSbtExists
                                     ?
-                                        <AttachText color = {"green"} bottom = {"4px"} theme = {Theme}>
-                                        NOT Your DAO ID
-                                        </AttachText>
+                                        props.sbtId
+                                        ?
+                                            <AttachText color = {"green"} bottom = {"4px"} theme = {Theme}>
+                                            NOT Your SBT ID
+                                            </AttachText>
+                                        :
+                                            <AttachText color = {"green"} bottom = {"4px"} theme = {Theme}>
+                                            SBT Exists
+                                            </AttachText>
                                     :
                                         <AttachText color = {"red"} bottom = {"4px"} theme = {Theme}>
-                                        No Such DAO ID
+                                        No Such SBT ID
                                         </AttachText>
                             }
                             {
@@ -402,7 +407,6 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                                 : null
                             }
                         </DaoIdContainer>
-                         
                     }
                     {
                         thisVeMulti.delegated
@@ -439,37 +443,30 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
     }
 
 
-    if (sbtExists) {
-        return(
-            <>
-                {myVeMulti.length === 0
-                ?
-                <div>
-                    <NormalText top = {"10px"} theme = {Theme}>
-                    No veMULTI on {netw}
-                    </NormalText> 
-                </div>
-                :
-                <>
-                    
-                <VeMultiContainer>
-                    <NormalText left = {"20px"} theme={Theme}>Your veMULTI </NormalText>
-                    <VeMultiList>
-                    {veMultiList()}
-                    </VeMultiList>
-                </VeMultiContainer>
-                    
-                </>
-                }
-            </>
-        )
-    } else {
-        return(
+    return(
+        <>
+            {myVeMulti.length === 0
+            ?
             <div>
-
+                <NormalText top = {"10px"} theme = {Theme}>
+                No veMULTI on {netw}
+                </NormalText> 
             </div>
-        )
-    }
+            :
+            <>
+                
+            <VeMultiContainer>
+                <NormalText left = {"20px"} theme={Theme}>Your veMULTI </NormalText>
+                <VeMultiList>
+                {veMultiList()}
+                </VeMultiList>
+            </VeMultiContainer>
+                
+            </>
+            }
+        </>
+    )
+  
 }
 
 
