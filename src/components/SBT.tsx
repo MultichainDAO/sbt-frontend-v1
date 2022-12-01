@@ -29,10 +29,10 @@ import {getCurrentEpoch,
     getLevel, 
     getLevelXChain, 
     removeSBT, 
-    findRewards, 
-    getRewards
 } from "../utils/multiHonor"
 import {getDidAdaptorAddr, userBabtTokenId, sbtBabtClaim, sbtClaim, babtExistXChain, getPremiumPrice} from "../utils/adaptor"
+import {bountyClaimable, claimBounty, getBountyTokenDetails} from "../utils/claimBounty"
+
 import { Web3Provider } from "@ethersproject/providers"
 import DelegateVeMULTI from "./DelegateVeMULTI"
 import HelperBox from "./HelperBox"
@@ -48,6 +48,7 @@ import goldMedal from "../images/gold-medal-lores.png"
 import platinumMedal from "../images/platinum-medal-lores.png"
 import diamondMedal from "../images/diamond-medal-lores.png"
 import emptyMedal from "../images/empty-medal-lores.png"
+import { ethers } from "ethers"
 
 
 interface ValueBoxProps {
@@ -154,7 +155,7 @@ const SbtLeftPanel = styled.div `
     align-items: flex-start;
 
     width: 405px;
-    height: 200px;
+    height: 220px;
     margin: 0 0 0 10px;
 
 
@@ -176,7 +177,7 @@ const SbtRightPanel = styled.div `
 
 
     width: 405px;
-    height: 200px;
+    height: 220px;
     margin: 0 10px 0 0;
 
     outline: 1px solid ${ props => props.theme.colors.tertiary };
@@ -194,7 +195,6 @@ const SbtRightPanel = styled.div `
 
 const SbtInfoRow = styled.div `
     display: flex;
-    flex: 1;
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
@@ -257,20 +257,27 @@ const LevelColumn = styled.div `
     font-size: 0.9rem;
 `
 
-const ClaimRow = styled.div `
+const ClaimColumn = styled.div `
     display: flex;
-    flex: 3;
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: flex-start;
 
-    margin: 5px 0;
+    width: 100%;
+    height: 100%;
+`
+
+const ClaimRow = styled.div `
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    margin: 2px 0;
 
     width: 100%;
     height: 100%;
 
-    font-family: "Source Code Pro", monospace;
-    font-size: 0.9rem;
 `
 
 
@@ -348,7 +355,7 @@ const ClaimButton = styled.button<ActiveElement>`
   justify-content: center;
   align-items: center;
 
-  margin: 20px 5px 0 0;
+  margin: 12px 5px 0 0;
   padding: 6px 6px;
 
   width: 30%;
@@ -377,6 +384,31 @@ const ClaimButton = styled.button<ActiveElement>`
   }
 `
 
+const InputAddress = styled.input`
+  width: 85%;
+  height: 60%;
+  margin: 0 auto;
+  padding: 2 1px;
+  outline: 0px solid ${props => props.theme.colors.secondary};
+  border: none;
+  border-radius: 0.1rem;
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  background-color: ${props => props.theme.colors.secondary};
+  outline: 1px solid ${ props => props.theme.colors.tertiary }};
+  color: ${props => props.color?props.color:props.theme.colors.text};
+  transition: outline 0.01s ease;
+  &:hover {
+    outline: 2px solid ${props => props.theme.colors.tertiary};
+  }
+
+  @media (max-width: 700px) {
+    height: 2vh;
+    margin: 0 1%;
+    font-size: 0.68rem;
+  }
+`
+
 
   
 interface ActiveElement {
@@ -396,7 +428,10 @@ interface buySbt {
     chainId: number
 }
 
-
+interface BountyDetails {
+    symbol: string,
+    decimals: number
+}
 
 
 const sbtOwned = async (account: string, sbtTokenId: number, chainId: number, provider: Web3Provider) => {
@@ -445,6 +480,8 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     const [babtExists, setBabtExists] = useState<boolean>(false)
     const [babtToken, setBabtToken] = useState<number | null>(null)
     const [sbtPrice, setSbtPrice] = useState<buySbt | null>(null)
+    const [bountyTokenDetails, setBountyTokenDetails] = useState<BountyDetails|null>(null)
+    const [bountyAddress, setBountyAddress] = useState<string|null>(null)
     const [loading, setLoading] = useState<Boolean>(false)
     
 
@@ -453,18 +490,32 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     useEffect(() => {
         const updateNet = async() => {
-            if(accounts && chainId && provider) {
+            if(accounts && chainId && provider && isActive) {
                 await updateBaseBal(accounts, provider)
                 const network = getNetwork(chainId)
                 setMinBal(network.nativeCurrency.gasToLeave)
                 const price = await getPremiumPrice(chainId, provider)
                 setSbtPrice(price)
+                
             }
         }
         
         updateNet()
     }
-    ,[accounts, chainId, provider])
+    ,[accounts, chainId, provider, isActive])
+
+    useEffect (() => {
+        const updateBounty = async() => {
+            if (accounts && chainId && provider) {
+                const bountyToken = await getBountyTokenDetails(chainId,provider)
+                if (bountyToken) {
+                    setBountyTokenDetails(bountyToken)
+                    setBountyAddress(accounts[0])
+                }
+            }
+        }
+        updateBounty()
+    },[chainId, provider])
 
     useEffect(()=>{
         const performSBTCheck = async() => {
@@ -630,8 +681,13 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 //console.log(`TotalPoint = ${totalPoint}`)
                 const level = await getLevel(sbtId, chainId, provider)
                 //console.log(`Level = ${level}`)
-                const rewards = await findRewards(sbtId, chainId, provider)
-                setClaimsOutstanding(rewards)
+                const bounty = await bountyClaimable(sbtId, chainId, provider)
+                if (bounty && bountyTokenDetails) {
+                    setClaimsOutstanding(bounty/(10**bountyTokenDetails.decimals))
+                }
+                else {
+                    console.log(`not there yet bounty = ${bounty}`)
+                }
         
                 setSbtInfo({
                     sbtId: Number(sbtId),
@@ -816,7 +872,6 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     {/*<RemoveSBTButton isActive = {true} theme={ Theme } onClick = {() => handleRemoveSBTClick()}>Remove </RemoveSBTButton>*/}
            
                 </SbtLeftPanel>
-                {/* <ColumnSpacer size = {"10px"}/> */}
                 <SbtRightPanel theme = {Theme}>
                     <SbtInfoRow theme = {Theme}>
                         {attainmentLevel()}
@@ -824,9 +879,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <SbtInfoRow theme = {Theme}>
                         {epochInfo()}
                     </SbtInfoRow>
-                    <ClaimRow theme = {Theme}>
-                        {claimRewards()}
-                    </ClaimRow>
+                    {claimRewards()}
                 </SbtRightPanel>
                 </>
 
@@ -898,19 +951,41 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
     const claimRewards = () => {
         return (
-            <>
-            <NormalText align = {"left"} left = {"10px"} top = {"30px"} theme = {Theme}>
-            Your Rewards:
-            </NormalText>
-            <ValueBox top = {"30px"} left = {"10px"} right = {"10px"} width = {"80px"} theme = {Theme}>{claimsOutstanding}</ValueBox>
-            <ClaimButton isActive = {claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
-                {!loading
-                    ? "Claim"
-                    : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                }
-            </ClaimButton>
-            </>
+            <ClaimColumn>
+                <ClaimRow>
+                    <NormalText align = {"left"} left = {"5px"} top = {"15px"} theme = {Theme}>
+                    Rewards:
+                    </NormalText>
+                    <ValueBox top = {"15px"} left = {"10px"} right = {"5px"} width = {"60px"} theme = {Theme}>{claimsOutstanding?claimsOutstanding: null}</ValueBox>
+                    <NormalText align = {"left"} right = {"5px"} top = {"15px"} theme = {Theme}>
+                    {bountyTokenDetails ? bountyTokenDetails.symbol: ""}
+                    </NormalText>
+                    <ClaimButton isActive = {claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
+                        {!loading
+                            ? "Claim"
+                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                        }
+                    </ClaimButton>
+                </ClaimRow>
+                <ClaimRow>
+                    <SmallText align = {"left"} left = {"15px"}  theme = {Theme}>
+                        {"To: "}
+                        <InputAddress color = {bountyAddress?Theme.colors.text:"red"} type="text"  placeholder={ bountyAddress?bountyAddress:"-" }  defaultValue= {bountyAddress?bountyAddress:"-"} onChange={ e => handleClaimAddressChange(e.target.value) } theme={ Theme }/>
+                    </SmallText>
+                </ClaimRow>
+            </ClaimColumn>
         )
+    }
+
+    const handleClaimAddressChange = (claimAddress: string) => {
+        if (claimAddress.length > 0) {
+            if (ethers.utils.isAddress(claimAddress)) {
+                setBountyAddress(claimAddress)
+            }
+            else {
+                setBountyAddress(null)
+            }
+        }
     }
 
     const helperClickHandler = (helperNumber: number) => {
@@ -922,12 +997,16 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
     }
 
     const claimClickHandler = async () => {
-        console.log(`claiming ${claimsOutstanding}`)
-        if (!loading && claimsOutstanding > 0 && accounts && chainId && provider && baseBal && minBal) {
+        //console.log(`claiming ${claimsOutstanding}`)
+        if (!loading && claimsOutstanding > 0 && accounts && chainId && (chainId === 137 || chainId === 56) && provider && baseBal && minBal) {
             await updateBaseBal(accounts, provider)
-            if (baseBal >= minBal) {
+            if (baseBal >= minBal && bountyAddress) {
                 setLoading(true)
-                await getRewards(sbtInfo.sbtId, chainId, provider)
+                const amount = await claimBounty(bountyAddress, sbtInfo.sbtId, chainId, provider)
+                if (bountyTokenDetails && amount) {
+                    console.log(`claimed ${amount/(10**bountyTokenDetails.decimals)} ${bountyTokenDetails.symbol}`)
+                    setMessage(4)
+                }
                 setLoading(false)
             }
         }

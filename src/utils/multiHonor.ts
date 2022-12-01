@@ -526,15 +526,6 @@ const unDelegateVeMultiToSBT = async (veId: number, daoId: number, chainId: numb
 }
 
 
-const findRewards = async (sbtId: number, chainId: number, provider: Web3Provider) => {
-    return(0)
-}
-
-
-const getRewards = async (sbtId: number, chainId: number, provider: Web3Provider) => {
-
-}
-
 const sbtExistXChain = async (account: string, chainId: number, sbtNetwork: [number, number]) => {
     var thisChainId
     var exist
@@ -653,6 +644,4 @@ export {
     getLevel,
     getLevelXChain,
     delegateVeMultiToSBT,
-    findRewards,
-    getRewards
 }

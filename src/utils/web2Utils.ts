@@ -9,24 +9,11 @@ enum Units {
   ether = "ether"
 }
 
-const SBT_COLORS = [
-  "#92b5e2",
-  "#bbd5f1",
-  "#6691d6",
-  "#fefeff"
-]
 
-const PALETTE: string[] = [
-  "#bbd5f1",
-  "#009bf9",
-  "#edfbff",
-  "#e6f4f1"
-]
 
 const ZERO = BigNumber.from("0")
 const ZERO_ADDR = "0x0000000000000000000000000000000000000000"
 const ONE_ETHER = BigNumber.from("1000000000000000000")
-const APPROVAL_THRESHOLD = BigNumber.from("0x7777777777777777777777777777777777777777777777777777777777777777")
 const MAX_UINT = BigNumber.from("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
 
 const parseUnits = (value: string, unit: Units | number): BigNumber => {
@@ -75,8 +62,8 @@ const significantDigits = (value: string, sig: number): string => {
 
 const formatAddr = (addr: string) => {
   const start = addr.slice(2, 6)
-  const end = addr.slice(36, 40)
-  return "0x" + (start + "..." + end).toLowerCase()
+  const end = addr.slice(38, 42)
+  return "0x" + (start + "..." + end)
 }
 
 const tsToTime = () => {
@@ -112,11 +99,9 @@ const nowPlusTime = (minutes: string) => {
 }
 
 export {
-  PALETTE,
   ZERO,
   ZERO_ADDR,
   ONE_ETHER,
-  APPROVAL_THRESHOLD,
   MAX_UINT,
   Units,
   parseUnits,

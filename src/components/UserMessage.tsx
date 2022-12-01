@@ -122,6 +122,12 @@ const UserMessage:React.FC<MessageBoxProps> =  ({onClose, selectedMessage}) => {
             message: "Insufficient gas. Please add some and try again",
             link: ""
         },
+        {
+            id: 4,
+            title: "",
+            message: "You have successfully claimed your bounty",
+            link: ""
+        },
     ], [])
 
     useEffect(() => {

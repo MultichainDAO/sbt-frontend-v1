@@ -4,7 +4,7 @@ import { Web3Provider } from "@ethersproject/providers"
 import BigNumberDecimal from "bignumber.js"
 import { Connector } from "@web3-react/types"
 
-import { Units, parseUnits, ZERO, ZERO_ADDR, ONE_ETHER, APPROVAL_THRESHOLD, MAX_UINT, formatUnits } from "./web2Utils"
+import { Units, parseUnits, ZERO, ZERO_ADDR, ONE_ETHER, MAX_UINT, formatUnits } from "./web2Utils"
 
 import networks, { Network, nullNetwork } from "./networks"
 import { getError } from "./errors"
