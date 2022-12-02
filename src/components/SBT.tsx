@@ -1000,14 +1000,19 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         //console.log(`claiming ${claimsOutstanding}`)
         if (!loading && claimsOutstanding > 0 && accounts && chainId && (chainId === 137 || chainId === 56) && provider && baseBal && minBal) {
             await updateBaseBal(accounts, provider)
-            if (baseBal >= minBal && bountyAddress) {
-                setLoading(true)
-                const amount = await claimBounty(bountyAddress, sbtInfo.sbtId, chainId, provider)
-                if (bountyTokenDetails && amount) {
-                    console.log(`claimed ${amount/(10**bountyTokenDetails.decimals)} ${bountyTokenDetails.symbol}`)
-                    setMessage(4)
+            if (baseBal >= minBal) {
+                if (bountyAddress) {
+                    setLoading(true)
+                    const amount = await claimBounty(bountyAddress, sbtInfo.sbtId, chainId, provider)
+                    if (bountyTokenDetails && amount) {
+                        console.log(`claimed ${amount/(10**bountyTokenDetails.decimals)} ${bountyTokenDetails.symbol}`)
+                        setMessage(4)
+                    }
+                    setLoading(false)
                 }
-                setLoading(false)
+            }
+            else {
+                setMessage(3)
             }
         }
     }
