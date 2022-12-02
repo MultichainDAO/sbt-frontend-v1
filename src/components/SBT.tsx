@@ -960,7 +960,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <NormalText align = {"left"} right = {"5px"} top = {"15px"} theme = {Theme}>
                     {bountyTokenDetails ? bountyTokenDetails.symbol: ""}
                     </NormalText>
-                    <ClaimButton isActive = {claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
+                    <ClaimButton isActive = {bountyAddress && claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
                         {!loading
                             ? "Claim"
                             : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
