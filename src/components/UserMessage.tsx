@@ -134,6 +134,12 @@ const UserMessage:React.FC<MessageBoxProps> =  ({onClose, selectedMessage}) => {
             message: "There are insufficient funds for you to claim your bounty. Please contact an admin",
             link: ""
         },
+        {
+          id: 6,
+          title: "",
+          message: "You can only claim your bounty for your SBTs on Polygon or on BNB chain",
+          link: ""
+      },
     ], [])
 
     useEffect(() => {

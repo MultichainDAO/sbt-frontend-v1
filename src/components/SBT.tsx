@@ -966,7 +966,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <NormalText align = {"left"} right = {"5px"} top = {"15px"} theme = {Theme}>
                     {bountyTokenDetails ? bountyTokenDetails.symbol: ""}
                     </NormalText>
-                    <ClaimButton isActive = {bountyAddress && claimsOutstanding>0?true:false} onClick = {() => claimClickHandler()} theme = {Theme} >
+                    <ClaimButton isActive = {bountyAddress && claimsOutstanding>0?true:false && (chainId === 137 || chainId === 56)} onClick = {() => claimClickHandler()} theme = {Theme} >
                         {!loading
                             ? "Claim"
                             : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
@@ -1031,6 +1031,10 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 setMessage(3)
                 setDisplayUserMessage(true)
             }
+        }
+        else if (!(chainId === 137 || chainId === 56)) {
+            setMessage(6)
+            setDisplayUserMessage(true)
         }
     }
 
