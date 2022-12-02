@@ -128,6 +128,12 @@ const UserMessage:React.FC<MessageBoxProps> =  ({onClose, selectedMessage}) => {
             message: "You have successfully claimed your bounty",
             link: ""
         },
+        {
+            id: 5,
+            title: "",
+            message: "There are insufficient funds for you to claim your bounty. Please contact an admin",
+            link: ""
+        },
     ], [])
 
     useEffect(() => {

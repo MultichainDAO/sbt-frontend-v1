@@ -32,6 +32,22 @@ const getClaimBounty = (chainId: number, provider: Web3Provider): (Contract|null
     else return(null)
 }
 
+const bountyContractBalance = async (chainId: number, provider: Web3Provider) => {
+    const claimBounty = getClaimBounty(chainId, provider)
+    if (claimBounty) {
+        try {
+            const tokenAddr = await claimBounty.bountyToken()
+            const bountyToken = new Contract(tokenAddr, ERC20, provider)
+            const bal = await bountyToken.balanceOf(claimBounty.address)
+            return(bal)
+        } catch (err: any) {
+            console.log(err.message)
+            return(null)
+        }
+    }
+    return(null)
+}
+
 const bountyClaimable = async (sbtId: number, chainId: number, provider: Web3Provider) => {
     const claimBounty = getClaimBounty(chainId, provider)
     if (claimBounty) {
@@ -79,6 +95,7 @@ const getBountyTokenDetails = async (chainId: number, provider: Web3Provider): P
 }
 
 export {
+    bountyContractBalance,
     bountyClaimable,
     claimBounty,
     getBountyTokenDetails,

@@ -31,7 +31,7 @@ import {getCurrentEpoch,
     removeSBT, 
 } from "../utils/multiHonor"
 import {getDidAdaptorAddr, userBabtTokenId, sbtBabtClaim, sbtClaim, babtExistXChain, getPremiumPrice} from "../utils/adaptor"
-import {bountyClaimable, claimBounty, getBountyTokenDetails} from "../utils/claimBounty"
+import {bountyContractBalance, bountyClaimable, claimBounty, getBountyTokenDetails} from "../utils/claimBounty"
 
 import { Web3Provider } from "@ethersproject/providers"
 import DelegateVeMULTI from "./DelegateVeMULTI"
@@ -155,7 +155,7 @@ const SbtLeftPanel = styled.div `
     align-items: flex-start;
 
     width: 405px;
-    height: 220px;
+    height: 230px;
     margin: 0 0 0 10px;
 
 
@@ -177,7 +177,7 @@ const SbtRightPanel = styled.div `
 
 
     width: 405px;
-    height: 220px;
+    height: 230px;
     margin: 0 10px 0 0;
 
     outline: 1px solid ${ props => props.theme.colors.tertiary };
@@ -189,6 +189,7 @@ const SbtRightPanel = styled.div `
 
     @media (max-width: 700px) {
         width: 98%;
+        height: 240px;
         margin: 5px 1%;
     }
 `
@@ -382,6 +383,11 @@ const ClaimButton = styled.button<ActiveElement>`
   &:hover {
     opacity: ${props => props.isActive ? `1` : `0.9`};
   }
+
+  @media (max-width: 700px) {
+    height: 3vh;
+    margin: 0 1%;
+  }
 `
 
 const InputAddress = styled.input`
@@ -403,7 +409,7 @@ const InputAddress = styled.input`
   }
 
   @media (max-width: 700px) {
-    height: 2vh;
+    height: 3vh;
     margin: 0 1%;
     font-size: 0.68rem;
   }
@@ -515,7 +521,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             }
         }
         updateBounty()
-    },[chainId, provider])
+    },[accounts, chainId, provider, isActive])
 
     useEffect(()=>{
         const performSBTCheck = async() => {
@@ -739,7 +745,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 displaySBT(accounts[0], chainId, provider)
             }
         }
-    },[isActive, provider, chainId, accounts, sbtPolygonExists, sbtBnbExists])
+    },[isActive, provider, chainId, accounts, bountyAddress, sbtPolygonExists, sbtBnbExists, bountyTokenDetails])
 
 
     useEffect(() => {
@@ -1001,18 +1007,29 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         if (!loading && claimsOutstanding > 0 && accounts && chainId && (chainId === 137 || chainId === 56) && provider && baseBal && minBal) {
             await updateBaseBal(accounts, provider)
             if (baseBal >= minBal) {
-                if (bountyAddress) {
-                    setLoading(true)
-                    const amount = await claimBounty(bountyAddress, sbtInfo.sbtId, chainId, provider)
-                    if (bountyTokenDetails && amount) {
-                        console.log(`claimed ${amount/(10**bountyTokenDetails.decimals)} ${bountyTokenDetails.symbol}`)
-                        setMessage(4)
+                if (bountyAddress && bountyTokenDetails) {
+                    const bal = await bountyContractBalance(chainId, provider)
+                    console.log(`USDC bal = ${bal}`)
+                    if ((bal/(10**bountyTokenDetails.decimals)) >= claimsOutstanding) {
+                        setLoading(true)
+                        const amount = await claimBounty(bountyAddress, sbtInfo.sbtId, chainId, provider)
+                        if (bountyTokenDetails && amount) {
+                            console.log(`claimed ${amount/(10**bountyTokenDetails.decimals)} ${bountyTokenDetails.symbol}`)
+                            setMessage(4)
+                            setDisplayUserMessage(true)
+                        }
+                        setLoading(false)
                     }
-                    setLoading(false)
+                    else {
+                        console.log(`Insufficient funds in the bounty contract ${bal/(10**bountyTokenDetails.decimals)} ${bountyTokenDetails.symbol}`)
+                        setMessage(5)
+                        setDisplayUserMessage(true)
+                    }
                 }
             }
             else {
                 setMessage(3)
+                setDisplayUserMessage(true)
             }
         }
     }

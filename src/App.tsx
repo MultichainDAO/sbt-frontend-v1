@@ -1,5 +1,4 @@
 import styled, { createGlobalStyle } from "styled-components"
-
 import { useWeb3React } from "@web3-react/core"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
