@@ -16,6 +16,7 @@ import {getCurrentEpoch,
     getSBTTokenIdXChain, 
     checkSbtExists, 
     checkSbtOwned, 
+    getWeights,
     getVePower,
     getVePowerXChain,
     getVePoint,
@@ -61,6 +62,7 @@ interface ValueBoxProps {
     height?: string,
     width?: string
 }
+
 
 const SbtTitle = styled.div`
 
@@ -439,6 +441,14 @@ interface BountyDetails {
     decimals: number
 }
 
+interface multiHonorWeights {
+    vePoints?: number,
+    POC: number,
+    event: number,
+    rest?: number
+}
+
+
 
 const sbtOwned = async (account: string, sbtTokenId: number, chainId: number, provider: Web3Provider) => {
     if (account && chainId && provider){
@@ -454,7 +464,7 @@ const sbtOwned = async (account: string, sbtTokenId: number, chainId: number, pr
 
 const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
 
-    const [sbtInfo, setSbtInfo] = useState({
+    const [sbtInfo, setSbtInfo] = useState<any>({
         sbtId: 0,
         currentEpoch: 0,
         level: 0,
@@ -463,6 +473,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
         vePoint: 0,
         POC: 0,
         eventPoint: 0,
+        weights: {} as multiHonorWeights
     })
 
     const multiCitizenThreshold = 20
@@ -687,6 +698,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 //console.log(`TotalPoint = ${totalPoint}`)
                 const level = await getLevel(sbtId, chainId, provider)
                 //console.log(`Level = ${level}`)
+                const weights = await getWeights(chainId, provider)
                 const bounty = await bountyClaimable(sbtId, chainId, provider)
                 if (bounty && bountyTokenDetails) {
                     setClaimsOutstanding(bounty/(10**bountyTokenDetails.decimals))
@@ -704,6 +716,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     vePoint: Number(vePoint),
                     POC: Number(POC),
                     eventPoint: Number(eventPoint),
+                    weights: weights
                 })
             }
             else if (sbtPolygonExists && chainId !== 137) {
@@ -735,6 +748,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     vePoint: Number(vePoint),
                     POC: Number(POC),
                     eventPoint: Number(eventPoint),
+                    weights: {vePoints: 0.3, POC: 0.6, event: 0.1}
                 })
             }
         }
@@ -1059,7 +1073,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             </SubTitle>
             <NormalText text-align = {"right"} top = {"5px"} right = {"10px"} theme = {Theme} ></NormalText>
             <ValueBox top = {"5px"} right = {"20px"} width = {"140px"} theme = {Theme}>{sbtInfo.vePoint}</ValueBox>
-            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*0.3</NormalText>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*{sbtInfo.weights.vePoints}</NormalText>
             </>
         )
     }
@@ -1073,7 +1087,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             </SubTitle>
             <NormalText text-align = {"right"}  top = {"5px"} right = {"10px"} theme = {Theme} >+</NormalText>
             <ValueBox top = {"5px"} right = {"20px"} width = {"140px"} theme = {Theme}>{sbtInfo.eventPoint}</ValueBox>
-            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*0.1</NormalText>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*{sbtInfo.weights.event}</NormalText>
             </>
         )
     }
@@ -1086,7 +1100,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
             </SubTitle>
             <NormalText text-align = {"right"}  top = {"5px"} right = {"10px"} theme = {Theme} >+</NormalText>
             <ValueBox top = {"5px"} right = {"20px"} width = {"140px"} theme = {Theme}>{sbtInfo.POC}</ValueBox>
-            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*0.6</NormalText>
+            <NormalText text-align = {"right"}  top = {"5px"} right = {"20px"} theme = {Theme}>*{sbtInfo.weights.POC}</NormalText>
             </>
         )
     }

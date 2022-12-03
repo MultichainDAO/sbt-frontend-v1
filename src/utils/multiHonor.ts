@@ -10,6 +10,14 @@ import {getWeb3, getNetwork} from "./web3Utils"
 
 import axios from "axios"
 import keccak256 from 'keccak256'
+import { BreakOrContinueStatement } from "typescript"
+
+interface multiHonorWeights {
+    vePoints?: number,
+    POC: number,
+    event: number,
+    rest?: number
+}
 
 
 const getMultiHonor = (chainId: number, provider: Web3Provider): (Contract|null) => {
@@ -62,6 +70,27 @@ const getIdNFT = (chainId: number, provider: Web3Provider): Contract => {
     const iDCardAddr = network.contracts.idCardProxy
     const { ethersSigner } = getWeb3(provider)
     return new Contract(iDCardAddr, idCardAbi, ethersSigner)
+}
+
+const getWeights = async (chainId: number, provider: Web3Provider): Promise<multiHonorWeights|null> => {
+    if ((chainId === 137 || chainId === 56) && provider) {
+        const multiHonor = getMultiHonor(chainId, provider)
+        if (multiHonor){
+            let multiWeights = {} as multiHonorWeights
+
+            if (chainId === 137) {
+                multiWeights.vePoints = Number(await multiHonor.weight_vepoint()/1000)
+            }
+            else {
+                multiWeights.rest = Number(await multiHonor.weight_rest()/1000)
+            }
+            multiWeights.POC = Number(await multiHonor.weight_poc()/1000)
+            multiWeights.event = Number(await multiHonor.weight_event()/1000)
+            return(multiWeights)
+        }
+        else return(null)
+    }
+    return(null)
 }
 
 
@@ -624,6 +653,7 @@ export {
     sbtExistXChainAny,
     getCurrentEpoch,
     getCurrentEpochXChain,
+    getWeights,
     getIdNFT,
     getSBTTokenId,
     getSBTTokenIdXChain,
