@@ -913,7 +913,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <>
                         <MainRow isBottom={false}>
                             <NormalText align = {"center"} left = {"0px"} top = {"30px"} theme = {Theme}>
-                            Choose BNB Chain or Polygon for your SBT
+                            Choose Polygon for your SBT to attach your veMULTI
                             </NormalText>
                         </MainRow>
                     </>
