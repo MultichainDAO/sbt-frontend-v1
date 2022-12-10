@@ -32,7 +32,7 @@ import {getCurrentEpoch,
     removeSBT, 
 } from "../utils/multiHonor"
 import {getDidAdaptorAddr, userBabtTokenId, sbtBabtClaim, sbtClaim, babtExistXChain, getPremiumPrice} from "../utils/adaptor"
-import {bountyContractBalance, bountyClaimable, claimBounty, getBountyTokenDetails} from "../utils/claimBounty"
+import {bountyContractBalance, bountyClaimable, bountyClaimableXChain, claimBounty, getBountyTokenDetails} from "../utils/claimBounty"
 
 import { Web3Provider } from "@ethersproject/providers"
 import DelegateVeMULTI from "./DelegateVeMULTI"
@@ -700,7 +700,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 //console.log(`Level = ${level}`)
                 const weights = await getWeights(chainId, provider)
                 const bounty = await bountyClaimable(sbtId, chainId, provider)
-                if (bounty && bountyTokenDetails) {
+                if (bounty !== null && bountyTokenDetails) {
                     setClaimsOutstanding(bounty/(10**bountyTokenDetails.decimals))
                 }
                 else {
@@ -738,6 +738,12 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                 //console.log(`cross chain POC = ${POC}`)
                 const eventPoint = await getEventPointXChain(sbtId, 137)
                 //console.log(`cross chain eventPoint = ${eventPoint}`)
+
+                const bounty = await bountyClaimableXChain(sbtId, 137)
+                console.log(`cross chain bounty claimable = ${bounty}`)
+                if (bounty!== null && bountyTokenDetails) {
+                    setClaimsOutstanding(bounty/(10**bountyTokenDetails.decimals))
+                }
 
                 setSbtInfo({
                     sbtId: Number(sbtId),
@@ -976,7 +982,7 @@ const SBT: React.FC<sbtNetworkProp> = ({sbtNetwork}) => {
                     <NormalText align = {"left"} left = {"5px"} top = {"15px"} theme = {Theme}>
                     Rewards:
                     </NormalText>
-                    <ValueBox top = {"15px"} left = {"10px"} right = {"5px"} width = {"60px"} theme = {Theme}>{claimsOutstanding?claimsOutstanding: null}</ValueBox>
+                    <ValueBox top = {"15px"} left = {"10px"} right = {"5px"} width = {"60px"} theme = {Theme}>{claimsOutstanding!==null?claimsOutstanding: null}</ValueBox>
                     <NormalText align = {"left"} right = {"5px"} top = {"15px"} theme = {Theme}>
                     {bountyTokenDetails ? bountyTokenDetails.symbol: ""}
                     </NormalText>
