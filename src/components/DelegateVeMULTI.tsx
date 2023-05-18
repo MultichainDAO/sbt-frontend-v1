@@ -420,12 +420,14 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
 
     const autoAttachHandler =  async (thisVeMulti: VeMultiDef) => {
         console.log(`auto attach`)
-        if (props.sbtId && chainId && provider) {
+        if (!loading && props.sbtId && chainId && provider) {
+            setLoading(true)
             if (thisVeMulti.autoDelegated) {
-                await autoDelegateMultiToSBT(0, props.sbtId, chainId, provider)
+                await autoDelegateMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
             } else {
                 await autoDelegateMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
             }
+            setLoading(false)
         }
     }
 
@@ -486,10 +488,13 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                                     }
                                     </AttachedButton>
                                     <AutoButton isActive={thisVeMulti.autoDelegated!==undefined?true:false} theme={ Theme } onClick = {()=> autoAttachHandler(thisVeMulti)}>
-                                        {
-                                            thisVeMulti.autoDelegated
-                                            ? "UnAuto"
-                                            : "Auto"
+                                        {!loading
+                                            ? 
+                                                thisVeMulti.autoDelegated
+                                                ? "UnAuto"
+                                                : "Auto"
+                                            
+                                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
                                         }
                                     </AutoButton>
                                 </AutoContainer>
