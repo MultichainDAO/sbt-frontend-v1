@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react"
+import {useEffect, useState} from "react"
 import { useWeb3React } from "@web3-react/core"
 
 
@@ -8,11 +8,11 @@ import styled, { DefaultTheme, keyframes } from "styled-components"
 
 import UserMessage from "./UserMessage"
 
-import {checkSbtExists, delegateVeMultiToSBT, sbtExistXChainAny} from "../utils/multiHonor"
+import {checkSbtExists, delegateVeMultiToSBT, autoDelegateMultiToSBT, isVeAutoDelegated, sbtExistXChainAny} from "../utils/multiHonor"
 
 import {significantDigits} from "../utils/web2Utils"
 
-import {NormalText, SubTitle, TitleRow, ApprovalLoader, SmallText} from "../component-styles"
+import {NormalText, ApprovalLoader} from "../component-styles"
 import {isVeDelegatedXChain, veMultiBalanceOf, totalLockedMulti, veMultiOfOwnerByIndex, lockedEnd} from "../utils/veMulti"
 import { networkInterfaces } from "os"
 
@@ -45,7 +45,23 @@ const DaoIdContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 15%;
+  width: 35%;
+  height: 90%;
+  
+  @media (max-width: 700px) {
+    height: 9vh;
+    width: 90%;
+    margin: 0 1%;
+    flex-direction: row;
+  }
+`
+
+const AutoContainer = styled.div`
+display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 35%;
   height: 90%;
   
   @media (max-width: 700px) {
@@ -171,7 +187,7 @@ const AttachButton = styled.button<ActiveElement>`
   }
 `
 
-const DetachButton = styled.button<ActiveElement>`
+const AttachedButton = styled.button<ActiveElement>`
 
   display: flex;
   justify-content: center;
@@ -180,7 +196,50 @@ const DetachButton = styled.button<ActiveElement>`
   margin: 0 5px 0 0;
   padding: 6px 6px;
 
-  width: 12%;
+  width: 85%;
+  height: 60%;
+
+  border: none;
+  border-radius: 0.2rem;
+
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.08rem;
+
+  background-color: ${props => props.isActive ? `${props.theme.colors.highlight}` : "#a3a3c2"};
+  color: ${props => props.theme.colors.secondary};
+
+  cursor: pointer;
+
+  opacity: 0.9;
+
+  transition: opacity 0.01s ease;
+  
+
+  &:hover {
+    opacity: ${props => props.isActive ? `1` : `0.9`};
+  }
+
+  @media (max-width: 700px) {
+    width: 80%;
+    height: 30%;
+    margin: 4px auto;
+    font-size: 0.9rem;
+  }
+`
+
+
+const AutoButton = styled.button<ActiveElement>`
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 5px 0 0;
+  padding: 6px 6px;
+
+  width: 80%;
   height: 60%;
 
   border: none;
@@ -254,6 +313,7 @@ interface VeMultiDef  {
     chainId: number,
     network: string,
     delegated: boolean|undefined,
+    autoDelegated: boolean|undefined,
     veMultiLocked: number,
     lockedTimeEnd: number,
     lockedTimeEndString: string
@@ -303,6 +363,7 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
             let veMultiLocked: number
             let endTime: number
             let isDel: boolean| undefined
+            let isAutoDel: boolean|undefined
             let newVeMulti: VeMultiDef
             if (accounts && chainId && provider){
                 const numberOfVeMulti = await veMultiBalanceOf(accounts[0], chainId, provider)
@@ -312,11 +373,13 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                     veMultiLocked = await totalLockedMulti(veMultiId, chainId, provider)
                     endTime = await lockedEnd(veMultiId, chainId, provider)
                     isDel = await isVeDelegatedXChain(chainId, veMultiId, sbtChainId)
+                    isAutoDel = await isVeAutoDelegated(veMultiId, chainId, provider)
                     newVeMulti =  {                   
                         iD: veMultiId,
                         chainId: chainId,
                         network: net.name,
                         delegated: isDel,
+                        autoDelegated: isAutoDel,
                         veMultiLocked: veMultiLocked,
                         lockedTimeEnd: endTime,
                         lockedTimeEndString: new Date(endTime * 1000).toISOString().slice(0, 11).replace("T", " ")
@@ -355,13 +418,15 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
         }
     }
 
-    const detachClickHandler = async (thisVeMulti: VeMultiDef) => {
-        if (!loading && chainId && chainId !== sbtChainId && provider){
-            //setLoading(true)
-            //await unDelegateVeMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
-            //setLoading(false)
+    const autoAttachHandler =  async (thisVeMulti: VeMultiDef) => {
+        console.log(`auto attach`)
+        if (props.sbtId && chainId && provider) {
+            if (thisVeMulti.autoDelegated) {
+                await autoDelegateMultiToSBT(0, props.sbtId, chainId, provider)
+            } else {
+                await autoDelegateMultiToSBT(thisVeMulti.iD, props.sbtId, chainId, provider)
+            }
         }
-
     }
 
     const veMultiDetails = (thisVeMulti: VeMultiDef, i: number) => {
@@ -409,19 +474,33 @@ const DelegateVeMULTI: React.FC<DelegateProps> = (props) => {
                         </DaoIdContainer>
                     }
                     {
-                        thisVeMulti.delegated
-                        ? <DetachButton isActive={false} theme = {Theme} onClick = {() => detachClickHandler(thisVeMulti)}>
-                        {!loading
-                            ? "Attached"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                        }
-                        </DetachButton>
-                        : <AttachButton isActive={xChainSbtExists?xChainSbtExists:false} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
-                        {!loading
-                            ? "Attach"
-                            : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
-                        }
-                        </AttachButton>
+                        <DaoIdContainer theme = {Theme}>
+                            {
+                            thisVeMulti.delegated
+                            ? 
+                                <AutoContainer theme = {Theme}>
+                                    <AttachedButton isActive={false} theme = {Theme} onClick = {() => {}}>
+                                    {!loading
+                                        ? "Attached"
+                                        : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                    }
+                                    </AttachedButton>
+                                    <AutoButton isActive={thisVeMulti.autoDelegated!==undefined?true:false} theme={ Theme } onClick = {()=> autoAttachHandler(thisVeMulti)}>
+                                        {
+                                            thisVeMulti.autoDelegated
+                                            ? "UnAuto"
+                                            : "Auto"
+                                        }
+                                    </AutoButton>
+                                </AutoContainer>
+                            : <AttachButton isActive={xChainSbtExists?xChainSbtExists:false} theme = {Theme} onClick = {() => attachClickHandler(thisVeMulti)}>
+                                {!loading
+                                    ? "Attach"
+                                    : <><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/><ApprovalLoader theme={ Theme }/></>
+                                }
+                              </AttachButton>
+                            }
+                        </DaoIdContainer>
                     }
                 </VeMULTI>
                 {

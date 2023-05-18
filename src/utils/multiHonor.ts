@@ -1,7 +1,7 @@
 import { ethers, Contract, BigNumber } from "ethers"
 import { Web3Provider } from "@ethersproject/providers"
 
-import {multiHonorAbi, multiHonorBnbAbi, idCardAbi, oracleSenderAbi} from "./abi"
+import {multiHonorAbi, multiHonorBnbAbi, idCardAbi, oracleSenderAbi, autoDelegatorAbi} from "./abi"
 import {sbtContract, delegatedVEQuerierContract} from "./sbtContract"
 
 import { getError } from "./errors"
@@ -531,6 +531,13 @@ const getOracleSender = (chainId: number, provider: Web3Provider): Contract => {
     return new Contract(oracleSenderAddr, oracleSenderAbi, ethersSigner)
 }
 
+const getVePowerOracleSender = (chainId: number, provider: Web3Provider): Contract => {
+    const network = getNetwork(chainId)
+    const oracleSenderAddr = network.contracts.vePowerOracleSender
+    const { ethersSigner } = getWeb3(provider)
+    return new Contract(oracleSenderAddr, autoDelegatorAbi, ethersSigner)
+}
+
 const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number, provider: Web3Provider) => {
     const oracleSender = getOracleSender(chainId, provider)
     try {
@@ -540,6 +547,30 @@ const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number
     } catch(err: any) {
         console.log(err.message)
         return(false)
+    }
+}
+
+const autoDelegateMultiToSBT = async (veId: number, daoId: number, chainId: number, provider: Web3Provider) => {
+    const oracleSender = getVePowerOracleSender(chainId, provider)
+    try {
+        const tx = await oracleSender.autoDelegate(veId, daoId)
+        await tx.wait()
+        return(true)
+    } catch(err: any) {
+        console.log(err.message)
+        return(false)
+    }
+}
+
+const isVeAutoDelegated = async(veId: number, chainId: number, provider: Web3Provider) => {
+    const oracleSender = getVePowerOracleSender(chainId, provider)
+    try {
+        const isAuto = await oracleSender.isAutoDelegating(veId)
+        console.log(`auto = ${isAuto}`)
+        return(isAuto)
+    } catch(err: any) {
+        console.log(err.message)
+        return(undefined)
     }
 }
 
@@ -661,6 +692,7 @@ export {
     checkSbtOwned,
     removeSBT,
     isVeMultiDelegated,
+    isVeAutoDelegated,
     getVePower,
     getVePowerXChain,
     getVePoint,
@@ -674,4 +706,5 @@ export {
     getLevel,
     getLevelXChain,
     delegateVeMultiToSBT,
+    autoDelegateMultiToSBT,
 }

@@ -12,6 +12,7 @@ interface Network {
     gasToLeave: number
   },
   contracts: {
+    vePowerOracleSender: string,
     veOracleSender: string,
     controller: string,
     proxyAdmin: string,
@@ -40,6 +41,7 @@ const networks: Network[] = [
       gasToLeave: 0.01,
     },
     contracts: {
+      vePowerOracleSender: "0x559d12a014497F558A2020A89cDa13983846c5F1",
       veOracleSender : "0x5c1F69eC530d69b5271678ACcAF8490F0dE725d3",
       controller: "",
       proxyAdmin: "",
@@ -66,6 +68,7 @@ const networks: Network[] = [
       gasToLeave: 0.003,
     },
     contracts: {
+      vePowerOracleSender: "0x231FEC207DEA24Fb05701fDc8a58919a3a93513f",
       veOracleSender : "0x7c8D2965D9Bf39BE0Bc7258BA59E6b5f2c48f17f",
       controller: "0x81DCd47EdAD7e30864C7d3f84032368954889B90",
       proxyAdmin: "",
@@ -92,6 +95,7 @@ const networks: Network[] = [
       gasToLeave: 0.001,
     },
     contracts: {
+      vePowerOracleSender: "0xdBd21429E02D7086E40E8052A556c394cbA2E117",
       veOracleSender : "0x70d6B3cFaaBd6c0Eb6b99b80C6540fA754a72c40",
       controller: "",
       proxyAdmin: "",
@@ -118,6 +122,7 @@ const networks: Network[] = [
       gasToLeave: 0.05
     },
     contracts: {
+      vePowerOracleSender: "",
       veOracleSender: "",
       controller: "0xB89a2Fa1efB5BcEcd813319c99711cc15DCa2C00",
       proxyAdmin: "0xe7E22Ad06493b97dd86875C7F59f0d71C664c75E",
@@ -144,6 +149,7 @@ const networks: Network[] = [
         gasToLeave: 0.5
       },
       contracts: {
+        vePowerOracleSender: "",
         veOracleSender: "",
         controller: "",
         proxyAdmin: "",
@@ -172,6 +178,7 @@ const nullNetwork: Network = {
     gasToLeave: 0
   },
   contracts: {
+    vePowerOracleSender: "",
     veOracleSender: "",
     controller: "",
     proxyAdmin: "",
