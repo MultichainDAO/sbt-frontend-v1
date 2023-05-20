@@ -154,7 +154,7 @@ const AttachButton = styled.button<ActiveElement>`
   margin: 0 5px 0 0;
   padding: 6px 6px;
 
-  width: 10%;
+  width:40%;
   height: 60%;
 
   border: none;
