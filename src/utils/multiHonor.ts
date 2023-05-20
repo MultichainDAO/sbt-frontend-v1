@@ -539,7 +539,8 @@ const getVePowerOracleSender = (chainId: number, provider: Web3Provider): Contra
 }
 
 const delegateVeMultiToSBT = async (veId: number, daoId: number, chainId: number, provider: Web3Provider) => {
-    const oracleSender = getOracleSender(chainId, provider)
+    //const oracleSender = getOracleSender(chainId, provider)
+    const oracleSender = getVePowerOracleSender(chainId, provider)
     try {
         const tx = await oracleSender.delegateVEPower(veId, daoId)
         await tx.wait()
